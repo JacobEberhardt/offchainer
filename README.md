@@ -9,5 +9,6 @@ This project is implemented and consists of the following team members:
 |------|--------|----
 |Dukagjin Ramosaj|dukagjinramosaj1|<dukagjin.ramosaj@campus.tu-berlin.de>
 |Thanh Tuan Tenh Cong|kaziller|<tenhcong@campus.tu-berlin.de>
+|Kevin Marcel Styp-Rekowski|kevinstyp|<kevin.styp@hotmail.de>
 
 
