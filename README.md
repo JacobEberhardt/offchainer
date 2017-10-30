@@ -11,5 +11,5 @@ This project is implemented and consists of the following team members:
 |Thanh Tuan Tenh Cong|kaziller|<tenhcong@campus.tu-berlin.de>
 |Kevin Marcel Styp-Rekowski|kevinstyp|<kevin.styp@hotmail.de>
 |Tarek Higazi|Tarek-higazi|<Tarek.higazi@campus.tu-berlin.de>
-
+|Vincent Jonany|vincentvjj|<v.jonany@campus.tu-berlin.de>
 
