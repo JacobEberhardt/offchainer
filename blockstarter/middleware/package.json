@@ -1,7 +1,7 @@
 {
   "name": "blockstarter",
   "version": "1.0.0",
-  "description": "Node.js app with Smart Contract interaction with web3",
+  "description": "Node.js app with Smart Contract interaction using web3",
   "author": "Thanh Tuan Tenh Cong",
   "main": "app/app.js",
   "scripts": {

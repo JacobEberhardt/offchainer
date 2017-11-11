@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const greeters = require('./routes/greeters');
 // const config = require('./config/database');
 
 // Connect To Database
@@ -33,7 +34,14 @@ app.use(bodyParser.json());
 
 
 // Set routes
-// const users = require('./routes/users');
-// const projects = require('./routes/projects');
-// app.use('/users', users);
-// app.use('/projects', projects);
+app.use('/greeters', greeters);
+
+// Index Route
+app.get('/', (req, res) => {
+  res.send('Invalid Endpoint');
+});
+
+// Start Server
+app.listen(port, () => {
+  console.log('Server started on port '+port);
+});
