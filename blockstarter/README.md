@@ -9,7 +9,7 @@ Go to directory /blockstarter and run:
 docker-compose up --build
 ```
 
-to run TestRPC (Port: 8545) and the middleware (Port: 8080).
+to run TestRPC (Port: 8545) and the middleware (Port: 3000).
 
 ## Endpoints
 

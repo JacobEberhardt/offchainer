@@ -21,7 +21,7 @@ const greeters = require('./routes/greeters');
 const app = express();
 
 // Port Number
-const port = 8080;
+const port = 3000;
 
 // CORS Middleware
 app.use(cors());

@@ -7,7 +7,7 @@ services:
   middleware:
     build: middleware
     ports:
-      - "3000:8080"
+      - "3000:3000"
     volumes:
       - ./middleware/app:/middleware/app
     depends_on:
