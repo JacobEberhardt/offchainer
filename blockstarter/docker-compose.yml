@@ -1,0 +1,30 @@
+version: '2'
+services:
+  # mongo:
+  #     image: mongo:latest
+  #     ports:
+  #       - "27017:27017"
+  middleware:
+    build: middleware
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./middleware/app:/middleware/app
+    depends_on:
+      # - mongo
+      - testrpc
+    # environment:
+    #   - MONGO_HOST=mongo
+    #   - MONGO_PORT=27017
+
+  # frontend:
+  #     build: public
+  #     ports:
+  #       - "4200:4200"
+  #     volumes:
+  #       - ./public/src:/frontend/src
+  testrpc:
+      image: dougvk/testrpc:latest
+      command: bash -c "testrpc -h 0.0.0.0"
+      ports:
+          - "8545:8545"

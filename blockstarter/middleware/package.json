@@ -1,0 +1,22 @@
+{
+  "name": "blockstarter",
+  "version": "1.0.0",
+  "description": "Node.js app with Smart Contract interaction using web3",
+  "author": "Thanh Tuan Tenh Cong",
+  "main": "app/app.js",
+  "scripts": {
+    "dev": "nodemon app/app.js",
+    "prod": "node app/app.js",
+    "start": "npm run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.13.3",
+    "cors": "^2.8.3",
+    "web3": "^0.19.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
