@@ -1,10 +1,8 @@
-# Project Unchained
-
 This is the repository for the project "Off-chaining Smart Contract Data to RDBMS"
 
 Created as project in the course **Cloud Prototyping** at TU Berlin
 
-## Team
+### Team
 This project is implemented and consists of the following team members:
 
 | Name | github | mail
