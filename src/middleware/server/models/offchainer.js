@@ -1,13 +1,14 @@
 // Import dependencies
 const web3 = require('../config/web3')
 const fs = require('fs')
+const path = require('path')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Offchainer.json'
 INITIAL_GAS = 4700000
 
 // Import contract data
-const contractData = JSON.parse(fs.readFileSync(CONTRACT_BUILD_FILE))
+const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BUILD_FILE)))
 
 // Create contract object
 const contract = web3.eth.contract(contractData.abi)
@@ -15,18 +16,27 @@ const contract = web3.eth.contract(contractData.abi)
 // Define functions
 /**
  * Create a new contract instance.
- * @param {String} message The initial message
  * @returns {Promise} A promise that depends on the contract creation
  */
-function create(message) {
-	return contract.new(
-		message,
-		{
-			from: web3.eth.accounts[0],
-			data: contractData.bytecode,
-			gas: INITIAL_GAS
+function create() {
+	return new Promise((resolve, reject) => {
+		try {
+			contract.new(
+				{
+					from: web3.eth.accounts[0],
+					data: contractData.bytecode,
+					gas: INITIAL_GAS
+				},
+				function (err, contract) {
+					if (err) reject(err)
+					if (contract.address) resolve(contract) // Do not reject otherwise because the callback is called multiple times
+				}
+			)
 		}
-	)
+		catch (err) {
+			reject(err)
+		}
+	})
 }
 
 /**

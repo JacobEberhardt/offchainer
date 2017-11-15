@@ -1,5 +1,6 @@
 // Import dependencies
 const router = require('express').Router()
+const offchainer = require('../models/offchainer')
 
 /**
  * Send a JSON response.
@@ -27,6 +28,15 @@ function error(res, status, err) {
 }
 
 // Routes
+router.post('/create', (req, res, next) => {
+	offchainer.create(res)
+		.then(contract => {
+			response(res, 200, {address: contract.address})
+		})
+		.catch(err => {
+			error(res, 500, err)
+		})
+})
 
 // 404 fallback
 router.get('/*', (req, res, next) => {
