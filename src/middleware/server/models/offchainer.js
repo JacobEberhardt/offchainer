@@ -29,7 +29,25 @@ function create(message) {
 	)
 }
 
+/**
+ * Set the address for the used contract instance to a given address.
+ * @param {String} address The given address
+ */
+function setAddress(address) {
+	contract.address = address
+}
+
+/**
+ * Perform an integrity check on the given string.
+ * @param {String} message The string check
+ * @returns {Boolean} Whether the integrity was successful
+ */
+function checkMessage(message) {
+	return contract.at(contract.address).checkMessage(message)
+}
+
 // Export functions
 module.exports = {
-	create
+	create,
+	checkMessage
 }
