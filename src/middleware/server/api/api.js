@@ -1,7 +1,13 @@
 // Import dependencies
 const router = require('express').Router()
 
-// Response functions
+/**
+ * Send a JSON response.
+ *
+ * @param {Object} res - The response object
+ * @param {Number} status - The status code for the response
+ * @param {Object} text - A JSON object which contains any additional data
+ */
 function response(res, status, text) {
 	var obj = {status: status}
 	if (text) obj.text = text
@@ -10,6 +16,13 @@ function response(res, status, text) {
 	res.end()
 }
 
+/**
+ * Send an error response.
+ *
+ * @param {Object} res - The response object
+ * @param {Number} status - The status code for the response
+ * @param {String} err - An error message which gets logged
+ */
 function error(res, status, err) {
 	console.log(err)
 	response(res, status)
