@@ -4,7 +4,7 @@ pragma solidity ^0.4.17;
 // Import dependencies
 import './Standard.sol';
 
-contract Offchainer is Standard {
+contract Offchainer {
 	
 	// Declare variables
 	string message; // The message to use in the contract
@@ -12,7 +12,7 @@ contract Offchainer is Standard {
 
 	// Define public functions 
 	function Offchainer() public {
-		// Initialize
+		integrityHash = 0;	
 	}
 
 	/**
@@ -51,7 +51,7 @@ contract Offchainer is Standard {
 	 * @param _message The string to compute the hash for
 	 * @return The computed hash
 	 */
-	function _computeHash(string _message) private constant returns (bytes32) {
+	function _computeHash(string _message) private constant returns (bytes32 hash) {
 		return keccak256(_message);
 	}
 
@@ -62,6 +62,9 @@ contract Offchainer is Standard {
 	 * @return Whether the integrity check succeed
 	 */
 	function _checkIntegrity(string _message) private constant returns (bool) {
+		if (integrityHash == 0) {
+			return false;
+		}
 		return _computeHash(_message) == integrityHash;
 	}
 
