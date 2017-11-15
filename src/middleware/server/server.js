@@ -21,6 +21,7 @@ app.use('/', api)
 
 // Error handler
 app.use(function(err, req, res, next) {
+	console.error(err.stack)
 	res.writeHead(500)
 	res.write('Internal error')
 	res.end()
