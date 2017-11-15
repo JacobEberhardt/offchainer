@@ -3,10 +3,9 @@ const router = require('express').Router()
 
 /**
  * Send a JSON response.
- *
- * @param {Object} res - The response object
- * @param {Number} status - The status code for the response
- * @param {Object} text - A JSON object which contains any additional data
+ * @param {Object} res The response object
+ * @param {Number} status The status code for the response
+ * @param {Object} text A JSON object which contains any additional data
  */
 function response(res, status, text) {
 	var obj = {status: status}
@@ -18,10 +17,9 @@ function response(res, status, text) {
 
 /**
  * Send an error response.
- *
- * @param {Object} res - The response object
- * @param {Number} status - The status code for the response
- * @param {String} err - An error message which gets logged
+ * @param {Object} res The response object
+ * @param {Number} status The status code for the response
+ * @param {String} err An error message which gets logged
  */
 function error(res, status, err) {
 	console.log(err)
