@@ -51,7 +51,7 @@ contract Offchainer is Standard {
 	 * @returns {bool} Whether the integrity check succeed
 	 */
 	function _checkIntegrity(string _message) constant returns (bool) {
-		return computeHash(_message) == integrityHash;
+		return _computeHash(_message) == integrityHash;
 	}
 
 	/**
@@ -60,7 +60,7 @@ contract Offchainer is Standard {
 	 * @returns {bytes32} The hash for the given message
 	 */
 	function _setMessage(string _message) {
-		integrityHash = computeHash(_message); // Compute the hash for the new message
+		integrityHash = _computeHash(_message); // Compute the hash for the new message
 		message = _message; // Store the new message
 		return integrityHash; // Return the new hash
 	}
