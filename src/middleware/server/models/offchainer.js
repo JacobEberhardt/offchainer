@@ -3,7 +3,7 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 
 // Define values
-CONTRACT_BUILD_FILE = '../../../blockchain/build/Offchainer.json'
+CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Offchainer.json'
 INITIAL_GAS = 4700000
 
 // Import contract data
