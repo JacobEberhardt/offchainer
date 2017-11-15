@@ -59,7 +59,7 @@ contract Offchainer is Standard {
 	 * @param {string} _message The string to store
 	 * @returns {bytes32} The hash for the given message
 	 */
-	function _setMessage(string _message) {
+	function _setMessage(string _message) returns (bytes32) {
 		integrityHash = _computeHash(_message); // Compute the hash for the new message
 		message = _message; // Store the new message
 		return integrityHash; // Return the new hash
