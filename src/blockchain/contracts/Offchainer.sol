@@ -32,7 +32,7 @@ contract Offchainer is Standard {
 	 * @returns {bool} Whether the integrity check was successful
 	 */
 	function checkMessage(string _message) constant public returns (bool) {
-		return _integrityCheck(_message);
+		return _checkIntegrity(_message);
 	}
 
 	// Define private methods
