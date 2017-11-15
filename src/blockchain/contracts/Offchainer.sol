@@ -31,7 +31,7 @@ contract Offchainer is Standard {
 	 * Get the stored message.
 	 * @returns {string} The stored message
 	 */
-	function getMessage() constant public returns (string) {
+	function getMessage() public constant returns (string) {
 		return message;
 	}
 
@@ -40,7 +40,7 @@ contract Offchainer is Standard {
 	 * @param {string} _message The string to check
 	 * @returns {bool} Whether the integrity check was successful
 	 */
-	function checkMessage(string _message) constant public returns (bool) {
+	function checkMessage(string _message) public constant returns (bool) {
 		return _checkIntegrity(_message);
 	}
 
@@ -50,7 +50,7 @@ contract Offchainer is Standard {
 	 * @param {string} _message The string to compute the hash for
 	 * @returns {bytes32} The computed hash
 	 */
-	function _computeHash(string _message) constant returns (bytes32) {
+	function _computeHash(string _message) private constant returns (bytes32) {
 		return keccak256(_message);
 	}
 
@@ -59,7 +59,7 @@ contract Offchainer is Standard {
 	 * @param {string} _message The string to check
 	 * @returns {bool} Whether the integrity check succeed
 	 */
-	function _checkIntegrity(string _message) constant returns (bool) {
+	function _checkIntegrity(string _message) private constant returns (bool) {
 		return _computeHash(_message) == integrityHash;
 	}
 
@@ -68,7 +68,7 @@ contract Offchainer is Standard {
 	 * @param {string} _message The string to store
 	 * @returns {bytes32} The hash for the given message
 	 */
-	function _setMessage(string _message) returns (bytes32) {
+	function _setMessage(string _message) private returns (bytes32) {
 		integrityHash = _computeHash(_message); // Compute the hash for the new message
 		message = _message; // Store the new message
 		return integrityHash; // Return the new hash
