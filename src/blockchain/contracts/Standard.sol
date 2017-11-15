@@ -7,6 +7,8 @@ contract owned {
 	address owner; // The owner of the contract
 
 	/**
+	 * Create an instance of the contract.
+	 *
 	 * @constructor
 	 */
 	function owned() public {
@@ -15,7 +17,8 @@ contract owned {
 
 	/**
 	 * Get the owner of the contract.
-	 * @returns {address} The address of the contract's owner
+	 *
+	 * @return {address} The address of the contract's owner
 	 */
 	function getOwner() public constant returns (address) {
 		return owner;

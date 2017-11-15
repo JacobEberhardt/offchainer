@@ -12,16 +12,19 @@ contract Offchainer is Standard {
 
 	// Define public methods
 	/**
+	 * Create an instance of the contract.
+	 *
 	 * @constructor
 	 */
-	function Offchainer(string _message) public {
+	function Offchainer() public {
 		// Initialize
 	}
 
 	/**
 	 * Set the message to the given string.
+	 *
 	 * @param {string} _message The given string
-	 * @returns {bytes32} The hash of the given string
+	 * @return {bytes32} The hash of the given string
 	 */
 	function setMessage(string _message) public returns (bytes32) {
 		return _setMessage(_message);
@@ -29,7 +32,8 @@ contract Offchainer is Standard {
 
 	/**
 	 * Get the stored message.
-	 * @returns {string} The stored message
+	 *
+	 * @return {string} The stored message
 	 */
 	function getMessage() public constant returns (string) {
 		return message;
@@ -37,8 +41,9 @@ contract Offchainer is Standard {
 
 	/**
 	 * Perform an integrity check on the given string.
+	 *
 	 * @param {string} _message The string to check
-	 * @returns {bool} Whether the integrity check was successful
+	 * @return {bool} Whether the integrity check was successful
 	 */
 	function checkMessage(string _message) public constant returns (bool) {
 		return _checkIntegrity(_message);
@@ -47,8 +52,9 @@ contract Offchainer is Standard {
 	// Define private methods
 	/**
 	 * Compute the hash of a given string.
+	 *
 	 * @param {string} _message The string to compute the hash for
-	 * @returns {bytes32} The computed hash
+	 * @return {bytes32} The computed hash
 	 */
 	function _computeHash(string _message) private constant returns (bytes32) {
 		return keccak256(_message);
@@ -56,8 +62,9 @@ contract Offchainer is Standard {
 
 	/**
 	 * Check the integrity of a given string against the stored hash.
+	 *
 	 * @param {string} _message The string to check
-	 * @returns {bool} Whether the integrity check succeed
+	 * @return {bool} Whether the integrity check succeed
 	 */
 	function _checkIntegrity(string _message) private constant returns (bool) {
 		return _computeHash(_message) == integrityHash;
@@ -65,8 +72,9 @@ contract Offchainer is Standard {
 
 	/**
 	 * Set the stored message to the given string.
+	 *
 	 * @param {string} _message The string to store
-	 * @returns {bytes32} The hash for the given message
+	 * @return {bytes32} The hash for the given message
 	 */
 	function _setMessage(string _message) private returns (bytes32) {
 		integrityHash = _computeHash(_message); // Compute the hash for the new message
