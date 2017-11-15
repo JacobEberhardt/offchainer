@@ -22,7 +22,7 @@ contract Offchainer is Standard {
 	 * Get the stored message.
 	 * @returns {string} The stored message
 	 */
-	function getMessage() constant public returns {string} {
+	function getMessage() constant public returns (string) {
 		return message;
 	}
 
@@ -31,7 +31,7 @@ contract Offchainer is Standard {
 	 * @param {string} _message The string to check
 	 * @returns {bool} Whether the integrity check was successful
 	 */
-	function checkMessage(string _message) constant public returns {bool} {
+	function checkMessage(string _message) constant public returns (bool) {
 		return _integrityCheck(_message);
 	}
 
