@@ -14,8 +14,17 @@ contract Offchainer is Standard {
 	/**
 	 * @constructor
 	 */
-	function Offchainer(string _message) public returns (bytes32) {
-		return _setMessage(_message); // Set the initial message
+	function Offchainer(string _message) public {
+		// Initialize
+	}
+
+	/**
+	 * Set the message to the given string.
+	 * @param {string} _message The given string
+	 * @returns {bytes32} The hash of the given string
+	 */
+	function setMessage(string _message) public returns (bytes32) {
+		return _setMessage(_message);
 	}
 
 	/**
