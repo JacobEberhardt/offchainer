@@ -25,7 +25,7 @@ function create() {
 	return new Promise((resolve, reject) => {
 		try {
 			contract.new(
-			{
+				{
 					from: web3.eth.accounts[0],
 					data: contractData.bytecode,
 					gas: INITIAL_GAS
