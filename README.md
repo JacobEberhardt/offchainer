@@ -12,4 +12,5 @@ This project is implemented and consists of the following team members:
 |Kevin Marcel Styp-Rekowski|kevinstyp|<kevin.styp@hotmail.de>
 |Tarek Higazi|Tarek-higazi|<Tarek.higazi@campus.tu-berlin.de>
 |Vincent Jonany|vincentvjj|<v.jonany@campus.tu-berlin.de>
+|Simon Fallnich|simonfall|<fallnich@campus.tu-berlin.de>
 
