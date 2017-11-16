@@ -2,6 +2,7 @@
 const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
+const promisify = require('../utils/promisify')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Offchainer.json'
@@ -24,7 +25,7 @@ function create() {
 	return new Promise((resolve, reject) => {
 		try {
 			contract.new(
-				{
+			{
 					from: web3.eth.accounts[0],
 					data: contractData.bytecode,
 					gas: INITIAL_GAS
@@ -66,20 +67,7 @@ function hasAddress() {
  * @param {String} message The given string
  */
 function setMessage(message) {
-	return new Promise((resolve, reject) => {
-		try {
-			contract.at(contract.currentAddress).setMessage(
-				message,
-				function (err, hash) {
-					if (err) reject(err)
-					if (hash) resolve(hash) // Do not reject here because the callback is called multiple times
-				}
-			)
-		}
-		catch (err) {
-			reject(err)
-		}
-	})
+	return promisify(contract.at(contract.currentAddress).setMessage, {arg: message})
 }
 
 /**
@@ -89,20 +77,7 @@ function setMessage(message) {
  * @return {Boolean} Whether the integrity was successful
  */
 function checkMessage(message) {
-	return new Promise((resolve, reject) => {
-		try {
-			contract.at(contract.address).checkMessage(
-				message,
-				function (err, bool) {
-					if (err) reject(err)
-					if (bool !== undefined) resolve(bool) // Do not reject here because the callback is called multiple times
-				}
-			)
-		}
-		catch (err) {
-			reject(err)
-		}
-	})
+	return new promisify(contract.at(contract.address).checkMessage, {arg: message})
 }
 
 // Export functions
