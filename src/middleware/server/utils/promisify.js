@@ -36,7 +36,7 @@ function promisify(originalFunction, obj) {
 			}
 		}
 		try {
-			if(arg !== undefined) originalFunction(arg, callback) // Run the original function with argument
+			if (arg !== undefined) originalFunction(arg, callback) // Run the original function with argument
 			else originalFunction(callback) // Run the original function
 		}
 		catch (err) {
