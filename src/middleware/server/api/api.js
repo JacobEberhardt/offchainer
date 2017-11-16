@@ -63,6 +63,7 @@ router.post('/message', (req, res, next) => {
  * Perform an integrity check on the given string.
  */
 router.post('/verify', (req, res, next) => {
+	if (!offchainer.hasAddress()) return response(res, 400, 'Create a contract first') // Check if a contract was created
 	if (!req.body.message || typeof(req.body.message) != 'string') return response(res, 400, 'Invalid message')	// Check if the given message is valid
 	offchainer.checkMessage(req.body.message)
 		.then(success => {
