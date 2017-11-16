@@ -77,7 +77,7 @@ function setMessage(message) {
  * @return {Boolean} Whether the integrity was successful
  */
 function checkMessage(message) {
-	return new promisify(contract.at(contract.address).checkMessage, {arg: message})
+	return new promisify(contract.at(contract.currentAddress).checkMessage, {arg: message})
 }
 
 // Export functions
