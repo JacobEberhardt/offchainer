@@ -1,6 +1,7 @@
 // Import dependencies
 const router = require('express').Router()
 const offchainer = require('../models/offchainer')
+const db = require('../models/database')
 
 /**
  * Send a JSON response.
@@ -25,7 +26,7 @@ function response(res, status, text) {
  * @param {String} err An error message which gets logged
  */
 function error(res, status, err) {
-	console.log(err)
+	console.error(err.stack)
 	response(res, status)
 }
 
@@ -39,9 +40,7 @@ router.post('/create', (req, res, next) => {
 			offchainer.setAddress(contract.address) // Store the address
 			response(res, 200, {address: contract.address})
 		})
-		.catch(err => {
-			error(res, 500, err)
-		})
+		.catch(err => error(res, 500, err))
 })
 
 /**
@@ -51,12 +50,9 @@ router.post('/message', (req, res, next) => {
 	if (!offchainer.hasAddress()) return response(res, 400, 'Create a contract first') // Check if a contract was created
 	if (!req.body.message || typeof(req.body.message) != 'string') return response(res, 400, 'Invalid message')	// Check if the given message is valid
 	offchainer.setMessage(req.body.message)
-		.then(hash => {
-			response(res, 200, {hash: hash})
-		})
-		.catch(err => {
-			error(res, 500, err)
-		})
+		.then(hash => return db.setMessage(hash, req.body.message))
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
 })
 
 /**
@@ -64,19 +60,14 @@ router.post('/message', (req, res, next) => {
  */
 router.post('/verify', (req, res, next) => {
 	if (!offchainer.hasAddress()) return response(res, 400, 'Create a contract first') // Check if a contract was created
-	if (!req.body.message || typeof(req.body.message) != 'string') return response(res, 400, 'Invalid message')	// Check if the given message is valid
-	offchainer.checkMessage(req.body.message)
-		.then(success => {
-			response(res, 200, {success: success})
-		})
-		.catch(err => {
-			error(res, 500, err)
-		})
+	db.getMessage(req.body.hash)
+		.then(result => return offchainer.checkMessage(result.message))
+		.then(success => response(res, 200, {success: success}))
+		.catch(err => error(res, 500, err))
 })
 
 // 404 fallback
-router.all('/*', (req, res, next) => {
-	error(res, 404)
-})
+router.all('/*', (req, res, next) => error(res, 404))
 
+// Export module
 module.exports = router
