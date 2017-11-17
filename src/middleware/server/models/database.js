@@ -1,11 +1,12 @@
 // Import dependecies
-const sqlize = require('sequelize')
+const Sequelize = require('sequelize')
+const connection = require('../config/postgresql')
 
 // Define scheme
-const db = global.db.define('offchainer',
+const db = connection.define('offchainer',
 	{
-		key: {type: sqlize.STRING},
-		message: {type: sqlize.STRING}
+		key: {type: Sequelize.STRING},
+		message: {type: Sequelize.STRING}
 	},
 	{timestamps: false}
 )
