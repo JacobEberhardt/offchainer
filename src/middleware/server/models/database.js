@@ -1,2 +1,2 @@
 // Import dependecies
-const postgres = require('pg')
+const sqlize = require('sequelize')

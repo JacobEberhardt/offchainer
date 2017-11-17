@@ -4,11 +4,11 @@
   "description": "A middleware for trustless data exchange between blockchain and RDBMS.",
   "main": "server/server.js",
   "scripts": {
-  	"start": "node server/server.js"
+    "start": "node server/server.js"
   },
   "dependencies": {
     "express": "^4.16.2",
-    "pg": "^7.4.0",
+    "sequelize": "^4.22.7",
     "web3": "^0.19.0"
   }
 }
