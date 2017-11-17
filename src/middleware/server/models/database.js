@@ -3,32 +3,37 @@ const sqlize = require('sequelize')
 
 // Define scheme
 const db = global.db.define('offchainer',
-	{message: {type: sqlize.STRING}},
+	{
+		key: {type: sqlize.STRING},
+		message: {type: sqlize.STRING}
+	},
 	{timestamps: false}
 )
 
 // Define functions
 /**
- * Store a given message in the database
+ * Store a given message in the database.
  *
+ * @param {String} hash The hash of the given message
  * @param {String} message The given message
  * @returns {Promise} A promise which depends on the database response
  */
-function setMessage(message) {
+function setMessage(hash, message) {
 	return db.create({
+		key: hash,
 		message: message
 	})	
 }
 
 /**
- * Get the message for a given ID
+ * Get the message for a given hash.
  *
- * @param {String} id The given ID
+ * @param {String} hash The given hash
  * @returns {Promise} A promise which depends on the database response
  */
-function getMessage(id) {
+function getMessage(hash) {
 	return db.findOne({
-		where: {id: id}
+		where: {key: hash}
 	})
 }
 
