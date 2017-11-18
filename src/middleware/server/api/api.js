@@ -51,7 +51,7 @@ router.post('/message', (req, res, next) => {
 	if (!req.body.message || typeof(req.body.message) != 'string') return response(res, 400, 'Invalid message')	// Check if the given message is valid
 	offchainer.setMessage(req.body.message)
 		.then(hash => db.setMessage(hash, req.body.message))
-		.then(result => response(res, 200, result))
+		.then(result => response(res, 200, {hash: result.key}))
 		.catch(err => error(res, 500, err))
 })
 
@@ -60,6 +60,7 @@ router.post('/message', (req, res, next) => {
  */
 router.post('/verify', (req, res, next) => {
 	if (!offchainer.hasAddress()) return response(res, 400, 'Create a contract first') // Check if a contract was created
+	if (!req.body.hash || typeof(req.body.hash) != 'string') return response(res, 400, 'Invalid hash') // Check if a contract was created
 	db.getMessage(req.body.hash)
 		.then(result => offchainer.checkMessage(result.message))
 		.then(success => response(res, 200, {success: success}))

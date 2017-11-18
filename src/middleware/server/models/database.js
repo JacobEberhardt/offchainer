@@ -2,13 +2,16 @@
 const Sequelize = require('sequelize')
 const connection = require('../config/postgresql')
 
-// Define scheme
+// Define table
 const db = connection.define('offchainer',
-	{
+	{ // Define scheme
 		key: {type: Sequelize.STRING},
 		message: {type: Sequelize.STRING}
 	},
-	{timestamps: false}
+	{ // Options
+		timestamps: false, // No timestamps
+		freezeTableName: true // Use table name as-is
+	}
 )
 
 // Define functions
