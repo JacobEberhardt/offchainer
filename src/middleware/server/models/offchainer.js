@@ -58,7 +58,7 @@ function setAddress(address) {
  * @returns {Boolean} Whether there is an address stored
  */
 function hasAddress() {
-	return contract.currentAddress !== undefined
+	return contract.currentAddress != undefined
 }
 
 /**
