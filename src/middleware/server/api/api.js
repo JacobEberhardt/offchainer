@@ -8,11 +8,11 @@ const db = require('../models/database')
  *
  * @param {Object} res The response object
  * @param {Number} status The status code for the response
- * @param {Object} text A JSON object which contains any additional data
+ * @param {Object} content A JSON object which contains any additional data
  */
-function response(res, status, text) {
+function response(res, status, content) {
 	var obj = {status: status}
-	if (text) obj.text = text
+	if (content) obj.content = content
 	res.writeHead(status, {'Content-Type': 'application/json'})
 	res.write(JSON.stringify(obj))
 	res.end()
