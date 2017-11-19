@@ -2,7 +2,8 @@
 const web3 = require('web3')
 
 // Define values
-PROVIDER_URL = 'http://localhost:8545'
+WEBTHREE_HOST = process.env.WEBTHREE_HOST || 'localhost'
+PROVIDER_URL = 'http://' + WEBTHREE_HOST + ':8545'
 
 // Create instance
 var instance = new web3()
