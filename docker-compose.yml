@@ -1,0 +1,21 @@
+version: "3"
+services:
+  middleware:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    environment:
+      - PG_HOST=database
+      - PG_PORT=5432
+      - PG_USER=postgres
+      - PG_DATABASE=offchainer
+      - WEBTHREE_HOST=testrpc
+  database:
+    build: docker/database
+  testrpc:
+    image: dougvk/testrpc:latest
+    command: bash -c "testrpc -h 0.0.0.0"
+    ports:
+      - "8545:8545"
