@@ -28,7 +28,7 @@ app.use(function(err, req, res, next) {
 })
 
 // Set port
-const port = DEFAULT_PORT
+const port = process.env.PORT || DEFAULT_PORT
 app.set('port', port)
 
 // Create server
