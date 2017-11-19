@@ -13,6 +13,7 @@ const db = connection.define('offchainer',
 		freezeTableName: true // Use table name as-is
 	}
 )
+db.sync() // Create database if it doesn't exist
 
 // Define functions
 /**
