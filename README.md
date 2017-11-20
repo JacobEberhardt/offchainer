@@ -13,4 +13,4 @@ This project is implemented and consists of the following team members:
 |Tarek Higazi|Tarek-higazi|<Tarek.higazi@campus.tu-berlin.de>
 |Vincent Jonany|vincentvjj|<v.jonany@campus.tu-berlin.de>
 |Simon Fallnich|simonfall|<fallnich@campus.tu-berlin.de>
-
+|Patrick Friedrich|patnorris|<patrick.friedrich@campus.tu-berlin.de>
