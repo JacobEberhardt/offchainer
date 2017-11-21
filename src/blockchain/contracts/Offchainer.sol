@@ -21,7 +21,7 @@ contract Offchainer {
 	 * @param _message The given string.
 	 * @return The hash of the given string.
 	 */
-	function setMessage(string _message) public returns (bytes32) {
+	function setMessage(string _message) public returns (bytes32 hash) {
 		return _setMessage(_message);
 	}
 
@@ -74,9 +74,8 @@ contract Offchainer {
 	 * @param _message The string to store
 	 * @return The hash for the given message
 	 */
-	function _setMessage(string _message) private returns (bytes32) {
+	function _setMessage(string _message) private returns (bytes32 hash) {
 		integrityHash = _computeHash(_message); // Compute the hash for the new message
-		message = _message; // Store the new message
 		return integrityHash; // Return the new hash
 	}
 
