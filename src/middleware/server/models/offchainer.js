@@ -74,7 +74,14 @@ function hasAddress() {
  * @param {String} message The given string
  */
 function setMessage(message) {
-	return promisify(contract.at(contract.currentAddress).setMessage, {arg: message})
+	var obj = {
+		arg: [
+			message,
+			{gas: 3000000}
+		]
+	}
+
+	return promisify(contract.at(contract.currentAddress).setMessage, obj)
 }
 
 /**
