@@ -38,7 +38,7 @@ function promisify(originalFunction, obj) {
 		try {
 			if (arg !== undefined) {
 				if (arg.constructor === Array) {
-					arg.push(callback);
+					arg.push(callback)
 					originalFunction.apply(null, arg) // Call the function with multiple arguments if arg is an array
 				}
 				else originalFunction(arg, callback) // Run the original function with argument
