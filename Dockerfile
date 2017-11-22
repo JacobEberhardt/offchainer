@@ -12,12 +12,12 @@ ADD src/blockchain /blockchain
 
 # Compile smart contracts
 WORKDIR /blockchain
-RUN npm install -g truffle --silent
+RUN npm install -g truffle
 RUN truffle compile --compile-all
 
 # Install dependencies
 WORKDIR /middleware
-RUN npm install --silent
+RUN npm install
 
 # Expose port
 EXPOSE 8000
