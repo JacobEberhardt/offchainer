@@ -1,11 +1,14 @@
 version: "3"
 services:
   middleware:
-    build: .
+    build: . 
+    command: npm run dev
     ports:
       - "8000:8000"
     depends_on:
       - database
+    volumes:
+      - ./src/middleware/server:/middleware/server
     environment:
       - PG_HOST=database
       - PG_PORT=5432
