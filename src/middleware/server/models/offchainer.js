@@ -74,14 +74,13 @@ function hasAddress() {
  * @param {String} message The given string
  */
 function setMessage(message) {
-	var obj = {
-		arg: [
+	const options = {
+		args: [
 			message,
 			{gas: 3000000}
 		]
 	}
-
-	return promisify(contract.at(contract.currentAddress).setMessage, obj)
+	return promisify(contract.at(contract.currentAddress).setMessage)(options)
 }
 
 /**
@@ -91,7 +90,7 @@ function setMessage(message) {
  * @return {Boolean} Whether the integrity was successful
  */
 function checkMessage(message) {
-	return new promisify(contract.at(contract.currentAddress).checkMessage, {arg: message})
+	return new promisify(contract.at(contract.currentAddress).checkMessage)({arg: message})
 }
 
 // Export functions
