@@ -8,6 +8,7 @@ const res = require('../../utils/response')
 const response = res.response
 const error = res.error
 
+// Routes
 /**
  * Create a new contract.
  */
