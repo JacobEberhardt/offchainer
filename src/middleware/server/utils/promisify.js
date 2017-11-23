@@ -18,8 +18,8 @@ function promisify(originalFunction) {
 	 */
 	return function (obj) {
 
-		var arg, requiredProperty
-		if (obj.hasOwnProperty('arg')) arg = obj.arg // Check for an argument to feed to the original function
+		var args, requiredProperty
+		if (obj.hasOwnProperty('args')) args = obj.args // Check for an argument to feed to the original function
 		if (obj.hasOwnProperty('requiredProperty')) { // Check for a required property of the returned object
 			requiredProperty = obj.requiredProperty
 			if (typeof(requiredProperty) !== 'string') throw new TypeError('Attribute "requiredProperty" has to be of type "string".') // Check type of the required property name
@@ -43,12 +43,12 @@ function promisify(originalFunction) {
 				}
 			}
 			try {
-				if (arg !== undefined) {
-					if (arg.constructor === Array) {
-						arg.push(callback)
-						originalFunction.apply(null, arg) // Call the function with multiple arguments if arg is an array
+				if (args !== undefined) {
+					if (args.constructor === Array) {
+						args.push(callback)
+						originalFunction.apply(null, args) // Call the function with multiple arguments if arg is an array
 					}
-					else originalFunction(arg, callback) // Run the original function with argument
+					else originalFunction(args, callback) // Run the original function with argument
 				}
 				else originalFunction(callback) // Run the original function
 			}
