@@ -26,7 +26,7 @@ function promisify(originalFunction) {
 		}
 
 		return new Promise(function (resolve, reject) {
-			setTimeout(reject('Timeout'), TIMEOUT_IN_SECONDS * 1000) // Reject after timeout
+			setTimeout(function () {reject('Timeout')}, TIMEOUT_IN_SECONDS * 1000) // Reject after timeout
 			/**
 			 * The callback for the original function.
 			 *
