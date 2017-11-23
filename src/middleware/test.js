@@ -4,6 +4,7 @@
 // https://www.npmjs.com/package/keccak
 const MerkleTree = require('m-tree')
 const createKeccakHash = require('keccak')
+const reverse = require('buffer-reverse')
 
 function keccak(data) {
   // returns Buffer
@@ -44,11 +45,11 @@ console.log('verified: ' + verified)
 var leaves_2_hash = keccak(leaves[2])
 // proof[0] has position right and its hash, so leaves_2_hash + proof[0] (note the position right of the proof[0] here) -> then hash that
 console.log('proof[0]: ' + proof[0].position + ", " + proof[0].data)
-var upper_hash = keccak((leaves_2_hash + proof[0].data))
+var upper_hash = keccak((Buffer.concat([reverse(leaves_2_hash), reverse(proof[0].data)])))
 
 // proof[1] has position left and its hash, so proof[1] + upper_hash (note the position left of the proof[1] here) ->
 // then hash that, and we should have the merkle root
 console.log('proof[1]: ' + proof[1].position + ", " + proof[1].data)
-var merkle_root_hopefully = keccak((proof[1].data + upper_hash))
+var merkle_root_hopefully = keccak((Buffer.concat([reverse(proof[1].data), reverse(upper_hash)])))
 
 console.log('merkle_root_hopefully: ' + merkle_root_hopefully.toString('hex'))
