@@ -12,7 +12,7 @@ contract Offchainer {
 
 	// Define public functions 
 	function Offchainer() public {
-		integrityHash = 0;	
+		integrityHash = bytes32(0);	
 	}
 
 	/**
@@ -51,7 +51,7 @@ contract Offchainer {
 	 * @param _message The string to compute the hash for
 	 * @return The computed hash
 	 */
-	function _computeHash(string _message) private constant returns (bytes32 hash) {
+	function _computeHash(string _message) private pure returns (bytes32 hash) {
 		return keccak256(_message);
 	}
 
