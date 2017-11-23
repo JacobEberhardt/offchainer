@@ -18,8 +18,6 @@ const db = new Database(
 	}
 )
 
-console.log(db)
-
 // Routes
 /**
  * Create a new contract.
