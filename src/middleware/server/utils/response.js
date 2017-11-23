@@ -21,7 +21,7 @@ function response(res, status, content) {
  * @param {String} err An error message which gets logged
  */
 function error(res, status, err) {
-	console.error(err.stack)
+	console.error(err.stack || err)
 	response(res, status)
 }
 
