@@ -18,12 +18,13 @@ function promisify(originalFunction) {
 	 */
 	return function (obj) {
 
-		var args, requiredProperty
+		var args, requiredProperty, context
 		if (obj.hasOwnProperty('args')) args = obj.args // Check for an argument to feed to the original function
 		if (obj.hasOwnProperty('requiredProperty')) { // Check for a required property of the returned object
 			requiredProperty = obj.requiredProperty
 			if (typeof(requiredProperty) !== 'string') throw new TypeError('Attribute "requiredProperty" has to be of type "string".') // Check type of the required property name
 		}
+		context = obj.hasOwnProperty('context') ? obj.context : null // Set context for original function
 
 		return new Promise(function (resolve, reject) {
 			setTimeout(function () {reject('Timeout')}, TIMEOUT_IN_SECONDS * 1000) // Reject after timeout
@@ -44,13 +45,13 @@ function promisify(originalFunction) {
 			}
 			try {
 				if (args !== undefined) {
-					if (args.constructor === Array) {
-						args.push(callback)
-						originalFunction.apply(null, args) // Call the function with multiple arguments if arg is an array
-					}
-					else originalFunction(args, callback) // Run the original function with argument
+					if (args.constructor !== Array) args = [args] // Convert to array if there's only a single argument
 				}
-				else originalFunction(callback) // Run the original function
+				else {
+					args = [] // Initialize empty args array
+				}
+				args.push(callback) // Push the callback function to arguments array
+				originalFunction.apply(context, args) // Call the function with defined context and arguments
 			}
 			catch (err) {
 				reject(err) // Reject if the execution of the original function fails
