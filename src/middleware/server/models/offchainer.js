@@ -29,23 +29,14 @@ var interval = setInterval(function() { // Poll to wait for web3 connection
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	return new Promise((resolve, reject) => {
-		try {
-			contract.new(
-				{
-					from: web3.eth.accounts[0],
-					data: contractData.bytecode,
-					gas: INITIAL_GAS
-				},
-				function (err, contract) {
-					if (err) reject(err)
-					if (contract.address) resolve(contract) // Do not reject here because the callback is called multiple times
-				}
-			)
-		}
-		catch (err) {
-			reject(err)
-		}
+	return promisify(contract.new)({
+		args: {
+			from: web3.eth.accounts[0],
+			data: contractData.bytecode,
+			gas: INITIAL_GAS
+		},
+		requiredProperty: 'address',
+		context: contract
 	})
 }
 
