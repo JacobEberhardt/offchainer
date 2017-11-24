@@ -1,5 +1,5 @@
 // Define values
-const TIMEOUT_IN_SECONDS = 15
+const TIMEOUT_IN_SECONDS = 60
 
 // Define functions
 /**
