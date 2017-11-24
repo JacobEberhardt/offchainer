@@ -1,5 +1,5 @@
 // Define values
-const TIMEOUT_IN_SECONDS = 5
+const TIMEOUT_IN_SECONDS = 15
 
 // Define functions
 /**
@@ -37,8 +37,8 @@ function promisify(originalFunction) {
 			const callback = function (err, result) {
 				if (err) reject(err) // Reject if there is an error
 				if (result !== undefined) { // Wait for a result, don't reject because the callback function might be called multiple times
-					if (requiredProperty !== undefined) {
-						if (result.hasOwnProperty(requiredProperty)) resolve(result) // If a specific property is required, only resolve if the property exists
+					if (requiredProperty != undefined) {
+						if (result.hasOwnProperty(requiredProperty) && result[requiredProperty] != undefined) resolve(result) // If a specific property is required, only resolve if the property exists
 					}
 					else resolve(result) // Resolve if there is a result and no required property
 				}
