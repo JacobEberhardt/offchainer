@@ -7,9 +7,9 @@ contract Counter {
 	bytes32 integrityHash; // The integrity hash of the counters array
 
 	// Declare events
-	event requestIncreaseCounterEvent(uint8 index);
-	event integrityCheckFailedEvent();
-	event counterIncreasedEvent(uint8[4] counters);
+	event RequestedCounterIncreaseEvent(uint8 index);
+	event IntegrityCheckFailedEvent();
+	event CounterIncreasedEvent(uint8[4] counters);
 
 	// Define public functions 
 	/**
@@ -25,8 +25,8 @@ contract Counter {
 	 *
 	 * @param _index The index of the counter to increase (zero-based)
 	 */
-	function requestIncreaseCounter(uint8 _index) public {
-		requestIncreaseCounterEvent(_index);	
+	function requestCounterIncrease(uint8 _index) public {
+		RequestedCounterIncreaseEvent(_index);	
 	}
 
 	/**
@@ -35,10 +35,12 @@ contract Counter {
 	 * @param _counters The array of counters
 	 * @param _index The index of the counter which should be increased (zero-based)
 	 */
-	function doIncreaseCounter(uint8[4] _counters, uint8 _index) public {
-		if (!_checkIntegrity(_counters)) return integrityCheckFailedEvent(); // Run integrity check
+	function doCounterIncrease(uint8[4] _counters, uint8 _index) public {
+		if (!_checkIntegrity(_counters)) 
+			return IntegrityCheckFailedEvent(); // Run integrity check
 		_counters[_index] += 1;
-		counterIncreasedEvent(_counters);
+		integrityHash = _computeHash(_counters);
+		CounterIncreasedEvent(_counters);
 	}
 
 	// Define private functions 
