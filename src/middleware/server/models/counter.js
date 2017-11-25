@@ -3,6 +3,9 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
+const events = require('../utils/events')
+const Database = require('./database')
+const Sequelize = require('sequelize')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -22,6 +25,17 @@ var interval = setInterval(function() { // Poll to wait for web3 connection
 	}
 }, 500)
 
+// Establish database connection
+const db = new Database(
+	'counter',
+	{
+		counter_one: {type: Sequelize.INTEGER},
+		counter_two: {type: Sequelize.INTEGER},
+		counter_three: {type: Sequelize.INTEGER},
+		counter_four: {type: Sequelize.INTEGER},
+	}
+)
+
 // Define functions
 /**
  * Create a new contract instance.
@@ -29,6 +43,14 @@ var interval = setInterval(function() { // Poll to wait for web3 connection
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
+	// Initialize four counters to zero
+	db.create({
+		counter_one: 0,
+		counter_two: 0,
+		counter_three: 0,
+		counter_four: 0
+	})
+		.then(result => contract.rowId = result.dataValues.id)
 	return promisify(contract.new)({
 		args: {
 			from: web3.eth.accounts[0],
@@ -44,24 +66,72 @@ function create() {
  * Set the address for the used contract instance to a given address.
  *
  * @param {String} address The given address
- * @return {String} The new address
+ * @return {String} The instance store in the contract
  */
-function setAddress(address) {
-	return contract.currentAddress = address
+function setInstance(address) {
+	return contract.instance = contract.at(address)
 }
 
 /**
- * Check if there is an address stored for the contract.
+ * Check if there is an instance address stored for the contract.
  *
  * @returns {Boolean} Whether there is an address stored
  */
-function hasAddress() {
-	return contract.currentAddress != undefined
+function hasInstance() {
+	return contract.instance != undefined
+}
+
+function increaseCounter(index) {
+
+	return new Promise ((resolve, reject) => {
+
+		// Define functions
+		const handler = (err) => reject(err)
+		const doCounterIncrease = promisify(contract.instance.doCounterIncrease)
+
+		// Set event listeners
+		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
+			.then(result => db.read({id: contract.rowId}))
+			.then(result => {
+				var counters = [
+					result.counter_one,
+					result.counter_two,
+					result.counter_three,
+					result.counter_four
+				]
+				return doCounterIncrease({args: [counters, index]})
+			})
+			.catch(handler)
+
+		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
+			.then(() => reject('Integrity check failed.'))
+			.catch(handler)
+
+		events.watch(contract.instance.CounterIncreasedEvent) // Counter was successfully increased
+			.then(result => {
+				const data = {
+					counter_one: result.args.counters[0].c[0],
+					counter_two: result.args.counters[1].c[0],	
+					counter_three: result.args.counters[2].c[0],
+					counter_four: result.args.counters[3].c[0]
+				}
+				return db.update({id: contract.rowId}, data)
+			})
+			.then(result => resolve(result[1][0])) // Resolve with the resulting row
+			.catch(handler)
+
+		// Request counter increase
+		promisify(contract.instance.requestCounterIncrease)({args: index})
+			.catch(handler)
+
+	})
+
 }
 
 // Export functions
 module.exports = {
 	create,
-	setAddress,
-	hasAddress
+	setInstance,
+	hasInstance,
+	increaseCounter
 }
