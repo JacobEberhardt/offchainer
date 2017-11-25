@@ -18,14 +18,23 @@ function promisify(originalFunction) {
 	 */
 	return function (obj) {
 
+		// Declare variables
 		var args, requiredProperty, context
-		if (obj.hasOwnProperty('args')) args = obj.args // Check for an argument to feed to the original function
-		if (obj.hasOwnProperty('requiredProperty')) { // Check for a required property of the returned object
-			requiredProperty = obj.requiredProperty
-			if (typeof(requiredProperty) !== 'string') throw new TypeError('Attribute "requiredProperty" has to be of type "string".') // Check type of the required property name
-		}
-		context = obj.hasOwnProperty('context') ? obj.context : null // Set context for original function
 
+		if (obj != undefined) {
+			// Check argument
+			if (typeof(obj) !== 'object') throw TypeError('Argument for promisified function has to be of type "object"')
+
+			// Set variables
+			if (obj.hasOwnProperty('args')) args = obj.args // Check for an argument to feed to the original function
+			if (obj.hasOwnProperty('requiredProperty')) { // Check for a required property of the returned object
+				requiredProperty = obj.requiredProperty
+				if (typeof(requiredProperty) !== 'string') throw TypeError('Attribute "requiredProperty" has to be of type "string".') // Check type of the required property name
+			}
+			context = obj.hasOwnProperty('context') ? obj.context : null // Set context for original function
+		}
+
+		// Return promise
 		return new Promise(function (resolve, reject) {
 			setTimeout(function () {reject('Timeout')}, TIMEOUT_IN_SECONDS * 1000) // Reject after timeout
 			/**
