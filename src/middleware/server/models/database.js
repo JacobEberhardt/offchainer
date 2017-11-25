@@ -1,49 +1,84 @@
 // Import dependecies
-const Sequelize = require('sequelize')
 const connection = require('../config/postgresql')
 
-// Define table
-const db = connection.define('offchainer',
-	{ // Define scheme
-		key: {type: Sequelize.STRING},
-		message: {type: Sequelize.STRING}
-	},
-	{ // Options
-		timestamps: false, // No timestamps
-		freezeTableName: true // Use table name as-is
+/**
+ * The database class.
+ */
+function Database(tableName, scheme) {
+
+	// Constructor
+	this.db = connection.define(
+		tableName,
+		scheme,
+		{
+			timestamps: false, // No timestamps
+			freezeTableName: true // Use table name as-is
+		}
+	)
+	this.db.sync()
+
+	// Define functions	
+	/**
+	 * Check if a database connection exists.
+	 *
+	 * @throws Throws an error if there is no database connection
+	 */
+	this.checkConnection = function () {
+		if (this.db == undefined) throw Error('No database connection. Set table with function "setTable" first.')
 	}
-)
-db.sync() // Create database if it doesn't exist
 
-// Define functions
-/**
- * Store a given message in the database.
- *
- * @param {String} hash The hash of the given message
- * @param {String} message The given message
- * @returns {Promise} A promise which depends on the database response
- */
-function setMessage(hash, message) {
-	return db.create({
-		key: hash,
-		message: message
-	})	
-}
+	// "Low level" wrapper functions
+	/**
+	 * Insert a new row.
+	 *
+	 * @param {Object} data The row to insert
+	 * @returns {Promise} The database response
+	 */
+	this.create = function (data) {
+		this.checkConnection()
+		return this.db.create(data)
+	}
 
-/**
- * Get the message for a given hash.
- *
- * @param {String} hash The given hash
- * @returns {Promise} A promise which depends on the database response
- */
-function getMessage(hash) {
-	return db.findOne({
-		where: {key: hash}
-	})
+	/**
+	 * Read a row.
+	 *
+	 * @param {Object} criteria The criteria for the row to read
+	 * @returns {Promise} The database response
+	 */
+	this.read = function (criteria) {
+		this.checkConnection()
+		return this.db.findOne({where: criteria})
+	}
+
+	/**
+	 * Update a row.
+	 *
+	 * @param {Object} criteria The criteria for the row to update
+	 * @param {Object} data The columns to update
+	 * @returns {Promise} The database response
+	 */
+	this.update = function (criteria, data) {
+		this.checkConnection()
+		return this.db.update(data,
+			{
+				where: criteria,
+				returning: true // Return the update result
+			}
+		)
+	}
+
+	/**
+	 * Delete a row.
+	 *
+	 * @param {Object} criteria The criteria for the row to delete
+	 * @returns {Promise} The database response
+	 */
+	this.destroy = function (criteria) {
+		this.checkConnection()
+		return this.db.destroy({where: criteria})
+	}
+
 }
 
 // Export module
-module.exports = {
-	setMessage,
-	getMessage
-}
+module.exports = Database 
