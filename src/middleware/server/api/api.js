@@ -2,7 +2,7 @@
 const router = require('express').Router()
 const res = require('../utils/response')
 const offchainer = require('./routes/offchainer')
-const counter = require('./routes/offchainer')
+const counter = require('./routes/counter')
 
 // Set response functions
 const error = res.error
