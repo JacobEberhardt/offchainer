@@ -50,7 +50,7 @@ function create() {
 		counter_three: 0,
 		counter_four: 0
 	})
-		.then(result => contract.rowId = result.dataValues.id)
+		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance
 	return promisify(contract.new)({
 		args: {
 			from: web3.eth.accounts[0],
@@ -81,6 +81,12 @@ function hasInstance() {
 	return contract.instance != undefined
 }
 
+/**
+ * Increase the counter with the given index.
+ *
+ * @param {Integer} index The index of the counter to increase
+ * @returns {Promise} A promise that depends on the successful counter increase
+ */
 function increaseCounter(index) {
 
 	return new Promise ((resolve, reject) => {
@@ -92,15 +98,17 @@ function increaseCounter(index) {
 		// Set event listeners
 		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
 			.then(result => db.read({id: contract.rowId}))
-			.then(result => {
-				var counters = [
-					result.counter_one,
-					result.counter_two,
-					result.counter_three,
-					result.counter_four
+			.then(result => doCounterIncrease({
+				args: [
+					[
+						result.counter_one,
+						result.counter_two,
+						result.counter_three,
+						result.counter_four
+					],
+					index
 				]
-				return doCounterIncrease({args: [counters, index]})
-			})
+			}))
 			.catch(handler)
 
 		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
@@ -108,15 +116,15 @@ function increaseCounter(index) {
 			.catch(handler)
 
 		events.watch(contract.instance.CounterIncreasedEvent) // Counter was successfully increased
-			.then(result => {
-				const data = {
+			.then(result => db.update(
+				{id: contract.rowId},
+				{
 					counter_one: result.args.counters[0].c[0],
 					counter_two: result.args.counters[1].c[0],	
 					counter_three: result.args.counters[2].c[0],
 					counter_four: result.args.counters[3].c[0]
-				}
-				return db.update({id: contract.rowId}, data)
-			})
+				}	
+			))
 			.then(result => resolve(result[1][0])) // Resolve with the resulting row
 			.catch(handler)
 
