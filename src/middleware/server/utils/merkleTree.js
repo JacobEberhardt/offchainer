@@ -2,10 +2,10 @@
 const MerkleTree = require('m-tree')
 const createKeccakHash = require('keccak')
 
-// For testing purposes
-var arr = ['a', 'b', 'c', 'd'];
-var tree = createTree(createLeaves(arr));
-console.log(verify(tree, 2));
+// example usage
+// var arr = ['a', 'b', 'c', 'd'];
+// var tree = createTree(createLeaves(arr));
+// console.log(verify(tree, 2));
 
 /**
  * Hash(keccak) the data in the array, and returns an array of <Bufffer>, the hashed data. 

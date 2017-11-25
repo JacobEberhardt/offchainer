@@ -6,7 +6,7 @@ const promisify = require('../utils/promisify')
 const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
-const MerkleTree = require('../utils/merkle-tree')
+const MerkleTree = require('../utils/merkleTree')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'

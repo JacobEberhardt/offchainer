@@ -16,8 +16,6 @@ contract Counter {
 	 * Create a new contract instance.
 	 */
 	function Counter(bytes32 rootHash) public {
-		//uint8[4] memory zeroArr; // Memory array is automatically initialized to zeros
-		//integrityHash = _computeHash(zeroArr); // Compute the initial integrity hash
 		integrityHash = rootHash;
 	}
 
