@@ -89,7 +89,7 @@ function verify(tree, target) {
  * Return the hashed (keccak) data
  *
  * @param {Generic?} data The data that is needed to be hashed
- * @returns {Object} returns a Buffer type object that represents the hashed data. 
+ * @returns {Object} returns a Buffer type object that represents the hashed data.
  */
 function keccak(data) {
   // returns Buffer

@@ -6,6 +6,7 @@ const promisify = require('../utils/promisify')
 const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
+const MerkleTree = require('../utils/merkle-tree')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -29,6 +30,7 @@ var interval = setInterval(function() { // Poll to wait for web3 connection
 const db = new Database(
 	'counter',
 	{
+		root_hash: {type : Sequelize.STRING},
 		counter_one: {type: Sequelize.INTEGER},
 		counter_two: {type: Sequelize.INTEGER},
 		counter_three: {type: Sequelize.INTEGER},
@@ -43,8 +45,11 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
+	// Keccak only hash string or buffer, so I have to parse it to String when dealing with Keccak
+	const rootHash = MerkleTree.getRoot(MerkleTree.createTree(MerkleTree.createLeaves(["0", "0", "0", "0"])));
 	// Initialize four counters to zero
 	db.create({
+		root_hash: rootHash.toString('hex'),
 		counter_one: 0,
 		counter_two: 0,
 		counter_three: 0,
@@ -52,11 +57,14 @@ function create() {
 	})
 		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance
 	return promisify(contract.new)({
-		args: {
-			from: web3.eth.accounts[0],
-			data: contractData.bytecode,
-			gas: INITIAL_GAS
-		},
+		args: [
+			rootHash.toString('hex'),
+			{
+				from: web3.eth.accounts[0],
+				data: contractData.bytecode,
+				gas: INITIAL_GAS
+			}
+		],
 		requiredProperty: 'address',
 		context: contract
 	})
