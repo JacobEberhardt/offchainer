@@ -35,6 +35,7 @@ function Database(tableName, scheme) {
 	 * @returns {Promise} The database response
 	 */
 	this.create = function (data) {
+		this.checkConnection()
 		return this.db.create(data)
 	}
 
@@ -45,6 +46,7 @@ function Database(tableName, scheme) {
 	 * @returns {Promise} The database response
 	 */
 	this.read = function (criteria) {
+		this.checkConnection()
 		return this.db.findOne({where: criteria})
 	}
 
@@ -56,7 +58,13 @@ function Database(tableName, scheme) {
 	 * @returns {Promise} The database response
 	 */
 	this.update = function (criteria, data) {
-		return this.db.update(data, {where: criteria})
+		this.checkConnection()
+		return this.db.update(data,
+			{
+				where: criteria,
+				returning: true // Return the update result
+			}
+		)
 	}
 
 	/**
@@ -66,6 +74,7 @@ function Database(tableName, scheme) {
 	 * @returns {Promise} The database response
 	 */
 	this.destroy = function (criteria) {
+		this.checkConnection()
 		return this.db.destroy({where: criteria})
 	}
 
