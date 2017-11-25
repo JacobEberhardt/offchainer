@@ -55,7 +55,7 @@ function create() {
 		counter_three: 0,
 		counter_four: 0
 	})
-		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance
+		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
 	return promisify(contract.new)({
 		args: [
 			rootHash.toString('hex'),
