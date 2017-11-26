@@ -118,24 +118,24 @@ function increaseCounter(index) {
 
 					const proof = MerkleTree.getProof(MerkleTree.createTree(MerkleTree.createLeaves(leaves)), index, index)
 					//construct a cheaper smaller object
-					var proofObj = []
-					var objIndex = 0
+					var proofData = []
+					var proofPosition = [];
 					// left is even numbered index, and right is odd even numbered index, while also preserving the order. 
 					for(var i = 0; i < proof.length; i++) {
-						if(proof[i].position === "left") {
-							if(objIndex % 2 !== 0) {
-								objIndex += 1 // makes it odd index
-							} 
-						} else {
-							if(objIndex % 2 !== 1) {
-								objIndex += 1 // makes it even index
-							}
-						}
-						proofObj[objIndex] = proof[i].data
-						objIndex += 1
+						proofPosition.push(proof[i].position === "left" ? 0 : 1)
+						proofData.push(Array.prototype.slice.call(proof[i].data))
 					}
 
-					doCounterIncrease(MerkleTree.createLeaves(leaves)[index], parseInt(leaves[index]), proofObj)
+					var leaf =  Array.prototype.slice.call(MerkleTree.createLeaves(leaves)[index])
+					doCounterIncrease({
+						args: [
+							leaf,
+							parseInt(leaves[index]),
+							proofPosition,
+							proofData
+						]
+					})
+
 
 					// doCounterIncrease({
 					// 	args: [

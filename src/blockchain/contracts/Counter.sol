@@ -10,7 +10,7 @@ contract Counter {
 	event RequestedCounterIncreaseEvent(string integrityHash);
 	event IntegrityCheckFailedEvent();
 	event CounterIncreasedEvent(uint8[4] counters);
-    event printStuff(bytes32[] proof);
+    event printStuff(uint[] _proof);
     
 	// Define public functions 
 	/**
@@ -34,9 +34,10 @@ contract Counter {
 	 *
 	 * @param _counterHash The keccak hash of the counter value
 	 * @param _counterValue value of the counter in int
-	 * @param _proof the proof to verify merkle tree
+	 * @param _proof proof
+	 * @param _proofPosition proof positions
 	 */
-	function doCounterIncrease(bytes32[] _counterHash, uint8 _counterValue, bytes32[] _proof) public {
+	function doCounterIncrease(uint[] _counterHash, uint8 _counterValue, uint[] _proof, uint[] _proofPosition) public {
 // 		if (!_checkIntegrity(_counters)) 
 // 			return IntegrityCheckFailedEvent(); // Run integrity check
 // 		_counters[_index] += 1;

@@ -5,6 +5,7 @@ const createKeccakHash = require('keccak')
 // example usesage
 // var arr = ['a', 'b', 'c', 'd', "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o","p"];
 // var tree = createTree(createLeaves(arr));
+// console.log(tree.getLeaves()[0])
 // console.log(verify(tree, 8));
 
 /**
