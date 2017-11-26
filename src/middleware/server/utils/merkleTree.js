@@ -2,11 +2,6 @@
 const MerkleTree = require('m-tree')
 const createKeccakHash = require('keccak')
 
-// example usage
-// var arr = ['a', 'b', 'c', 'd'];
-// var tree = createTree(createLeaves(arr));
-// console.log(verify(tree, 2));
-
 /**
  * Hash(keccak) the data in the array, and returns an array of <Bufffer>, the hashed data. 
  *
@@ -84,7 +79,7 @@ function verify(tree, target) {
 	return newHash.equals(tree.getRoot())
 }
 
-///// PRIVATE FUNCTION /////
+// Define private functions
 /**
  * Return the hashed (keccak) data
  *
@@ -103,7 +98,3 @@ module.exports = {
 	printTree,
 	getProof
 }
-
-
-
-
