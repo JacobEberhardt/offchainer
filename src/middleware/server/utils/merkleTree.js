@@ -2,6 +2,11 @@
 const MerkleTree = require('m-tree')
 const createKeccakHash = require('keccak')
 
+// example usesage
+// var arr = ['a', 'b', 'c', 'd', "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o","p"];
+// var tree = createTree(createLeaves(arr));
+// console.log(verify(tree, 8));
+
 /**
  * Hash(keccak) the data in the array, and returns an array of <Bufffer>, the hashed data. 
  *
@@ -52,14 +57,14 @@ function printTree(tree) {
  * @param {Number} index The index of the leaves that wants to be used as a target starting from 0.
  * @returns {Object} returns a Buffer array of the minimum data needed to recreate the merkle tree. 
  */
-function getProof(tree, index) { 
-	return tree.getProof(tree.getLeaves()[index])
+function getProof(tree, leaf, index) { 
+	return tree.getProof(tree.getLeaves()[leaf], index)
 }
 
 // this will later be a SC function
 function verify(tree, target) {
 	// This is how to verify the proof.
-	const proof = getProof(tree, target)
+	const proof = tree.getProof(tree.getLeaves()[target], target)
 	var arr = []
 	var newHash
 	arr.push(tree.getLeaves()[target]) // push the target
@@ -72,14 +77,24 @@ function verify(tree, target) {
 			arr[0] = arr[1]
 			arr[1] = temp
 		} 
-		newHash = keccak(Buffer.concat(arr))
+		// concat my own buffer Array.
+		var arr1 = [];
+		for(var j = 0; j < 64; j++) {
+			if(j < 32) {
+				arr1.push(arr[0][j])
+			} else {
+				arr1.push(arr[1][j - 32])
+			}
+		}
+
+		newHash = keccak(new Buffer(arr1))
 		arr = []
 		arr[0] = newHash
 	}
 	return newHash.equals(tree.getRoot())
 }
 
-// Define private functions
+///// PRIVATE FUNCTION /////
 /**
  * Return the hashed (keccak) data
  *
@@ -98,3 +113,7 @@ module.exports = {
 	printTree,
 	getProof
 }
+
+
+
+

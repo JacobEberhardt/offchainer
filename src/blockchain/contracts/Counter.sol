@@ -4,19 +4,20 @@ pragma solidity ^0.4.17;
 contract Counter {
 	
 	// Declare variables
-	bytes32 integrityHash; // The integrity hash of the counters array
+	string integrityHash; // The integrity hash of the counters array
 
 	// Declare events
-	event RequestedCounterIncreaseEvent(uint8 index);
+	event RequestedCounterIncreaseEvent(string integrityHash);
 	event IntegrityCheckFailedEvent();
 	event CounterIncreasedEvent(uint8[4] counters);
-
+    event printStuff(bytes32[] proof);
+    
 	// Define public functions 
 	/**
 	 * Create a new contract instance.
 	 */
-	function Counter(bytes32 rootHash) public {
-		integrityHash = rootHash;
+	function Counter(string _rootHash) public {
+		integrityHash = _rootHash;
 	}
 
 	/**
@@ -25,21 +26,23 @@ contract Counter {
 	 * @param _index The index of the counter to increase (zero-based)
 	 */
 	function requestCounterIncrease(uint8 _index) public {
-		RequestedCounterIncreaseEvent(_index);	
+		RequestedCounterIncreaseEvent(integrityHash);	
 	}
 
 	/**
 	 * Perform an increase of the counter with the given index.
 	 *
-	 * @param _counters The array of counters
-	 * @param _index The index of the counter which should be increased (zero-based)
+	 * @param _counterHash The keccak hash of the counter value
+	 * @param _counterValue value of the counter in int
+	 * @param _proof the proof to verify merkle tree
 	 */
-	function doCounterIncrease(uint8[4] _counters, uint8 _index) public {
-		if (!_checkIntegrity(_counters)) 
-			return IntegrityCheckFailedEvent(); // Run integrity check
-		_counters[_index] += 1;
-		integrityHash = _computeHash(_counters);
-		CounterIncreasedEvent(_counters);
+	function doCounterIncrease(bytes32[] _counterHash, uint8 _counterValue, bytes32[] _proof) public {
+// 		if (!_checkIntegrity(_counters)) 
+// 			return IntegrityCheckFailedEvent(); // Run integrity check
+// 		_counters[_index] += 1;
+// 		integrityHash = _computeHash(_counters);
+// 		CounterIncreasedEvent(_counters);
+        printStuff(_proof);
 	}
 
 	// Define private functions 
@@ -59,9 +62,9 @@ contract Counter {
 	 * @param _counters The array of integers to check
 	 * @return Whether the integrity check succeed
 	 */
-	function _checkIntegrity(uint8[4] _counters) private constant returns (bool) {
-		if (integrityHash == 0) return false;
-		return _computeHash(_counters) == integrityHash;
-	}
+// 	function _checkIntegrity(uint8[4] _counters) private constant returns (bool) {
+// 		if (integrityHash == 0) return false;
+// 		return _computeHash(_counters) == integrityHash;
+// 	}
 
 }

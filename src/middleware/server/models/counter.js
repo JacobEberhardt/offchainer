@@ -105,18 +105,56 @@ function increaseCounter(index) {
 
 		// Set event listeners
 		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
-			.then(result => db.read({id: contract.rowId}))
-			.then(result => doCounterIncrease({
-				args: [
-					[
-						result.counter_one,
-						result.counter_two,
-						result.counter_three,
-						result.counter_four
-					],
-					index
-				]
-			}))
+			.then(result => {
+				db.read({root_hash: result.args.integrityHash}).then(result => {
+					// perform proof here, and transform the object here. 
+
+					const leaves = [
+						result.counter_one.toString(),
+						result.counter_two.toString(),
+						result.counter_three.toString(),
+						result.counter_four.toString()
+					]
+
+					const proof = MerkleTree.getProof(MerkleTree.createTree(MerkleTree.createLeaves(leaves)), index, index)
+					//construct a cheaper smaller object
+					var proofObj = []
+					var objIndex = 0
+					// left is even numbered index, and right is odd even numbered index, while also preserving the order. 
+					for(var i = 0; i < proof.length; i++) {
+						if(proof[i].position === "left") {
+							if(objIndex % 2 !== 0) {
+								objIndex += 1 // makes it odd index
+							} 
+						} else {
+							if(objIndex % 2 !== 1) {
+								objIndex += 1 // makes it even index
+							}
+						}
+						proofObj[objIndex] = proof[i].data
+						objIndex += 1
+					}
+
+					doCounterIncrease(MerkleTree.createLeaves(leaves)[index], parseInt(leaves[index]), proofObj)
+
+					// doCounterIncrease({
+					// 	args: [
+					// 		[
+					// 			result.counter_one,
+					// 			result.counter_two,
+					// 			result.counter_three,
+					// 			result.counter_four
+					// 		],
+					// 		index
+					// 	]
+					// })
+					})	
+			}).catch(handler)
+
+		events.watch(contract.instance.printStuff) // Given data failed the integrity check
+			.then( result => {
+				console.log(result)
+			})
 			.catch(handler)
 
 		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
