@@ -7,6 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
+const createKeccakHash = require('keccak')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -46,10 +47,12 @@ const db = new Database(
  */
 function create() {
 	// Keccak only hash string or buffer, so I have to parse it to String when dealing with Keccak
-	const rootHash = MerkleTree.getRoot(MerkleTree.createTree(MerkleTree.createLeaves(["0", "0", "0", "0"])));
+	const tree = new MerkleTree(["0", "0", "0", "0"].map(data => keccak(data)), keccak)
+
+	const rootHash = tree.getRoot()
 	// Initialize four counters to zero
 	db.create({
-		root_hash: rootHash.toString('hex'),
+		root_hash: rootHash,
 		counter_one: 0,
 		counter_two: 0,
 		counter_three: 0,
@@ -58,7 +61,7 @@ function create() {
 		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
 	return promisify(contract.new)({
 		args: [
-			rootHash.toString('hex'),
+			rootHash,
 			{
 				from: web3.eth.accounts[0],
 				data: contractData.bytecode,
@@ -114,48 +117,37 @@ function increaseCounter(index) {
 						result.counter_two.toString(),
 						result.counter_three.toString(),
 						result.counter_four.toString()
-					]
-
-					const proof = MerkleTree.getProof(MerkleTree.createTree(MerkleTree.createLeaves(leaves)), index, index)
+					]	
+					const tree = new MerkleTree(leaves.map(data => keccak(data)), keccak)
+					const proof = tree.getProof(index, index)
 					//construct a cheaper smaller object
 					var proofData = []
 					var proofPosition = [];
 					// left is even numbered index, and right is odd even numbered index, while also preserving the order. 
 					for(var i = 0; i < proof.length; i++) {
 						proofPosition.push(proof[i].position === "left" ? 0 : 1)
-						proofData.push(Array.prototype.slice.call(proof[i].data))
+						proofData.push(proof[i].data)
 					}
 
-					var leaf =  Array.prototype.slice.call(MerkleTree.createLeaves(leaves)[index])
+					var hashedLeaf =  tree.getLeaves()[index]
 					doCounterIncrease({
 						args: [
-							leaf,
+							hashedLeaf,
 							parseInt(leaves[index]),
+							proofData,
 							proofPosition,
-							proofData
+							{gas: 300000}
 						]
 					})
 
-
-					// doCounterIncrease({
-					// 	args: [
-					// 		[
-					// 			result.counter_one,
-					// 			result.counter_two,
-					// 			result.counter_three,
-					// 			result.counter_four
-					// 		],
-					// 		index
-					// 	]
-					// })
-					})	
+				})	
 			}).catch(handler)
 
-		events.watch(contract.instance.printStuff) // Given data failed the integrity check
-			.then( result => {
-				console.log(result)
-			})
-			.catch(handler)
+		// events.watch(contract.instance.printStuff) // Given data failed the integrity check
+		// 	.then( result => {
+		// 		console.log(result.args)
+		// 	})
+		// 	.catch(handler)
 
 		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
 			.then(() => reject('Integrity check failed.'))
@@ -181,6 +173,13 @@ function increaseCounter(index) {
 	})
 
 }
+
+// The hash algoirhtm we use to construct the Merkle Tree
+function keccak(data) {
+  // returns Buffer
+  return createKeccakHash('keccak256').update(data).digest('hex')
+}
+
 
 // Export functions
 module.exports = {

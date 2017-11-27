@@ -1,120 +1,151 @@
 //please refer to this documentation https://github.com/miguelmota/merkle-tree#MerkleTree+getProof
-const MerkleTree = require('m-tree')
-const createKeccakHash = require('keccak')
-
-// example usesage
-// var arr = ['a', 'b', 'c', 'd', "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o","p"];
-// var tree = createTree(createLeaves(arr));
-// console.log(tree.getLeaves()[0])
-// console.log(verify(tree, 8));
 
 /**
- * Hash(keccak) the data in the array, and returns an array of <Bufffer>, the hashed data. 
- *
- * @param {Object} dataArray An array of the data that will be hashed to construct the merkle tree
- * @returns {Object} An array<Buffer> of the hashed data. 
+ * Class reprensenting a Merkle Tree
+ * @namespace MerkleTree
  */
-function createLeaves(dataArray) {
-	return dataArray.map(data => keccak(data))
+class MerkleTree {
+  /**
+   * @desc Constructs a Merkle Tree.
+   * All nodes and leaves are stored as Strings.
+   * Lonely leaf nodes are promoted to the next level up without being hashed again.
+   * @param {HexString[]} leaves - Array of hashed leaves. Each leaf must be a HexString(hashed).
+   * @param {Function} hashAlgorithm - Algorithm used for hashing leaves and nodes
+   * @param {Object} options - Additional options
+   * @example
+   * const MerkleTree = require('m-tree')
+   * const crypto = require('crypto')
+   *
+   * function sha256(data) {
+   *   // returns HexString
+   *   return crypto.createHash('sha256').update(data).digest()
+   * }
+   *
+   * const leaves = ['a', 'b', 'c'].map(x => sha3(x))
+   *
+   * const tree = new MerkleTree(leaves, sha256)
+   */
+  constructor(leaves, hashAlgorithm, options={}) {
+    this.hashAlgo = hashAlgorithm
+    this.leaves = leaves
+    this.layers = [leaves]
+
+    this.createHashes(this.leaves)
+  }
+
+  createHashes(nodes) {
+    if (nodes.length === 1) {
+      return false
+    }
+
+    const layerIndex = this.layers.length
+
+    this.layers.push([])
+
+    for (let i = 0; i < nodes.length - 1; i += 2) {
+      const left = nodes[i]
+      const right = nodes[i+1]
+      let data = null
+
+      data = left + right
+      let hash = this.hashAlgo(data)
+      this.layers[layerIndex].push(hash)
+    }
+
+    // is odd number of nodes
+    if (nodes.length % 2 === 1) {
+      let data = nodes[nodes.length-1]
+      let hash = data
+
+      this.layers[layerIndex].push(hash)
+    }
+
+    this.createHashes(this.layers[layerIndex])
+  }
+
+  /**
+   * getLeaves
+   * @desc Returns array of leaves of Merkle Tree.
+   * @return {HexString[]}
+   * @example
+   * const leaves = tree.getLeaves()
+   */
+  getLeaves() {
+    return this.leaves
+  }
+
+  /**
+   * getLayers
+   * @desc Returns array of all layers of Merkle Tree, including leaves and root.
+   * @return {HexString[]}
+   * @example
+   * const layers = tree.getLayers()
+   */
+  getLayers() {
+    return this.layers
+  }
+
+  /**
+   * getRoot
+   * @desc Returns the Merkle root hash as a HexString.
+   * @return {HexString}
+   * @example
+   * const root = tree.getRoot()
+   */
+  getRoot() {
+    return this.layers[this.layers.length-1][0]
+  }
+
+  /**
+   * getProof
+   * @desc Returns the proof for a target leaf.
+   * @param {HexString} leaf - Target leaf
+   * @param {Number} [index] - Target leaf index in leaves array.
+   * Use if there are leaves containing duplicate data in order to distinguish it.
+   * @return {HexString[]} - Array of HexString hashes.
+   * @example
+   * const proof = tree.getProof(leaves[2])
+   *
+   * @example
+   * const leaves = ['a', 'b', 'a'].map(x => sha3(x))
+   * const tree = new MerkleTree(leaves, sha3)
+   * const proof = tree.getProof(leaves[2], 2)
+   */
+  getProof(leaf, index) {
+    const proof = [];
+
+    if (typeof index !== 'number') {
+      index = -1
+
+      for (let i = 0; i < this.leaves.length; i++) {
+        if (leaf === this.leaves[i]) {
+          index = i
+        }
+      }
+    }
+
+    if (index <= -1) {
+      return []
+    }
+
+    for (let i = 0; i < this.layers.length; i++) {
+      const layer = this.layers[i]
+      const isRightNode = index % 2
+      const pairIndex = (isRightNode ? index - 1 : index + 1)
+
+      if (pairIndex < layer.length) {
+        proof.push({
+          position: isRightNode ? 'left': 'right',
+          data: layer[pairIndex]
+        })
+      }
+
+      // set index to parent index
+      index = (index / 2)|0
+    }
+
+    return proof
+  }
 }
 
-/**
- * Return a merkle tree
- *
- * @param {Object} leaves An array of <Buffer>, the hashed data to be used to construct the merkle tree
- * @returns {Object} The Merkle Tree object. 
- */
-function createTree(leaves) {
-	return new MerkleTree(leaves, keccak)
-}
-
-/**
- * Return the root hash of the merkle tree
- *
- * @param {Object} tree A Merkle Tree object
- * @returns {Object} returns a <Buffer> type object, the root hash itself. 
- */
-function getRoot(tree) {
-	return tree.getRoot()
-}
-
-/**
- * Prints out the tree by layers. 
- *
- * @param {Object} tree A Merkle Tree object
- */
-function printTree(tree) {
-	const treeLayers = tree.getLayers()
-	for(var i = 0; i < treeLayers.length; i ++) {
-		console.log("Height " + i)
-		console.log(treeLayers[i])
-	}
-}
-
-/**
- * Return the proof or the minimum data required to recreate the merkle tree based on the target leaf. 
- *
- * @param {Object} tree A Merkle Tree object
- * @param {Number} index The index of the leaves that wants to be used as a target starting from 0.
- * @returns {Object} returns a Buffer array of the minimum data needed to recreate the merkle tree. 
- */
-function getProof(tree, leaf, index) { 
-	return tree.getProof(tree.getLeaves()[leaf], index)
-}
-
-// this will later be a SC function
-function verify(tree, target) {
-	// This is how to verify the proof.
-	const proof = tree.getProof(tree.getLeaves()[target], target)
-	var arr = []
-	var newHash
-	arr.push(tree.getLeaves()[target]) // push the target
-	// if you don't believe it, uncomment below, and comment ^ up 
-	// arr.push(keccak('xx')); // target is compromised
-	for(var i = 0; i < proof.length; i++) {
-		arr.push(proof[i].data)
-		if(proof[i].position === "left"){ // swap the first first element and the second element. So that the 
-			var temp = arr[0]
-			arr[0] = arr[1]
-			arr[1] = temp
-		} 
-		// concat my own buffer Array.
-		var arr1 = [];
-		for(var j = 0; j < 64; j++) {
-			if(j < 32) {
-				arr1.push(arr[0][j])
-			} else {
-				arr1.push(arr[1][j - 32])
-			}
-		}
-
-		newHash = keccak(new Buffer(arr1))
-		arr = []
-		arr[0] = newHash
-	}
-	return newHash.equals(tree.getRoot())
-}
-
-///// PRIVATE FUNCTION /////
-/**
- * Return the hashed (keccak) data
- *
- * @param {Generic?} data The data that is needed to be hashed
- * @returns {Object} returns a Buffer type object that represents the hashed data.
- */
-function keccak(data) {
-  // returns Buffer
-  return createKeccakHash('keccak256').update(data).digest()
-}
-
-module.exports = {
-	createLeaves,
-	createTree,
-	getRoot,
-	printTree,
-	getProof
-}
-
-
-
-
+module.exports = MerkleTree

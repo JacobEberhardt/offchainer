@@ -10,8 +10,7 @@ contract Counter {
 	event RequestedCounterIncreaseEvent(string integrityHash);
 	event IntegrityCheckFailedEvent();
 	event CounterIncreasedEvent(uint8[4] counters);
-    event printStuff(uint[] _proof);
-    
+
 	// Define public functions 
 	/**
 	 * Create a new contract instance.
@@ -37,13 +36,8 @@ contract Counter {
 	 * @param _proof proof
 	 * @param _proofPosition proof positions
 	 */
-	function doCounterIncrease(uint[] _counterHash, uint8 _counterValue, uint[] _proof, uint[] _proofPosition) public {
-// 		if (!_checkIntegrity(_counters)) 
-// 			return IntegrityCheckFailedEvent(); // Run integrity check
-// 		_counters[_index] += 1;
-// 		integrityHash = _computeHash(_counters);
-// 		CounterIncreasedEvent(_counters);
-        printStuff(_proof);
+	function doCounterIncrease(string _counterHash, uint8 _counterValue, byte[64][] _proof, uint[] _proofPosition) public {
+	    //do integrityCheck here for proof and merkle tree
 	}
 
 	// Define private functions 
