@@ -10,17 +10,9 @@ const error = res.error
 
 // Routes
 
-router.post('/import', (req, res, next) => {
-	employee.importEmployees(req.body.employees)
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
-
-/**
- * Create a new contract.
- */
-router.post('/pay-raise-contract', (req, res, next) => {
-	employee.createPayRaiseContract(req.body.percentage, req.body.department, req.body.fromEntryDate ,res)
+// Create Employee contract
+router.post('/create', (req, res, next) => {
+	employee.create(res)
 		.then(contract => {
 			employee.setInstance(contract.address) // Store the address
 			response(res, 200, {address: contract.address})
@@ -28,6 +20,28 @@ router.post('/pay-raise-contract', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+// Add Employee to contract
+router.post('/add', (req, res, next) => {
+	employee.add(req.body)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
+// Add multiple Employees to contract
+router.post('/import', (req, res, next) => {
+	employee.importEmployees(req.body.employees)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
+// Create Pay Raise Contract
+router.post('/pay-raise-contract', (req, res, next) => {
+	employee.createPayRaiseContract(req.body, res)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
+// Increase Salary
 router.post('/increase-salary', (req, res, next) => {
 	employee.increaseSalary()
 		.then(result => response(res, 200, result))

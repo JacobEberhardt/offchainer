@@ -3,5 +3,6 @@ CREATE TABLE employee (
 	first_name TEXT,
 	last_name TEXT,
 	start_date TEXT,
-	department TEXT
+	department TEXT,
+	salary INTEGER
 );

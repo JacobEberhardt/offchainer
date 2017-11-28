@@ -7,7 +7,7 @@ contract Employee {
 	
 	// Variables
 	address creator;
-	mapping(uint => bytes32) employeeRootHashes;
+	mapping(uint => bytes32) employeesRootHashes;
 	
 	// Events
 	event RetrieveDataEvent(bytes32 department, bytes32 fromEntryDate);
@@ -24,13 +24,13 @@ contract Employee {
 	
 	// Public functions
 	/**
-	 * Adds the root hash of an employee record to employeeRootHashes mapping.
+	 * Adds the root hash of an employee record to employeesRootHashes mapping.
 	 *
 	 * @param _index The index of the employee in the database
 	 * @param _rootHash The root hash of the merkle tree of the employee record
 	 */
 	function add(uint8 _index, bytes32 _rootHash) public {
-		employeeRootHashes[_index] = _rootHash;
+		employeesRootHashes[_index] = _rootHash;
 	}
 
 	/**
@@ -40,7 +40,7 @@ contract Employee {
 	 * @param _rootHash The new root hash of the employee record 
 	 */
 	function update(uint8 _index, bytes32 _rootHash) public {
-		employeeRootHashes[_index] = _rootHash;
+		employeesRootHashes[_index] = _rootHash;
 	}
 
 		/**
