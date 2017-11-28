@@ -117,7 +117,7 @@ function increaseCounter(index) {
 						result.counter_two,
 						result.counter_three,
 						result.counter_four
-					]	
+					]
 
 					// transform int to uint8 bytes because that is what being done in SC.
 					const tree = new MerkleTree(leaves.map(data => sha3(leftPad((data).toString(16), 2, 0))), sha3)
@@ -129,7 +129,7 @@ function increaseCounter(index) {
 					for(var i = 0; i < proof.length; i++) {
 						proofPosition.push(proof[i].position === "left" ? 0 : 1)
 						proofData.push(proof[i].data)
-					}	
+					}
 
 					doCounterIncrease({
 						args: [
@@ -139,13 +139,47 @@ function increaseCounter(index) {
 							{gas: 300000}
 						]
 					})
-
-				})	
+				})
 			}).catch(handler)
 
 		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
 			.then( result => {
-				console.log(result.args) // the new roothash and the new counter value. 
+				var newRootHash = result.args.proof
+				var newCounterValue = result.args.newCounterValue.c[0]
+
+				db.read({id: contract.rowId}).then(result => {
+					var c_one = result.counter_one
+					var c_two = result.counter_two
+					var c_three = result.counter_three
+					var c_four = result.counter_four
+					if(index == 0) c_one = newCounterValue
+					else if(index == 1) c_two = newCounterValue
+					else if(index == 2) c_three = newCounterValue
+					else if(index == 3) c_four = newCounterValue
+
+
+					db.update(
+						{id: contract.rowId},
+						{
+							root_hash: newRootHash,
+							counter_one: c_one,
+							counter_two: c_two,
+							counter_three: c_three,
+							counter_four: c_four
+						}
+					).then(() => {
+						db.read({root_hash: newRootHash, id: contract.rowId}).then(result => {
+							console.log('db.read:')
+							console.log(result.counter_one)
+							console.log(result.counter_two)
+							console.log(result.counter_three)
+							console.log(result.counter_four)
+						})
+					})
+				})
+
+
+
 			})
 			.catch(handler)
 
@@ -158,10 +192,10 @@ function increaseCounter(index) {
 				{id: contract.rowId},
 				{
 					counter_one: result.args.counters[0].c[0],
-					counter_two: result.args.counters[1].c[0],	
+					counter_two: result.args.counters[1].c[0],
 					counter_three: result.args.counters[2].c[0],
 					counter_four: result.args.counters[3].c[0]
-				}	
+				}
 			))
 			.then(result => resolve(result[1][0])) // Resolve with the resulting row
 			.catch(handler)
