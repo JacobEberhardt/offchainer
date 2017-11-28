@@ -46,8 +46,8 @@ class MerkleTree {
       const left = nodes[i]
       const right = nodes[i+1]
       let data = null
-
-      data = left + right
+      // Concat Hex string 
+      data = left + right.substring(2, right.length)
       let hash = this.hashAlgo(data)
       this.layers[layerIndex].push(hash)
     }

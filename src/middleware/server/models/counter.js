@@ -7,7 +7,6 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
-const createKeccakHash = require('keccak')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -46,8 +45,8 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	// Keccak only hash string or buffer, so I have to parse it to String when dealing with Keccak
-	const tree = new MerkleTree(["0", "0", "0", "0"].map(data => keccak(data)), keccak)
+	// Sha3/keccak only hash string or buffer, so I have to parse it to String when dealing with Sha3/keccak
+	const tree = new MerkleTree(["0", "0", "0", "0"].map(data => sha3(data)), sha3)
 
 	const rootHash = tree.getRoot()
 	// Initialize four counters to zero
@@ -118,7 +117,7 @@ function increaseCounter(index) {
 						result.counter_three.toString(),
 						result.counter_four.toString()
 					]	
-					const tree = new MerkleTree(leaves.map(data => keccak(data)), keccak)
+					const tree = new MerkleTree(leaves.map(data => sha3(data)), sha3)
 					const proof = tree.getProof(index, index)
 					//construct a cheaper smaller object
 					var proofData = []
@@ -127,12 +126,13 @@ function increaseCounter(index) {
 					for(var i = 0; i < proof.length; i++) {
 						proofPosition.push(proof[i].position === "left" ? 0 : 1)
 						proofData.push(proof[i].data)
-					}
+					}	
 
-					var hashedLeaf =  tree.getLeaves()[index]
+					const test1 = new MerkleTree(["0", "1", "0", "0"].map(data => sha3(data)), sha3)
+					console.log(test1.getRoot()) // the new root hash after adding 1 to counter 1. 
+
 					doCounterIncrease({
 						args: [
-							hashedLeaf,
 							parseInt(leaves[index]),
 							proofData,
 							proofPosition,
@@ -143,11 +143,11 @@ function increaseCounter(index) {
 				})	
 			}).catch(handler)
 
-		// events.watch(contract.instance.printStuff) // Given data failed the integrity check
-		// 	.then( result => {
-		// 		console.log(result.args)
-		// 	})
-		// 	.catch(handler)
+		events.watch(contract.instance.returnNewRootHash) // Given data failed the integrity check
+			.then( result => {
+				console.log(result.args.proof) // is there any similarlity here? 
+			})
+			.catch(handler)
 
 		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
 			.then(() => reject('Integrity check failed.'))
@@ -175,9 +175,9 @@ function increaseCounter(index) {
 }
 
 // The hash algoirhtm we use to construct the Merkle Tree
-function keccak(data) {
-  // returns Buffer
-  return createKeccakHash('keccak256').update(data).digest('hex')
+function sha3(data) {
+  // returns a hex representation of bytes32
+  return web3.sha3(data, {encoding: "hex"});
 }
 
 

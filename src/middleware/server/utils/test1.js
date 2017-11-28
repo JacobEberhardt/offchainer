@@ -1,10 +1,11 @@
 //please refer to this documentation https://github.com/miguelmota/merkle-tree#MerkleTree+getProof
 const MerkleTree = require('./merkleTree')
-const createKeccakHash = require('keccak')
+const web3 = require('../config/web3')
 
 // example usesage
-// var arr = ['a', 'b', 'c', 'd'];
-// var tree = createTree(createLeaves(arr));
+var arr = ['a', 'b', 'c', 'd'];
+var tree = createTree(createLeaves(arr));
+console.log(tree.getLayers())
 // console.log(printTree(tree))
 // console.log(verify(tree, 1));
 
@@ -20,7 +21,7 @@ const createKeccakHash = require('keccak')
  * @returns {Object} An array<Buffer> of the hashed data. 
  */
 function createLeaves(dataArray) {
-	return dataArray.map(data => keccak(data))
+	return dataArray.map(data => sha3(data))
 }
 
 /**
@@ -30,7 +31,7 @@ function createLeaves(dataArray) {
  * @returns {Object} The Merkle Tree object. 
  */
 function createTree(leaves) {
-	return new MerkleTree(leaves, keccak)
+	return new MerkleTree(leaves, sha3)
 }
 
 /**
@@ -93,7 +94,7 @@ function verify(tree, target) {
 		// 	}
 		// }
 
-		newHash = keccak(arr[0] + arr[1])
+		newHash = sha3(arr[0] + arr[1])
 		// newHash = keccak(new Buffer(arr1)) 
 		arr = []
 		arr[0] = newHash
@@ -110,9 +111,9 @@ function verify(tree, target) {
  * @param {Generic?} data The data that is needed to be hashed
  * @returns {Object} returns a Buffer type object that represents the hashed data.
  */
-function keccak(data) {
-  // returns Buffer
-  return createKeccakHash('keccak256').update(data).digest('hex')
+function sha3(data) {
+  // returns Hex 0x123etcetc
+  return web3.sha3(data, {encoding: 'hex'})
 }
 
 module.exports = {
