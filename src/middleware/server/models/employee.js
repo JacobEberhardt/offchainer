@@ -43,7 +43,7 @@ const db = new Database(
  *
  * @return {Promise} A promise that depends on the contract creation
  */
-function create(percentage, department, fromEntryDate) {
+function createPayRaiseContract(percentage, department, fromEntryDate) {
 	return promisify(contract.new)({
 		args: [
 			percentage,
