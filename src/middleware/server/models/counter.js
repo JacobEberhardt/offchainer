@@ -7,6 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
+const leftPad = require('left-pad')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -45,8 +46,9 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	// Sha3/keccak only hash string or buffer, so I have to parse it to String when dealing with Sha3/keccak
-	const tree = new MerkleTree(["0", "0", "0", "0"].map(data => sha3(data)), sha3)
+	// https://ethereum.stackexchange.com/questions/2632/how-does-soliditys-sha3-keccak256-hash-uints
+	// transform int to uint8 bytes because that is what being done in SC.
+	const tree = new MerkleTree([0, 0, 0, 0].map(data => sha3(leftPad((data).toString(16), 2, 0))), sha3)
 
 	const rootHash = tree.getRoot()
 	// Initialize four counters to zero
@@ -109,31 +111,29 @@ function increaseCounter(index) {
 		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
 			.then(result => {
 				db.read({root_hash: result.args.integrityHash}).then(result => {
-					// perform proof here, and transform the object here. 
 
 					const leaves = [
-						result.counter_one.toString(),
-						result.counter_two.toString(),
-						result.counter_three.toString(),
-						result.counter_four.toString()
+						result.counter_one,
+						result.counter_two,
+						result.counter_three,
+						result.counter_four
 					]	
-					const tree = new MerkleTree(leaves.map(data => sha3(data)), sha3)
+
+					// transform int to uint8 bytes because that is what being done in SC.
+					const tree = new MerkleTree(leaves.map(data => sha3(leftPad((data).toString(16), 2, 0))), sha3)
 					const proof = tree.getProof(index, index)
-					//construct a cheaper smaller object
 					var proofData = []
 					var proofPosition = [];
-					// left is even numbered index, and right is odd even numbered index, while also preserving the order. 
+
+					// Create proofData obj and the proof posistions
 					for(var i = 0; i < proof.length; i++) {
 						proofPosition.push(proof[i].position === "left" ? 0 : 1)
 						proofData.push(proof[i].data)
 					}	
 
-					const test1 = new MerkleTree(["0", "1", "0", "0"].map(data => sha3(data)), sha3)
-					console.log(test1.getRoot()) // the new root hash after adding 1 to counter 1. 
-
 					doCounterIncrease({
 						args: [
-							parseInt(leaves[index]),
+							leaves[index],
 							proofData,
 							proofPosition,
 							{gas: 300000}
@@ -143,9 +143,9 @@ function increaseCounter(index) {
 				})	
 			}).catch(handler)
 
-		events.watch(contract.instance.returnNewRootHash) // Given data failed the integrity check
+		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
 			.then( result => {
-				console.log(result.args.proof) // is there any similarlity here? 
+				console.log(result.args) // the new roothash and the new counter value. 
 			})
 			.catch(handler)
 

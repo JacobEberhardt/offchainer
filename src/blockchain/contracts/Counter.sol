@@ -39,7 +39,7 @@ contract Counter {
 	function doCounterIncrease(uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) public {
 	    //Perform integrity check by reconstrcuting the merkle tree.
 	    bytes32 computedHash = _createTree(_counterValue, _proof, _proofPosition);
-	    
+	   
         if(computedHash == integrityHash) {
             uint8 newCounterValue = _counterValue + 1;
             // get new roothash after increasing the counter
@@ -72,6 +72,7 @@ contract Counter {
 	 */
 	function _createTree(uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) private returns (bytes32) {
 	    bytes32 computedHash = keccak256(_counterValue);
+
 	    for(uint8 i = 0; i < _proof.length; i++) {
 	        if(_proofPosition[i] == 0) {
 	            // if left
@@ -83,5 +84,4 @@ contract Counter {
 	    }
 	    return computedHash;
 	}
-
 }
