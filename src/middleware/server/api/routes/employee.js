@@ -9,6 +9,13 @@ const response = res.response
 const error = res.error
 
 // Routes
+
+router.post('/import', (req, res, next) => {
+	employee.importEmployees(req.body.employees)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
 /**
  * Create a new contract.
  */

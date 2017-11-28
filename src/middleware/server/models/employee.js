@@ -88,10 +88,21 @@ function increaseSalary() {
 
 }
 
+/**
+ * Add a set of employees to the database and store the root hash of the data record into 
+ * 
+ * @param {String[]} employees The set of employees to add
+ * @returns {Promise} A promise that depends on the successful salary increase
+ */
+function importEmployees(employees) {
+	
+}
+
 // Export functions
 module.exports = {
 	create,
 	setInstance,
 	hasInstance,
-	increaseSalary
+	increaseSalary,
+	importEmployees
 }
