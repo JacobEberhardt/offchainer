@@ -94,7 +94,7 @@ function add(employee) {
  * @return {Promise} A promise that depends on the contract creation
  */
 function getAll() {
-	return db.find();
+	return db.readAll();
 }
 
 /**
@@ -104,9 +104,7 @@ function getAll() {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function importEmployees(employees) {
-	for (let i = 0; i < employees.length; i++) {
-
-	}
+	return db.createMany(employees)
 }
 
 /**
