@@ -147,36 +147,35 @@ function increaseCounter(index) {
 				var newRootHash = result.args.proof
 				var newCounterValue = result.args.newCounterValue.c[0]
 
-				db.read({id: contract.rowId}).then(result => {
-					var c_one = result.counter_one
-					var c_two = result.counter_two
-					var c_three = result.counter_three
-					var c_four = result.counter_four
-					if(index == 0) c_one = newCounterValue
-					else if(index == 1) c_two = newCounterValue
-					else if(index == 2) c_three = newCounterValue
-					else if(index == 3) c_four = newCounterValue
+				var colName;
+				if(index === 0) {
+				    colName = "counter_one"
+				} else if(index === 1) {
+				    colName = "counter_two"
+				} else if (index === 2) {
+						colname = "counter_three"
+				} else if (index === 3) {
+						colname = "counter_four"
+				}
 
 
-					db.update(
-						{id: contract.rowId},
-						{
-							root_hash: newRootHash,
-							counter_one: c_one,
-							counter_two: c_two,
-							counter_three: c_three,
-							counter_four: c_four
-						}
-					).then(() => {
-						db.read({root_hash: newRootHash, id: contract.rowId}).then(result => {
-							console.log('db.read:')
-							console.log(result.counter_one)
-							console.log(result.counter_two)
-							console.log(result.counter_three)
-							console.log(result.counter_four)
-						})
+				var counterUpdate = {};
+				counterUpdate[colName] = newCounterValue
+				counterUpdate["root_hash"] = newRootHash
+
+				db.update(
+					{id: contract.rowId},
+					counterUpdate
+				).then(() => {
+					db.read({root_hash: newRootHash, id: contract.rowId}).then(result => {
+						console.log('db.read:')
+						console.log(result.counter_one)
+						console.log(result.counter_two)
+						console.log(result.counter_three)
+						console.log(result.counter_four)
 					})
 				})
+
 
 
 
