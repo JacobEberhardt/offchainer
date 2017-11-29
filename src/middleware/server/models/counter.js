@@ -7,6 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
+const leftPad = require('left-pad')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -45,11 +46,14 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	// Keccak only hash string or buffer, so I have to parse it to String when dealing with Keccak
-	const rootHash = MerkleTree.getRoot(MerkleTree.createTree(MerkleTree.createLeaves(["0", "0", "0", "0"])));
+	// https://ethereum.stackexchange.com/questions/2632/how-does-soliditys-sha3-keccak256-hash-uints
+	// transform int to uint8 bytes because that is what being done in SC.
+	const tree = new MerkleTree([0, 0, 0, 0].map(data => sha3(leftPad((data).toString(16), 2, 0))), sha3)
+
+	const rootHash = tree.getRoot()
 	// Initialize four counters to zero
 	db.create({
-		root_hash: rootHash.toString('hex'),
+		root_hash: rootHash,
 		counter_one: 0,
 		counter_two: 0,
 		counter_three: 0,
@@ -58,7 +62,7 @@ function create() {
 		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
 	return promisify(contract.new)({
 		args: [
-			rootHash.toString('hex'),
+			rootHash,
 			{
 				from: web3.eth.accounts[0],
 				data: contractData.bytecode,
@@ -105,18 +109,66 @@ function increaseCounter(index) {
 
 		// Set event listeners
 		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
-			.then(result => db.read({id: contract.rowId}))
-			.then(result => doCounterIncrease({
-				args: [
-					[
+			.then(result => {
+				db.read({root_hash: result.args.integrityHash}).then(result => {
+
+					const leaves = [
 						result.counter_one,
 						result.counter_two,
 						result.counter_three,
 						result.counter_four
-					],
-					index
-				]
-			}))
+					]
+
+					// transform int to uint8 bytes because that is what being done in SC.
+					const tree = new MerkleTree(leaves.map(data => sha3(leftPad((data).toString(16), 2, 0))), sha3)
+					const proof = tree.getProof(index, index)
+					var proofData = []
+					var proofPosition = [];
+
+					// Create proofData obj and the proof posistions
+					for(var i = 0; i < proof.length; i++) {
+						proofPosition.push(proof[i].position === "left" ? 0 : 1)
+						proofData.push(proof[i].data)
+					}
+
+					doCounterIncrease({
+						args: [
+							leaves[index],
+							proofData,
+							proofPosition,
+							{gas: 300000}
+						]
+					})
+				})
+			}).catch(handler)
+
+		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
+			.then( result => {
+				var newRootHash = result.args.proof
+				var newCounterValue = result.args.newCounterValue.c[0]
+
+				var colName;
+				if(index === 0) {
+				    colName = "counter_one"
+				} else if(index === 1) {
+				    colName = "counter_two"
+				} else if (index === 2) {
+						colname = "counter_three"
+				} else if (index === 3) {
+						colname = "counter_four"
+				}
+
+
+				var counterUpdate = {};
+				counterUpdate[colName] = newCounterValue
+				counterUpdate["root_hash"] = newRootHash
+
+				db.update(
+					{id: contract.rowId},
+					counterUpdate
+				)
+
+			})
 			.catch(handler)
 
 		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
@@ -128,10 +180,10 @@ function increaseCounter(index) {
 				{id: contract.rowId},
 				{
 					counter_one: result.args.counters[0].c[0],
-					counter_two: result.args.counters[1].c[0],	
+					counter_two: result.args.counters[1].c[0],
 					counter_three: result.args.counters[2].c[0],
 					counter_four: result.args.counters[3].c[0]
-				}	
+				}
 			))
 			.then(result => resolve(result[1][0])) // Resolve with the resulting row
 			.catch(handler)
@@ -143,6 +195,13 @@ function increaseCounter(index) {
 	})
 
 }
+
+// The hash algoirhtm we use to construct the Merkle Tree
+function sha3(data) {
+  // returns a hex representation of bytes32
+  return web3.sha3(data, {encoding: "hex"});
+}
+
 
 // Export functions
 module.exports = {
