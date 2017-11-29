@@ -166,18 +166,7 @@ function increaseCounter(index) {
 				db.update(
 					{id: contract.rowId},
 					counterUpdate
-				).then(() => {
-					db.read({root_hash: newRootHash, id: contract.rowId}).then(result => {
-						console.log('db.read:')
-						console.log(result.counter_one)
-						console.log(result.counter_two)
-						console.log(result.counter_three)
-						console.log(result.counter_four)
-					})
-				})
-
-
-
+				)
 
 			})
 			.catch(handler)
