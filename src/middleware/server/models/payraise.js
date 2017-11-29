@@ -38,7 +38,7 @@ function create(contractDetails) {
 		args: [
 			contractDetails.percentage,
 			contractDetails.department,
-			contractDetails.fromEntryDate,
+			contractDetails.fromStartDate,
 			{
 				from: web3.eth.accounts[0],
 				data: contractData.bytecode,
@@ -58,7 +58,7 @@ function create(contractDetails) {
  * @return {String} The instance store in the contract
  */
 function setInstance(address) {
-	return employeeContract.instance = employeeContract.at(address)
+	return contract.instance = contract.at(address)
 }
 
 /**
@@ -67,7 +67,7 @@ function setInstance(address) {
  * @returns {Boolean} Whether there is an address stored
  */
 function hasInstance() {
-	return employeeContract.instance != undefined
+	return contract.instance != undefined
 }
 
 // Export functions
