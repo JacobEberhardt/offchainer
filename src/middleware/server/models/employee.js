@@ -9,16 +9,14 @@ const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
 
 // Define values
-CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/PayRaise.json'
+CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Employee.json'
 INITIAL_GAS = 4700000
 
 // Import contract data
-const employeeContractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BUILD_FILE)))
-const payRaiseContractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BUILD_FILE)))
+const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BUILD_FILE)))
 
 // Create contract object
-const employeeContract = web3.eth.contract(employeeContractData.abi)
-const payRaiseContract = web3.eth.contract(payRaiseContractData.abi)
+const contract = web3.eth.contract(contractData.abi)
 
 // Set default account
 var interval = setInterval(function () { // Poll to wait for web3 connection
@@ -49,16 +47,16 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	return promisify(employeeContract.new)({
+	return promisify(contract.new)({
 		args: [
 			{
 				from: web3.eth.accounts[0],
-				data: employeeContractData.bytecode,
+				data: contractData.bytecode,
 				gas: INITIAL_GAS
 			}
 		],
 		requiredProperty: 'address',
-		context: employeeContract
+		context: contract
 	})
 }
 
@@ -102,29 +100,6 @@ function importEmployees(employees) {
 }
 
 /**
- * Create a new pay raise contract instance.
- * 
- * @param {Object} contractDetails The details of the contract
- * @return {Promise} A promise that depends on the contract creation
- */
-function createPayRaiseContract(contractDetails) {
-	return promisify(payRaiseContract.new)({
-		args: [
-			contractDetails.percentage,
-			contractDetails.department,
-			contractDetails.fromEntryDate,
-			{
-				from: web3.eth.accounts[0],
-				data: contractData.bytecode,
-				gas: INITIAL_GAS
-			}
-		],
-		requiredProperty: 'address',
-		context: payRaiseContract
-	})
-}
-
-/**
  * Increase the salary of each affected employee.
  *
  * @returns {Promise} A promise that depends on the successful salary increase
@@ -140,7 +115,7 @@ function increaseSalary(payRaiseContractAddress) {
  * @return {String} The instance store in the contract
  */
 function setInstance(address) {
-	return employeeContract.instance = employeeContract.at(address)
+	return contract.instance = contract.at(address)
 }
 
 /**
@@ -149,7 +124,7 @@ function setInstance(address) {
  * @returns {Boolean} Whether there is an address stored
  */
 function hasInstance() {
-	return employeeContract.instance != undefined
+	return contract.instance != undefined
 }
 
 
@@ -160,7 +135,6 @@ module.exports = {
 	create,
 	add,
 	importEmployees,
-	createPayRaiseContract,
 	increaseSalary,
 	setInstance,
 	hasInstance
