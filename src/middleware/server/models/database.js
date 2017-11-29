@@ -40,6 +40,17 @@ function Database(tableName, scheme) {
 	}
 
 	/**
+	 * Insert multiple row.
+	 *
+	 * @param {Object[]} data The rows to insert
+	 * @returns {Promise} The database response
+	 */
+	this.createMany = function (data) {
+		this.checkConnection()
+		return this.db.bulkCreate(data)
+	}
+
+	/**
 	 * Read a row.
 	 *
 	 * @param {Object} criteria The criteria for the row to read
