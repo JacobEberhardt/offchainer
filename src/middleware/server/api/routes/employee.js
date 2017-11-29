@@ -26,17 +26,16 @@ router.post('/add', (req, res, next) => {
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
-
-// Add multiple Employees to contract
-router.post('/import', (req, res, next) => {
-	employee.importEmployees(req.body.employees)
+// Get all Employees from DB
+router.get('/', (req, res, next) => {
+	employee.getAll()
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
 
-// Create Pay Raise Contract
-router.post('/pay-raise-contract', (req, res, next) => {
-	employee.createPayRaiseContract(req.body, res)
+// Add multiple Employees to contract
+router.post('/import', (req, res, next) => {
+	employee.importEmployees(req.body.employees)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })

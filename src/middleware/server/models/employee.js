@@ -32,7 +32,7 @@ const db = new Database(
 	{
 		first_name: { type: Sequelize.STRING },
 		last_name: { type: Sequelize.STRING },
-		entry_date: { type: Sequelize.STRING },
+		start_date: { type: Sequelize.STRING },
 		department: { type: Sequelize.STRING },
 		salary: { type: Sequelize.INTEGER }
 	}
@@ -69,22 +69,32 @@ function create() {
  */
 function add(employee) {
 	// Insert new Employee
-	db.create({
+	return db.create({
 		first_name: employee.firstName,
 		last_name: employee.lastName,
-		entry_date: employee.entryDate,
+		start_date: employee.startDate,
 		department: employee.department,
 		salary: employee.salary
-	}).then(result => {
-		// Create merkle tree first
-		// TODO
-
-		// Send index and merkle root to SC
-		// TODO
-
-		// For now just return result
-		return result
 	})
+	// .then(result => {
+	// 	// Create merkle tree first
+	// 	// TODO
+
+	// 	// Send index and merkle root to SC
+	// 	// TODO
+
+	// 	// For now just return result
+	// 	return result
+	// })
+}
+
+/**
+ * Return all employees in the database.
+ *
+ * @return {Promise} A promise that depends on the contract creation
+ */
+function getAll() {
+	return db.find();
 }
 
 /**
@@ -134,6 +144,7 @@ function hasInstance() {
 module.exports = {
 	create,
 	add,
+	getAll,
 	importEmployees,
 	increaseSalary,
 	setInstance,
