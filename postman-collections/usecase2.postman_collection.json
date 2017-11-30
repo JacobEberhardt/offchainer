@@ -1,0 +1,71 @@
+{
+	"variables": [],
+	"info": {
+		"name": "CP: Increase Salary Use Case 2",
+		"_postman_id": "d11a6599-b43b-7bec-e3cc-bc9f47df0ecd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Financials",
+			"description": "",
+			"item": [
+				{
+					"name": "http://localhost:8000/financials/create",
+					"request": {
+						"url": "http://localhost:8000/financials/create",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/financials/new",
+					"request": {
+						"url": "http://localhost:8000/financials/new",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"companyName\" : \"Company1\",\n\t\"recordingDate\" : \"01.01.2010\",\n\t\"totalSales\" : \"12349\",\n\t\"cogs\" : \"500\",\n\t\"inventoryStock\" : \"1245\",\n\t\"cashCounter\" : \"111\",\n\t\"accountsReceivables\" :\"258\",\n\t\"accountsPayable\" : \"2666\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/financials/",
+					"request": {
+						"url": "http://localhost:8000/financials/",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+				
+			]
+		}
+		
+	]
+}

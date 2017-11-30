@@ -5,6 +5,7 @@ const offchainer = require('./routes/offchainer')
 const counter = require('./routes/counter')
 const employee = require('./routes/employee')
 const payraise = require('./routes/payraise')
+const financials = require('./routes/financials')
 
 // Set response functions
 const error = res.error
@@ -14,6 +15,7 @@ router.use('/offchainer', offchainer)
 router.use('/counter', counter)
 router.use('/employee', employee)
 router.use('/payraise', payraise)
+router.use('/financials', financials)
 
 // 404 fallback
 router.all('/*', (req, res, next) => error(res, 404))
