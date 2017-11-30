@@ -16,6 +16,8 @@ RUN npm install -g truffle
 RUN truffle compile --compile-all
 
 # Install dependencies
+RUN yes | apt-get update
+RUN yes | apt-get install build-essential python
 WORKDIR /middleware
 RUN npm install
 
