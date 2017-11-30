@@ -1,5 +1,5 @@
 # Base image
-FROM node:7.1-slim
+FROM node:slim
 
 # Create directories
 RUN mkdir -p /middleware/server
