@@ -7,7 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
-const leftPad = require('left-pad')
+const sha3 = require('web3-utils').soliditySha3
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -48,10 +48,11 @@ const db = new Database(
 function create() {
 	// https://ethereum.stackexchange.com/questions/2632/how-does-soliditys-sha3-keccak256-hash-uints
 	// transform int to uint8 bytes because that is what being done in SC.
-	const tree = new MerkleTree([0, 0, 0, 0].map(data => sha3(leftPad((data).toString(16), 2, 0))), sha3)
+	const leaves = [0, 0, 0, 0].map(x => sha3({value: x.toString(), type: 'uint8'}))
+	const tree = new MerkleTree(leaves, sha3)
 
-	const rootHash = tree.getRoot()
 	// Initialize four counters to zero
+	const rootHash = tree.getRoot()
 	db.create({
 		root_hash: rootHash,
 		counter_one: 0,
@@ -60,6 +61,7 @@ function create() {
 		counter_four: 0
 	})
 		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
+	
 	return promisify(contract.new)({
 		args: [
 			rootHash,
@@ -120,7 +122,7 @@ function increaseCounter(index) {
 					]
 
 					// transform int to uint8 bytes because that is what being done in SC.
-					const tree = new MerkleTree(leaves.map(data => sha3(leftPad((data).toString(16), 2, 0))), sha3)
+					const tree = new MerkleTree(leaves.map(x => sha3({value: x.toString(), type: 'uint8'})), sha3)
 					const proof = tree.getProof(index, index)
 					var proofData = []
 					var proofPosition = [];
@@ -167,6 +169,7 @@ function increaseCounter(index) {
 					{id: contract.rowId},
 					counterUpdate
 				)
+					.then(resolve)
 
 			})
 			.catch(handler)
@@ -195,13 +198,6 @@ function increaseCounter(index) {
 	})
 
 }
-
-// The hash algoirhtm we use to construct the Merkle Tree
-function sha3(data) {
-  // returns a hex representation of bytes32
-  return web3.sha3(data, {encoding: "hex"});
-}
-
 
 // Export functions
 module.exports = {
