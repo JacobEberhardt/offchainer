@@ -12,7 +12,8 @@
     "left-pad": "^1.2.0",
     "pg": "^7.4.0",
     "sequelize": "^4.22.7",
-    "web3": "^0.19.0"
+    "web3": "^0.19.0",
+    "web3-utils": "^1.0.0-beta.26"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"
