@@ -61,7 +61,7 @@ function create() {
 		counter_four: 0
 	})
 		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
-	
+
 	return promisify(contract.new)({
 		args: [
 			rootHash,
@@ -123,7 +123,7 @@ function increaseCounter(index) {
 
 					// transform int to uint8 bytes because that is what being done in SC.
 					const tree = new MerkleTree(leaves.map(x => sha3({value: x.toString(), type: 'uint8'})), sha3)
-					const proof = tree.getProof(index, index)
+					const proof = tree.getProof(index)
 					var proofData = []
 					var proofPosition = [];
 
