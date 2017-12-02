@@ -111,7 +111,8 @@ class MerkleTree {
    * const proof = tree.getProof(2) // for third element in leaves
    */
   getProof(index) {
-    const proof = [];
+    const proofPosition = [];
+    const proofData = [];
 
     if (typeof index !== 'number' || index <= -1) {
       return []
@@ -123,17 +124,18 @@ class MerkleTree {
       const pairIndex = (isRightNode ? index - 1 : index + 1)
 
       if (pairIndex < layer.length) {
-        proof.push({
-          position: isRightNode ? 'left': 'right',
-          data: layer[pairIndex]
-        })
+        proofPosition.push(isRightNode === "left" ? 0 : 1)
+        proofData.push(layer[pairIndex])
       }
 
       // set index to parent index
       index = (index / 2)|0
     }
 
-    return proof
+    return {
+        proofPosition: proofPosition,
+        proofData: proofData
+    }
   }
 }
 
