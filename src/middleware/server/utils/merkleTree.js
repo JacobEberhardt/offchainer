@@ -46,7 +46,7 @@ class MerkleTree {
       const left = nodes[i]
       const right = nodes[i+1]
       let data = null
-      // Concat Hex string 
+      // Concat Hex string
       data = left + right.substring(2, right.length)
       let hash = this.hashAlgo(data)
       this.layers[layerIndex].push(hash)
@@ -99,32 +99,22 @@ class MerkleTree {
   /**
    * getProof
    * @desc Returns the proof for a target leaf.
-   * @param {HexString} leaf - Target leaf
    * @param {Number} [index] - Target leaf index in leaves array.
    * Use if there are leaves containing duplicate data in order to distinguish it.
    * @return {HexString[]} - Array of HexString hashes.
    * @example
-   * const proof = tree.getProof(leaves[2])
+   * const proof = tree.getProof(2) //for leaves[2]
    *
    * @example
    * const leaves = ['a', 'b', 'a'].map(x => sha3(x))
    * const tree = new MerkleTree(leaves, sha3)
-   * const proof = tree.getProof(leaves[2], 2)
+   * const proof = tree.getProof(2) // for third element in leaves
    */
-  getProof(leaf, index) {
-    const proof = [];
+  getProof(index) {
+    const proofPosition = [];
+    const proofData = [];
 
-    if (typeof index !== 'number') {
-      index = -1
-
-      for (let i = 0; i < this.leaves.length; i++) {
-        if (leaf === this.leaves[i]) {
-          index = i
-        }
-      }
-    }
-
-    if (index <= -1) {
+    if (typeof index !== 'number' || index <= -1) {
       return []
     }
 
@@ -134,17 +124,18 @@ class MerkleTree {
       const pairIndex = (isRightNode ? index - 1 : index + 1)
 
       if (pairIndex < layer.length) {
-        proof.push({
-          position: isRightNode ? 'left': 'right',
-          data: layer[pairIndex]
-        })
+        proofPosition.push(isRightNode === "left" ? 0 : 1)
+        proofData.push(layer[pairIndex])
       }
 
       // set index to parent index
       index = (index / 2)|0
     }
 
-    return proof
+    return {
+        proofPosition: proofPosition,
+        proofData: proofData
+    }
   }
 }
 
