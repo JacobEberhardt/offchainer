@@ -20,7 +20,7 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 const contract = web3.eth.contract(contractData.abi)
 
 // Set default account
-var interval = setInterval(function () { // Poll to wait for web3 connection
+var interval = setInterval(function() { // Poll to wait for web3 connection
 	if (web3.isConnected()) {
 		web3.eth.defaultAccount = web3.eth.accounts[0] // Set default account
 		clearInterval(interval)
@@ -31,11 +31,11 @@ var interval = setInterval(function () { // Poll to wait for web3 connection
 const db = new Database(
 	'counter',
 	{
-		root_hash: { type: Sequelize.STRING },
-		counter_one: { type: Sequelize.INTEGER },
-		counter_two: { type: Sequelize.INTEGER },
-		counter_three: { type: Sequelize.INTEGER },
-		counter_four: { type: Sequelize.INTEGER },
+		root_hash: {type : Sequelize.STRING},
+		counter_one: {type: Sequelize.INTEGER},
+		counter_two: {type: Sequelize.INTEGER},
+		counter_three: {type: Sequelize.INTEGER},
+		counter_four: {type: Sequelize.INTEGER},
 	}
 )
 
@@ -46,8 +46,25 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
+	// https://ethereum.stackexchange.com/questions/2632/how-does-soliditys-sha3-keccak256-hash-uints
+	// transform int to uint8 bytes because that is what being done in SC.
+	const leaves = [0, 0, 0, 0].map(x => sha3({value: x.toString(), type: 'uint8'}))
+	const tree = new MerkleTree(leaves, sha3)
+
+	// Initialize four counters to zero
+	const rootHash = tree.getRoot()
+	db.create({
+		root_hash: rootHash,
+		counter_one: 0,
+		counter_two: 0,
+		counter_three: 0,
+		counter_four: 0
+	})
+		.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
+
 	return promisify(contract.new)({
 		args: [
+			rootHash,
 			{
 				from: web3.eth.accounts[0],
 				data: contractData.bytecode,
@@ -57,37 +74,6 @@ function create() {
 		requiredProperty: 'address',
 		context: contract
 	})
-}
-
-/**
- * Create and insert a counter into the database and store the root hash of the data record into the smart contract
- * 
- * @param {Object} counters The new counters to add
- * @returns {Promise} A promise that depends on the successful counters insert
- */
-function add(counters) {
-	// Create Merkle tree
-	const leaves = [counters.counterOne, counters.counterTwo, counters.counterThree, counters.counterFour].map(x => sha3({ value: x.toString(), type: 'uint8' }))
-	const tree = new MerkleTree(leaves, sha3)
-	const rootHash = tree.getRoot()
-	// Insert new counters
-	return db.create({
-		root_hash: rootHash,
-		counter_one: counters.counterOne,
-		counter_two: counters.counterTwo,
-		counter_three: counters.counterThree,
-		counter_four: counters.counterFour
-	}).then(result => {
-		//contract.rowId = result.dataValues.id
-		return promisify(contract.instance.add)({
-			args: [
-				result.dataValues.id,
-				rootHash
-			]
-		})
-	})
-
-
 }
 
 /**
@@ -117,7 +103,7 @@ function hasInstance() {
  */
 function increaseCounter(index) {
 
-	return new Promise((resolve, reject) => {
+	return new Promise ((resolve, reject) => {
 
 		// Define functions
 		const handler = (err) => reject(err)
@@ -126,7 +112,7 @@ function increaseCounter(index) {
 		// Set event listeners
 		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
 			.then(result => {
-				db.read({ root_hash: result.args.integrityHash }).then(result => {
+				db.read({root_hash: result.args.integrityHash}).then(result => {
 
 					const leaves = [
 						result.counter_one,
@@ -136,7 +122,7 @@ function increaseCounter(index) {
 					]
 
 					// transform int to uint8 bytes because that is what being done in SC.
-					const tree = new MerkleTree(leaves.map(x => sha3({ value: x.toString(), type: 'uint8' })), sha3)
+					const tree = new MerkleTree(leaves.map(x => sha3({value: x.toString(), type: 'uint8'})), sha3)
 					const proof = tree.getProof(index)
 
 					doCounterIncrease({
@@ -144,26 +130,26 @@ function increaseCounter(index) {
 							leaves[index],
 							proof.proofData,
 							proof.proofPosition,
-							{ gas: 300000 }
+							{gas: 300000}
 						]
 					})
 				})
 			}).catch(handler)
 
 		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
-			.then(result => {
+			.then( result => {
 				var newRootHash = result.args.proof
 				var newCounterValue = result.args.newCounterValue.c[0]
 
 				var colName;
-				if (index === 0) {
-					colName = "counter_one"
-				} else if (index === 1) {
-					colName = "counter_two"
+				if(index === 0) {
+				    colName = "counter_one"
+				} else if(index === 1) {
+				    colName = "counter_two"
 				} else if (index === 2) {
-					colname = "counter_three"
+						colname = "counter_three"
 				} else if (index === 3) {
-					colname = "counter_four"
+						colname = "counter_four"
 				}
 
 
@@ -172,7 +158,7 @@ function increaseCounter(index) {
 				counterUpdate["root_hash"] = newRootHash
 
 				db.update(
-					{ id: contract.rowId },
+					{id: contract.rowId},
 					counterUpdate
 				)
 					.then(resolve)
@@ -186,7 +172,7 @@ function increaseCounter(index) {
 
 		events.watch(contract.instance.CounterIncreasedEvent) // Counter was successfully increased
 			.then(result => db.update(
-				{ id: contract.rowId },
+				{id: contract.rowId},
 				{
 					counter_one: result.args.counters[0].c[0],
 					counter_two: result.args.counters[1].c[0],
@@ -198,7 +184,7 @@ function increaseCounter(index) {
 			.catch(handler)
 
 		// Request counter increase
-		promisify(contract.instance.requestCounterIncrease)({ args: index })
+		promisify(contract.instance.requestCounterIncrease)({args: index})
 			.catch(handler)
 
 	})
@@ -208,7 +194,6 @@ function increaseCounter(index) {
 // Export functions
 module.exports = {
 	create,
-	add,
 	setInstance,
 	hasInstance,
 	increaseCounter
