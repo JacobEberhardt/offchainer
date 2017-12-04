@@ -10,7 +10,7 @@ const error = res.error
 
 // Routes
 /**
- * Create a new contract.
+ * Create a new counter contract.
  */
 router.post('/create', (req, res, next) => {
 	counter.create(res)
@@ -18,6 +18,13 @@ router.post('/create', (req, res, next) => {
 			counter.setInstance(contract.address) // Store the address
 			response(res, 200, {address: contract.address})
 		})
+		.catch(err => error(res, 500, err))
+})
+
+// Add counter to contract
+router.post('/add', (req, res, next) => {
+	counter.add(req.body)
+		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
 
