@@ -32,14 +32,20 @@ router.get('/', (req, res, next) => {
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
-/*
-// Add multiple financial records to contract
-router.post('/more', (req, res, next) => {
-	financials.importFinancials(req.body.financials)
+
+router.post('/addEntry', (req, res, next) => {
+	financials.addRecordEntry(req.body.recordEntries)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
-})*/
+})
 
+
+
+router.get('/root', (req, res, next) => {
+	financials.getAllRecordEntries()
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
 
 // Export module
 module.exports = router

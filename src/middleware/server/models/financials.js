@@ -49,9 +49,27 @@ const db = new Database(
  *
  * @return {Promise} A promise that depends on the contract creation
  */
-function create() {
+/*function create() {
 	return promisify(contract.new)({
 		args: [
+			{
+				from: web3.eth.accounts[0],
+				data: contractData.bytecode,
+				gas: INITIAL_GAS
+			}
+		],
+		requiredProperty: 'address',
+		context: contract
+	})
+}
+*/
+
+function create(contractDetails) {
+	return promisify(contract.new)({
+		args: [
+			contractDetails.addRecordEntry,
+			contractDetails.getAllRecordEntries,
+			contractDetails.getAllRootHashes,
 			{
 				from: web3.eth.accounts[0],
 				data: contractData.bytecode,
@@ -112,6 +130,16 @@ function getAllFinancials()  {
 }*/
 
 
+
+function addRecordEntry() {
+	return new promisify(contract.at(contract.currentAddress).addRecordEntry)
+
+}
+
+
+function getAllRecordEntries() {
+	return promisify(contract.at(contract.currentAddress).getAllRecordEntries)
+}
 /**
  * Set the address for the used contract instance to a given address.
  *
@@ -140,5 +168,7 @@ module.exports = {
 	add,
 	getAllFinancials,
 	setInstance,
+	addRecordEntry,
+	getAllRecordEntries,
 	hasInstance
 }
