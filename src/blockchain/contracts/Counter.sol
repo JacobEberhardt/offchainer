@@ -10,7 +10,7 @@ contract Counter {
 	event RequestedCounterIncreaseEvent(bytes32 integrityHash);
 	event IntegrityCheckFailedEvent();
 	event CounterIncreasedEvent(uint8[4] counters);
-	event returnNewRootHash(bytes32 proof, uint8 newCounterValue);
+	event returnNewRootHash(bytes32 prevRootHash, bytes32 newRootHash, uint8 newCounterValue);
 
 	// Define public functions
 	/**
@@ -19,6 +19,14 @@ contract Counter {
 	function Counter(bytes32 _rootHash) public {
 		integrityHash = _rootHash;
 	}
+	
+	/**
+	 * Revert to previous hash. A Rollback function.
+	 */
+	 function rollBack(bytes32 _prevRootHash) public {
+	    integrityHash = _prevRootHash;
+	 }
+	
 
 	/**
 	 * Request the increase of the counter with the given index.
@@ -42,9 +50,10 @@ contract Counter {
 
         if(computedHash == integrityHash) {
             uint8 newCounterValue = _counterValue + 1;
+            bytes32 prevHash = integrityHash;
             // get new roothash after increasing the counter
             integrityHash = _createTree(newCounterValue, _proof, _proofPosition);
-            returnNewRootHash(integrityHash, newCounterValue);
+            returnNewRootHash(prevHash, integrityHash, newCounterValue);
         } else {
             IntegrityCheckFailedEvent();
         }
