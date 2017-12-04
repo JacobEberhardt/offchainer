@@ -152,7 +152,9 @@ function increaseCounter(index) {
 
 				// start watching for the tx to be mined.
 				// might not be a good idea to do it from block 1, might get very long.
-				web3.eth.filter({ fromBlock:1, toBlock: "latest" }, (error, blockHash) => {
+
+				var filter = web3.eth.filter({ fromBlock:1, toBlock: "latest" })
+				filter.watch((error, blockHash) => {
 					console.log("the transaction I want " + rootHashStateChangeTxHash)
 				    if (!error) {
 				        var block = web3.eth.getBlock(blockHash.blockHash, true)     
@@ -179,6 +181,9 @@ function increaseCounter(index) {
 									counterUpdate[colName] = newCounterValue
 									counterUpdate["root_hash"] = newRootHash
 
+									//stop watching for the mining.
+									filter.stopWatching()
+
 									db.update(
 										{id: contract.rowId},
 										counterUpdate
@@ -199,7 +204,7 @@ function increaseCounter(index) {
 				    } else {
 				    	reject(error)
 				    }
-				});
+				})
 
 			}).catch(handler)
 
