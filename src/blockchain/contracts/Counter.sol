@@ -30,10 +30,6 @@ contract Counter {
 		integrityHashes[_index] = _rootHash;
 	}
 
-	function get(uint _index) constant public returns (bytes32) {
-		return integrityHashes[_index];
-	}
-
 	/**
 	 * Request the increase of the counter with the given index.
 	 *
