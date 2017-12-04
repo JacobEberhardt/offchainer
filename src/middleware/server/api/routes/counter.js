@@ -28,20 +28,6 @@ router.post('/add', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Get all Counters from DB
-router.get('/', (req, res, next) => {
-	counter.getAllFromDb()
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
-
-// Get all Employees from DB
-router.get('/:id', (req, res, next) => {
-	counter.getRootHashFromSc(req.params.id)
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
-
 router.post('/increase/:index', (req, res, next) => {
 	var index
 	const badRequest = () => response(res, 400, 'Invalid index.')
