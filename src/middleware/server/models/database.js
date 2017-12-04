@@ -50,6 +50,18 @@ function Database(tableName, scheme) {
 		return this.db.findOne({where: criteria})
 	}
 
+
+	/**
+	 * Read all row.
+	 *
+	 * @param {Object} criteria The criteria for the row to read
+	 * @returns {Promise} The database response
+	 */
+	this.readAll = function (criteria) {
+		this.checkConnection()
+		return this.db.findAll({where: criteria})
+	}
+
 	/**
 	 * Update a row.
 	 *
