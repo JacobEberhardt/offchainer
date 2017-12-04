@@ -5,7 +5,6 @@ contract Counter {
 
 	// Declare variables
 	bytes32 integrityHash; // The integrity hash of the counters array
-	mapping(uint => bytes32) integrityHashes; // The integrity hashes of the counters array
 
 	// Declare events
 	event RequestedCounterIncreaseEvent(bytes32 integrityHash);
@@ -17,17 +16,8 @@ contract Counter {
 	/**
 	 * Create a new contract instance.
 	 */
-	function Counter() public {
-	}
-
-	/**
-	 * Adds the root hash of a counter record to integrityHashes mapping.
-	 *
-	 * @param _index The index of the counter in the database
-	 * @param _rootHash The root hash of the merkle tree of the counter record
-	 */
-	function add(uint _index, bytes32 _rootHash) public {
-		integrityHashes[_index] = _rootHash;
+	function Counter(bytes32 _rootHash) public {
+		integrityHash = _rootHash;
 	}
 
 	/**
@@ -46,7 +36,7 @@ contract Counter {
 	 * @param _proof proof
 	 * @param _proofPosition proof positions
 	 */
-	function doCounterIncrease(uint _index, uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) public {
+	function doCounterIncrease(uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) public {
 	    //Perform integrity check by reconstrcuting the merkle tree.
 	    bytes32 computedHash = _createTree(_counterValue, _proof, _proofPosition);
 
