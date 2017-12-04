@@ -86,28 +86,8 @@ function add(counters) {
 			]
 		})
 	})
-}
 
-/**
- * Return all counters in the database.
- *
- * @return {Promise} A promise
- */
-function getAllFromDb() {
-	return db.readAll();
-}
 
-/**
- * Return all root hashes of counters in smart contract.
- *
- * @return {Promise} A promise
- */
-function getRootHashFromSc(_index) {
-	return promisify(contract.instance.get)({
-		args: [
-			_index
-		]
-	})
 }
 
 /**
@@ -229,8 +209,6 @@ function increaseCounter(index) {
 module.exports = {
 	create,
 	add,
-	getAllFromDb,
-	getRootHashFromSc,
 	setInstance,
 	hasInstance,
 	increaseCounter
