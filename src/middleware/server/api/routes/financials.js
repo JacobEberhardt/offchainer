@@ -34,7 +34,7 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/addEntry', (req, res, next) => {
-	financials.addRecordEntry(req.body.recordEntries)
+	financials.add(req.body)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })

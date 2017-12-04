@@ -9,6 +9,8 @@ contract Financials {
 	mapping(uint => RecordEntry) recordEntries;
 	mapping(uint => bytes32) datesToHashes;
 
+	mapping(uint => bytes32) rootHashes;
+
 	struct RecordEntry {
         uint date;
         bytes32 rootHash;
@@ -29,14 +31,15 @@ contract Financials {
 	// Public functions
 	/**
 	 * Adds a new record entry to recordEntries mapping.
-	 *
+	 * @param _index The index of the record entry
 	 * @param _rootHash The root hash of the merkle tree of the record entry
 	 */
-	function addRecordEntry(bytes32 _rootHash) public {
-	    datesToHashes[now] = _rootHash;
-	    RecordEntry memory recordEntry = RecordEntry(now, _rootHash);
-		recordEntries[recordIndex] = recordEntry;
-		recordIndex++;
+	function addRecordEntry(uint _index, bytes32 _rootHash) public {
+	    // datesToHashes[now] = _rootHash;
+	    // RecordEntry memory recordEntry = RecordEntry(now, _rootHash);
+		// recordEntries[recordIndex] = recordEntry;
+		// recordIndex++;
+		rootHashes[_index] = _rootHash;
 	}
 
 	function getAllRecordEntries() constant returns(RecordEntry[]) {
