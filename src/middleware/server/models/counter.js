@@ -155,7 +155,6 @@ function increaseCounter(index) {
 
 				// start watching for the tx to be mined.
 				// might not be a good idea to do it from block 1, might get very long.
-
 				var filter = web3.eth.filter({ fromBlock:1, toBlock: "latest" })
 				filter.watch((error, blockHash) => {
 					// console.log("the transaction I want " + rootHashStateChangeTxHash)
@@ -168,14 +167,14 @@ function increaseCounter(index) {
 				            	// we do not want to update the db first, because of consistency, what if someone 
 				            	// uses the new roothash, but the state of SC has not been changed yet. 
 				            
-				            	if(block.transactions[i].hash === rootHashStateChangeTxHash) {
-				            		var colName;
-				            		console.log(typeof index)
-				            		console.log(index === 0)
+					        	if(block.transactions[i].hash === rootHashStateChangeTxHash) {
+					        		var colName;
+					        		console.log(typeof index)
+					        		console.log(index === 0)
 									if(index === 0) {
-									    colName = "counter_one"
+								  		colName = "counter_one"
 									} else if(index === 1) {
-									    colName = "counter_two"
+										colName = "counter_two"
 									} else if (index === 2) {
 										colName = "counter_three"
 									} else if (index === 3) {
@@ -200,17 +199,15 @@ function increaseCounter(index) {
 										}).then(() => reject("DB cannot update new state. State is reverted. ERR: " + err)) //reject or resolve? 
 										.catch(handler)
 									}) 
-			
-				            	}
-				            }
-				        } else {
+					        	}
+				        	}
+				    	} else {
 				            console.log("no transaction in block: " + blockHash)
-				        }
-				    } else {
-				    	reject(error)
-				    }
+				    	}
+					} else {
+						reject(error)
+					}
 				})
-
 			}).catch(handler)
 
 		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
