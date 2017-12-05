@@ -42,28 +42,8 @@ const db = new Database(
 	}
 )
 
-// Define functions
+//Contract construction
 
-
-/**
- * Create a new contract instance.
- *
- * @return {Promise} A promise that depends on the contract creation
- */
-/*function create() {
-	return promisify(contract.new)({
-		args: [
-			{
-				from: web3.eth.accounts[0],
-				data: contractData.bytecode,
-				gas: INITIAL_GAS
-			}
-		],
-		requiredProperty: 'address',
-		context: contract
-	})
-}
-*/
 
 function create(contractDetails) {
 	return promisify(contract.new)({
@@ -132,25 +112,33 @@ function getAllFinancials() {
 	return db.readAll();
 }
 
-/**
- * Add a more than a one set of records to the database and store the root hash of the data record into 
+/* Commented if in any case these functions are implemented for our Use case 
 
- */
-/*function importFinancials(financials) {
-	return db.createMany(financials)
-}*/
-
-
-
-function addRecordEntry() {
-	return new promisify(contract.at(contract.currentAddress).addRecordEntry)
-
-}
-
-
+//Get the number of Record Entries
 function getAllRecordEntries() {
-	return promisify(contract.instance.getAllRecordEntries)
+	//return promisify(contract.instance.getAllRecordEntries)
+	return new promisify(contract.at(contract.currentAddress).getAllRecordEntries)
+
 }
+
+//Get a specific record entry by a specific index
+function getRecordEntry(indexOfRecord) {
+	return new promisify(contract.instance.getRecordEntry)({args: indexOfRecord})
+}
+
+
+//Get all the roothashes of all entries
+function getAllRootHashes() {
+	return new promisify(contract.at(contract.currentAddress).getAllRootHashes)
+}
+*/
+
+
+//Get Root has fro a specific entry specified by index
+function getRootHash(indexOfRecord){
+	return new promisify(contract.instance.getRootHash)({args: indexOfRecord})
+}
+
 /**
  * Set the address for the used contract instance to a given address.
  *
@@ -179,7 +167,6 @@ module.exports = {
 	add,
 	getAllFinancials,
 	setInstance,
-	addRecordEntry,
-	getAllRecordEntries,
+	getRootHash,
 	hasInstance
 }
