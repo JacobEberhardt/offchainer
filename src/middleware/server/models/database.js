@@ -24,7 +24,7 @@ function Database(tableName, scheme) {
 	 * @throws Throws an error if there is no database connection
 	 */
 	this.checkConnection = function () {
-		if (this.db == undefined) throw Error('No database connection. Set table with function "setTable" first.')
+		if (this.db == undefined) throw Error('No database connection. Please retry again later.')
 	}
 
 	// "Low level" wrapper functions
@@ -48,6 +48,18 @@ function Database(tableName, scheme) {
 	this.read = function (criteria) {
 		this.checkConnection()
 		return this.db.findOne({where: criteria})
+	}
+
+
+	/**
+	 * Read all rows.
+	 *
+	 * @param {Object} criteria The criteria for the row to read
+	 * @returns {Promise} The database response
+	 */
+	this.readAll = function (criteria) {
+		this.checkConnection()
+		return this.db.findAll({where: criteria})
 	}
 
 	/**

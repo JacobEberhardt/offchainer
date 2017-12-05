@@ -1,0 +1,115 @@
+{
+	"variables": [],
+	"info": {
+		"name": "CP: Increase Salary Use Case",
+		"_postman_id": "d11a6599-b43b-7bec-e3cc-bc9f47df0ecd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Employee",
+			"description": "",
+			"item": [
+				{
+					"name": "http://localhost:8000/employee/create",
+					"request": {
+						"url": "http://localhost:8000/employee/create",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/employee/add",
+					"request": {
+						"url": "http://localhost:8000/employee/add",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"firstName\" : \"Thanh Tuan\",\n\t\"lastName\" : \"Tenh Cong\",\n\t\"startDate\" : \"01.01.2010\",\n\t\"department\" : \"IT\",\n\t\"salary\" : \"100000\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/employee/",
+					"request": {
+						"url": "http://localhost:8000/employee/",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/employee/import",
+					"request": {
+						"url": "http://localhost:8000/employee/import",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"employees\" : [\n        {\n            \"first_name\": \"Thanh Tuan\",\n            \"last_name\": \"Tenh Cong\",\n            \"start_date\": \"01.01.2010\",\n            \"department\": \"IT\",\n            \"salary\": 100000\n        },\n        {\n            \"first_name\": \"Thanh Tuan\",\n            \"last_name\": \"Tenh Cong\",\n            \"start_date\": \"01.01.2010\",\n            \"department\": \"IT\",\n            \"salary\": 100000\n        },\n        {\n            \"first_name\": \"Thanh Tuan\",\n            \"last_name\": \"Tenh Cong\",\n            \"start_date\": \"01.01.2010\",\n            \"department\": \"IT\",\n            \"salary\": 100000\n        },\n        {\n            \"first_name\": \"Thanh Tuan\",\n            \"last_name\": \"Tenh Cong\",\n            \"start_date\": \"01.01.2010\",\n            \"department\": \"IT\",\n            \"salary\": 100000\n        }\n    ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payraise",
+			"description": "",
+			"item": [
+				{
+					"name": "http://localhost:8000/payraise/create",
+					"request": {
+						"url": "http://localhost:8000/payraise/create",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"percentage\" : 4,\n\t\"department\" : \"IT\",\n\t\"fromStartDate\" : \"01.01.2010\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

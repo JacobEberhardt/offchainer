@@ -1,9 +1,6 @@
 // Required version
 pragma solidity ^0.4.17;
 
-// Import dependencies
-import './Standard.sol';
-
 contract Offchainer {
 	
 	// Declare variables

@@ -13,7 +13,7 @@ const error = res.error
  * Create a new contract.
  */
 router.post('/create', (req, res, next) => {
-	counter.create(res)
+	counter.create()
 		.then(contract => {
 			counter.setInstance(contract.address) // Store the address
 			response(res, 200, {address: contract.address})
