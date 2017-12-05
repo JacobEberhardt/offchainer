@@ -1,6 +1,6 @@
 // Import dependencies
 const router = require('express').Router()
-const counter = require('../../models/counter')
+const counterMultiple = require('../../models/counter')
 const db = require('../../models/database')
 const res = require('../../utils/response')
 
@@ -13,9 +13,9 @@ const error = res.error
  * Create a new counter contract.
  */
 router.post('/create', (req, res, next) => {
-	counter.create(res)
+	counterMultiple.create(res)
 		.then(contract => {
-			counter.setInstance(contract.address) // Store the address
+			counterMultiple.setInstance(contract.address) // Store the address
 			response(res, 200, {address: contract.address})
 		})
 		.catch(err => error(res, 500, err))
@@ -23,7 +23,7 @@ router.post('/create', (req, res, next) => {
 
 // Add counter to contract
 router.post('/add', (req, res, next) => {
-	counter.add(req.body)
+	counterMultiple.add(req.body)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
 
 // Get all Employees from DB
 router.get('/:id', (req, res, next) => {
-	counter.getRootHashFromSc(req.params.id)
+	counterMultiple.getRootHashFromSc(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
@@ -52,7 +52,7 @@ router.post('/increase/:index', (req, res, next) => {
 		badRequest()
 	}
 	if (typeof(index) !== 'number' || index < 0 || index > 4) return badRequest()
-	counter.increaseCounter(index)
+	counterMultiple.increaseCounter(index)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
@@ -67,7 +67,7 @@ router.post('/:id/increase/:col', (req, res, next) => {
 		badRequest()
 	}
 	if (typeof(col) !== 'number' ||col < 0 || col > 4) return badRequest()
-	counter.increaseSingle(req.params.id, col)
+	counterMultiple.increaseSingle(req.params.id, col)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
