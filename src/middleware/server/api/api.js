@@ -6,6 +6,7 @@ const counter = require('./routes/counter')
 const employee = require('./routes/employee')
 const payraise = require('./routes/payraise')
 const financials = require('./routes/financials')
+const counterMutiple = require('./routes/counterMultiple')
 
 // Set response functions
 const error = res.error
@@ -16,6 +17,7 @@ router.use('/counter', counter)
 router.use('/employee', employee)
 router.use('/payraise', payraise)
 router.use('/financials', financials)
+router.use('/counter-multiple', counterMutiple)
 
 // 404 fallback
 router.all('/*', (req, res, next) => error(res, 404))
