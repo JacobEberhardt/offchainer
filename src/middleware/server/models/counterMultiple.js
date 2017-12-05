@@ -78,17 +78,19 @@ function add(counters) {
 			counter_two: counters.counterTwo,
 			counter_three: counters.counterThree,
 			counter_four: counters.counterFour
-		}).then(result => {
-			promisify(contract.instance.add)({
-				args: [
-					result.dataValues.id,
-					rootHash
-				]
-			}).then(result => {
-				var receipt = web3.eth.getTransactionReceipt(result);
-				resolve(result)
-			})
 		})
+			.then(result => {
+				promisify(contract.instance.add)({
+					args: [
+						result.dataValues.id,
+						rootHash
+					]
+				})
+					.then(result => {
+						var receipt = web3.eth.getTransactionReceipt(result);
+						resolve(result)
+					})
+			})
 	})
 }
 
@@ -97,7 +99,7 @@ function add(counters) {
  *
  * @return {Promise} A promise
  */
-function getAllFromDb() {
+function getAllFromDatabase() {
 	return db.readAll();
 }
 
@@ -107,7 +109,7 @@ function getAllFromDb() {
  * @param {Number} _index The index of the counters
  * @return {Promise} A promise
  */
-function getRootHashFromSc(_index) {
+function getRootHashFromSmartContract(_index) {
 	return promisify(contract.instance.getRootHash)({
 		args: [
 			_index
@@ -212,11 +214,10 @@ function increaseSingle(rowId, colId) {
 		// IntegrityCheckFailedEvent
 		events.watch(contract.instance.IntegrityCheckFailedEvent)
 			.then(result => {
-				console.log(result);
 				reject('Integrity check failed.')
 			})
 			.catch(handler)
-			// TODO: Rollback
+		// TODO: Rollback
 
 		// Request counter increase
 		promisify(contract.instance.requestSingleCounterIncrease)({ args: [rowId, colId] })
@@ -228,8 +229,8 @@ function increaseSingle(rowId, colId) {
 module.exports = {
 	create,
 	add,
-	getAllFromDb,
-	getRootHashFromSc,
+	getAllFromDatabase,
+	getRootHashFromSmartContract,
 	setInstance,
 	hasInstance,
 	increaseSingle

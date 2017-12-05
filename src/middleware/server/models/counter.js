@@ -135,7 +135,6 @@ function increaseCounter(index) {
 					// transform int to uint8 bytes because that is what being done in SC.
 					const tree = new MerkleTree(leaves.map(x => sha3({value: x.toString(), type: 'uint8'})), sha3)
 					const proof = tree.getProof(index)
-					console.log(result)
 					doCounterIncrease({
 						args: [
 							leaves[index],
@@ -157,11 +156,9 @@ function increaseCounter(index) {
 				// might not be a good idea to do it from block 1, might get very long.
 				var filter = web3.eth.filter({ fromBlock:1, toBlock: "latest" })
 				filter.watch((error, blockHash) => {
-					// console.log("the transaction I want " + rootHashStateChangeTxHash)
 				    if (!error) {
 				        var block = web3.eth.getBlock(blockHash.blockHash, true)     
 				        if (block.transactions.length > 0) {
-				        	// console.log(block.transactions)
 				            for(var i = 0; i < block.transactions.length; i++) {
 				            	// if that state change transaction is mined, we want to update the db now
 				            	// we do not want to update the db first, because of consistency, what if someone 
@@ -169,8 +166,6 @@ function increaseCounter(index) {
 				            
 					        	if(block.transactions[i].hash === rootHashStateChangeTxHash) {
 					        		var colName;
-					        		console.log(typeof index)
-					        		console.log(index === 0)
 									if(index === 0) {
 								  		colName = "counter_one"
 									} else if(index === 1) {
