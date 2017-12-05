@@ -79,7 +79,6 @@ function add(counters) {
 			counter_three: counters.counterThree,
 			counter_four: counters.counterFour
 		}).then(result => {
-			//contract.rowId = result.dataValues.id
 			promisify(contract.instance.add)({
 				args: [
 					result.dataValues.id,
@@ -87,7 +86,6 @@ function add(counters) {
 				]
 			}).then(result => {
 				var receipt = web3.eth.getTransactionReceipt(result);
-				console.log(receipt);
 				resolve(result)
 			})
 		})
@@ -104,8 +102,9 @@ function getAllFromDb() {
 }
 
 /**
- * Return all root hashes of counters in smart contract.
+ * Return the root hashes of counters of a given index in smart contract.
  *
+ * @param {Number} _index The index of the counters
  * @return {Promise} A promise
  */
 function getRootHashFromSc(_index) {
@@ -148,28 +147,26 @@ function increaseSingle(rowId, colId) {
 		const catchedEvent = false
 		const handler = (err) => reject(err)
 		const doSingleCounterIncrease = promisify(contract.instance.doSingleCounterIncrease)
-		// Set event listeners
+
+		// Event Listeners
+
+		// RequestSingleDataEvent
 		events.watch(contract.instance.RequestSingleDataEvent) // Smart contract needs data
 			.then(eventResult => {
-				console.log('Request Event');
-				console.log(eventResult.args.rowId.c[0]);
-				console.log(eventResult.args.colId.c[0]);
+				// Find data record with given index
 				db.read({ id: eventResult.args.rowId.c[0] }).then(dbResult => {
-					console.log('DB query');
-					console.log(dbResult)
+					// Create leaves of counter values 
 					const leaves = [
 						dbResult.counter_one,
 						dbResult.counter_two,
 						dbResult.counter_three,
 						dbResult.counter_four
 					]
-					console.log(leaves)
-					// transform int to uint8 bytes because that is what being done in SC.
+					// Construct merkle tree
 					const tree = new MerkleTree(leaves.map(x => sha3({ value: x.toString(), type: 'uint8' })), sha3)
+					// Get proof for give counter
 					const proof = tree.getProof(eventResult.args.colId.c[0])
-					console.log('roooooooot');
-					console.log(tree.getRoot());
-					console.log(leaves[eventResult.args.colId.c[0]]);
+					// Call counter increase function
 					doSingleCounterIncrease({
 						args: [
 							eventResult.args.rowId.c[0],
@@ -182,10 +179,9 @@ function increaseSingle(rowId, colId) {
 				})
 			})
 
+		// ReturnNewRootHash
 		events.watch(contract.instance.ReturnNewRootHash) // Return the new root hash
 			.then(result => {
-				console.log('Event---------')
-				console.log(result)
 				var newRootHash = result.args.proof
 				var newCounterValue = result.args.newCounterValue.c[0]
 
@@ -195,16 +191,15 @@ function increaseSingle(rowId, colId) {
 				} else if (colId === 1) {
 					colName = "counter_two"
 				} else if (colId === 2) {
-					colname = "counter_three"
+					colName = "counter_three"
 				} else if (colId === 3) {
-					colname = "counter_four"
+					colName = "counter_four"
 				}
-
 
 				var counterUpdate = {};
 				counterUpdate[colName] = newCounterValue
 				counterUpdate["root_hash"] = newRootHash
-
+				// Update counters record
 				db.update(
 					{ id: rowId },
 					counterUpdate
@@ -214,25 +209,14 @@ function increaseSingle(rowId, colId) {
 			})
 			.catch(handler)
 
-		events.watch(contract.instance.IntegrityCheckFailedEvent2) // Given data failed the integrity chec
+		// IntegrityCheckFailedEvent
+		events.watch(contract.instance.IntegrityCheckFailedEvent)
 			.then(result => {
-				console.log(result)
+				console.log(result);
 				reject('Integrity check failed.')
 			})
 			.catch(handler)
-
-
-			.then(result => db.update(
-				{ id: contract.rowId },
-				{
-					counter_one: result.args.counters[0].c[0],
-					counter_two: result.args.counters[1].c[0],
-					counter_three: result.args.counters[2].c[0],
-					counter_four: result.args.counters[3].c[0]
-				}
-			))
-			.then(result => resolve(result[1][0])) // Resolve with the resulting row
-			.catch(handler)
+			// TODO: Rollback
 
 		// Request counter increase
 		promisify(contract.instance.requestSingleCounterIncrease)({ args: [rowId, colId] })

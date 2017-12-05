@@ -9,9 +9,8 @@ const response = res.response
 const error = res.error
 
 // Routes
-/**
- * Create a new counter contract.
- */
+
+// Create a new counter contract
 router.post('/create', (req, res, next) => {
 	counterMultiple.create(res)
 		.then(contract => {
@@ -35,24 +34,25 @@ router.get('/', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Get all Employees from DB
+// Get roothash of given id from SC
 router.get('/:id', (req, res, next) => {
 	counterMultiple.getRootHashFromSc(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
 
-router.post('/:id/increase/:col', (req, res, next) => {
-	var col
+// Increase counter of specific row and column
+router.post('/:rowId/column/:colId/increase', (req, res, next) => {
+	var colId
 	const badRequest = () => response(res, 400, 'Invalid index.')
 	try {
-		col = parseInt(req.params.col)
+		colId = parseInt(req.params.colId)
 	}
 	catch (err) {
 		badRequest()
 	}
-	if (typeof(col) !== 'number' ||col < 0 || col > 4) return badRequest()
-	counterMultiple.increaseSingle(req.params.id, col)
+	if (typeof(colId) !== 'number' ||colId < 0 || colId > 4) return badRequest()
+	counterMultiple.increaseSingle(req.params.rowId, colId)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })

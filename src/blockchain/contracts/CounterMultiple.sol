@@ -7,8 +7,7 @@ contract CounterMultiple {
 	mapping(uint => bytes32) integrityHashes; // The integrity hashes of the counters array
 
 	// Declare events
-	event IntegrityCheckFailedEvent();
-	event IntegrityCheckFailedEvent2(bytes32 proof1,bytes32 proof2);
+	event IntegrityCheckFailedEvent(bytes32 proof1,bytes32 proof2);
 	event ReturnNewRootHash(bytes32 proof, uint newCounterValue);
 	event RequestSingleDataEvent(uint rowId, uint colId);
 	
@@ -62,7 +61,7 @@ contract CounterMultiple {
             integrityHashes[_rowId] = _createTree(newCounterValue, _proof, _proofPosition);
             ReturnNewRootHash(integrityHashes[_rowId], newCounterValue);
         } else {
-			IntegrityCheckFailedEvent2(integrityHashes[_rowId], computedHash);
+			IntegrityCheckFailedEvent(integrityHashes[_rowId], computedHash);
         }
 	}
 

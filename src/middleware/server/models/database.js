@@ -52,7 +52,7 @@ function Database(tableName, scheme) {
 
 
 	/**
-	 * Read all row.
+	 * Read all rows.
 	 *
 	 * @param {Object} criteria The criteria for the row to read
 	 * @returns {Promise} The database response
