@@ -137,103 +137,6 @@ function hasInstance() {
 }
 
 /**
- * Increase the counter with the given index.
- *
- * @param {Integer} index The index of the counter to increase
- * @returns {Promise} A promise that depends on the successful counter increase
- */
-function increaseCounter(index) {
-
-	return new Promise((resolve, reject) => {
-
-		// Define functions
-		const handler = (err) => reject(err)
-		const doCounterIncrease = promisify(contract.instance.doCounterIncrease)
-
-		// Set event listeners
-		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
-			.then(result => {
-				db.read({ root_hash: result.args.integrityHash }).then(result => {
-
-					const leaves = [
-						result.counter_one,
-						result.counter_two,
-						result.counter_three,
-						result.counter_four
-					]
-					
-					// transform int to uint8 bytes because that is what being done in SC.
-					const tree = new MerkleTree(leaves.map(x => sha3({ value: x.toString(), type: 'uint256' })), sha3)
-					const proof = tree.getProof(index)
-
-					doCounterIncrease({
-						args: [
-							leaves[index],
-							proof.proofData,
-							proof.proofPosition,
-							{ gas: 300000 }
-						]
-					})
-				})
-			}).catch(handler)
-
-		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
-			.then(result => {
-				var newRootHash = result.args.proof
-				var newCounterValue = result.args.newCounterValue.c[0]
-
-				var colName;
-				if (index === 0) {
-					colName = "counter_one"
-				} else if (index === 1) {
-					colName = "counter_two"
-				} else if (index === 2) {
-					colname = "counter_three"
-				} else if (index === 3) {
-					colname = "counter_four"
-				}
-
-
-				var counterUpdate = {};
-				counterUpdate[colName] = newCounterValue
-				counterUpdate["root_hash"] = newRootHash
-
-				db.update(
-					{ id: contract.rowId },
-					counterUpdate
-				)
-					.then(resolve)
-
-			})
-			.catch(handler)
-
-		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
-			.then(() => reject('Integrity check failed.'))
-			.catch(handler)
-
-		events.watch(contract.instance.CounterIncreasedEvent) // Counter was successfully increased
-			.then(result => db.update(
-				{ id: contract.rowId },
-				{
-					counter_one: result.args.counters[0].c[0],
-					counter_two: result.args.counters[1].c[0],
-					counter_three: result.args.counters[2].c[0],
-					counter_four: result.args.counters[3].c[0]
-				}
-			))
-			.then(result => resolve(result[1][0])) // Resolve with the resulting row
-			.catch(handler)
-
-		// Request counter increase
-		promisify(contract.instance.requestCounterIncrease)({ args: index })
-			.catch(handler)
-
-	})
-
-
-}
-
-/**
  * Increase the counter with the given row and column index.
  *
  * @param {Integer} rowId The index of the counter row
@@ -346,6 +249,5 @@ module.exports = {
 	getRootHashFromSc,
 	setInstance,
 	hasInstance,
-	increaseCounter,
 	increaseSingle
 }
