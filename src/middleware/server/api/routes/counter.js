@@ -57,22 +57,6 @@ router.post('/increase/:index', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-router.post('/:id/increase/:col', (req, res, next) => {
-	var col
-	const badRequest = () => response(res, 400, 'Invalid index.')
-	try {
-		col = parseInt(req.params.col)
-	}
-	catch (err) {
-		badRequest()
-	}
-	if (typeof(col) !== 'number' ||col < 0 || col > 4) return badRequest()
-	counter.increaseSingle(req.params.id, col)
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
-
-
 // Export module
 module.exports = router
 
