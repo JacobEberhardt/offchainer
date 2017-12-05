@@ -1,0 +1,85 @@
+{
+	"variables": [],
+	"info": {
+		"name": "CP: Counters Multiple Rows Example",
+		"_postman_id": "2e339b04-9945-400d-8224-aff5cbf959fd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8000/counter-multiple/create",
+			"request": {
+				"url": "http://localhost:8000/counter-multiple/create",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/counter-multiple/add",
+			"request": {
+				"url": "http://localhost:8000/counter-multiple/add",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"counterOne\": 0,\n\t\"counterTwo\": 0,\n\t\"counterThree\": 0,\n\t\"counterFour\": 0\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/counter-multiple/",
+			"request": {
+				"url": "http://localhost:8000/counter-multiple/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/counter-multiple/1/increase/1",
+			"request": {
+				"url": "http://localhost:8000/counter-multiple/1/increase/1",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/counter-multiple/1",
+			"request": {
+				"url": "http://localhost:8000/counter-multiple/1",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
