@@ -182,7 +182,7 @@ function increaseSingle(rowId, colId) {
 				})
 			})
 
-		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
+		events.watch(contract.instance.ReturnNewRootHash) // Return the new root hash
 			.then(result => {
 				console.log('Event---------')
 				console.log(result)
