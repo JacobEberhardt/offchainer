@@ -10,7 +10,7 @@ const MerkleTree = require('../utils/merkleTree')
 const sha3 = require('web3-utils').soliditySha3
 
 // Define values
-CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
+CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/CounterMultiple.json'
 INITIAL_GAS = 4700000
 
 // Import contract data
@@ -92,7 +92,6 @@ function add(counters) {
 			})
 		})
 	})
-
 }
 
 /**

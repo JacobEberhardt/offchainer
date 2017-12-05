@@ -30,7 +30,7 @@ router.post('/add', (req, res, next) => {
 
 // Get all Counters from DB
 router.get('/', (req, res, next) => {
-	counter.getAllFromDb()
+	counterMultiple.getAllFromDb()
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
@@ -38,21 +38,6 @@ router.get('/', (req, res, next) => {
 // Get all Employees from DB
 router.get('/:id', (req, res, next) => {
 	counterMultiple.getRootHashFromSc(req.params.id)
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
-
-router.post('/increase/:index', (req, res, next) => {
-	var index
-	const badRequest = () => response(res, 400, 'Invalid index.')
-	try {
-		index = parseInt(req.params.index)
-	}
-	catch (err) {
-		badRequest()
-	}
-	if (typeof(index) !== 'number' || index < 0 || index > 4) return badRequest()
-	counterMultiple.increaseCounter(index)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
