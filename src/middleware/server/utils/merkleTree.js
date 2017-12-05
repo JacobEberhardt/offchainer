@@ -124,7 +124,7 @@ class MerkleTree {
       const pairIndex = (isRightNode ? index - 1 : index + 1)
 
       if (pairIndex < layer.length) {
-        proofPosition.push(isRightNode === "left" ? 0 : 1)
+        proofPosition.push(isRightNode ? 0 : 1)
         proofData.push(layer[pairIndex])
       }
 

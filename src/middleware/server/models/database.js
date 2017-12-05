@@ -24,7 +24,7 @@ function Database(tableName, scheme) {
 	 * @throws Throws an error if there is no database connection
 	 */
 	this.checkConnection = function () {
-		if (this.db == undefined) throw Error('No database connection. Set table with function "setTable" first.')
+		if (this.db == undefined) throw Error('No database connection. Please retry again later.')
 	}
 
 	// "Low level" wrapper functions
