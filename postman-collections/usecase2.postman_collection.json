@@ -1,71 +1,110 @@
 {
-	"variables": [],
-	"info": {
-		"name": "CP: Increase Salary Use Case 2",
-		"_postman_id": "d11a6599-b43b-7bec-e3cc-bc9f47df0ecd",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-	},
-	"item": [
+	"id": "a0977baf-aa2d-0d88-d720-d8160199fd36",
+	"name": "CP: Increase Salary Use Case 2",
+	"description": "",
+	"order": [],
+	"folders": [
 		{
+			"id": "ae8058cd-12eb-d2a0-daa5-cfc9d747b421",
 			"name": "Financials",
 			"description": "",
-			"item": [
-				{
-					"name": "http://localhost:8000/financials/create",
-					"request": {
-						"url": "http://localhost:8000/financials/create",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": "",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "http://localhost:8000/financials/new",
-					"request": {
-						"url": "http://localhost:8000/financials/new",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{ \n\t\"companyName\" : \"Company1\",\n\t\"recordingDate\" : \"01.01.2010\",\n\t\"totalSales\" : \"12349\",\n\t\"cogs\" : \"500\",\n\t\"inventoryStock\" : \"1245\",\n\t\"cashCounter\" : \"111\",\n\t\"accountsReceivables\" :\"258\",\n\t\"accountsPayable\" : \"2666\"\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "http://localhost:8000/financials/",
-					"request": {
-						"url": "http://localhost:8000/financials/",
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"description": ""
-					},
-					"response": []
-				}
-				
-			]
+			"order": [
+				"a9018a6f-f118-861b-f0d2-6457b06e7e64",
+				"01809aec-df1a-e759-c8aa-bbb4523c1ba3",
+				"8bb4e963-2601-b0ff-4d68-5cf2027b8723"
+			],
+			"folders_order": [],
+			"owner": "1202096",
+			"collectionId": "a0977baf-aa2d-0d88-d720-d8160199fd36"
 		}
-		
+	],
+	"folders_order": [
+		"ae8058cd-12eb-d2a0-daa5-cfc9d747b421"
+	],
+	"timestamp": 0,
+	"owner": "1202096",
+	"public": false,
+	"requests": [
+		{
+			"id": "01809aec-df1a-e759-c8aa-bbb4523c1ba3",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8000/financials/addEntry",
+			"folder": "ae8058cd-12eb-d2a0-daa5-cfc9d747b421",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1512479744172,
+			"name": "http://localhost:8000/financials/",
+			"description": "",
+			"collectionId": "a0977baf-aa2d-0d88-d720-d8160199fd36",
+			"responses": [],
+			"rawModeData": "{ \n\t\"companyName\" : \"CompanyAB\",\n\t\"recordingDate\" : \"01.01.2010\",\n\t\"totalSales\" : \"4213\",\n\t\"cogs\" : \"322\",\n\t\"inventoryStock\" : \"412\",\n\t\"cashCounter\" : \"5123\",\n\t\"accountsReceivables\" :\"321\",\n\t\"accountsPayable\" : \"5123\"\n}"
+		},
+		{
+			"id": "8bb4e963-2601-b0ff-4d68-5cf2027b8723",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8000/financials/",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "a0977baf-aa2d-0d88-d720-d8160199fd36",
+			"data": null,
+			"dataMode": "params",
+			"name": "http://localhost:8000/financials/",
+			"description": "Get all record entries from DB",
+			"descriptionFormat": "html",
+			"time": 1512479816695,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "ae8058cd-12eb-d2a0-daa5-cfc9d747b421"
+		},
+		{
+			"id": "a9018a6f-f118-861b-f0d2-6457b06e7e64",
+			"name": "http://localhost:8000/financials/create",
+			"description": "",
+			"collectionId": "a0977baf-aa2d-0d88-d720-d8160199fd36",
+			"method": "POST",
+			"headers": "// Content-Type: application/json",
+			"dataMode": "raw",
+			"data": [],
+			"rawModeData": "",
+			"url": "http://localhost:8000/financials/create",
+			"responses": [],
+			"pathVariableData": [],
+			"queryParams": [],
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": false
+				}
+			],
+			"collection_id": "a0977baf-aa2d-0d88-d720-d8160199fd36",
+			"folder": "ae8058cd-12eb-d2a0-daa5-cfc9d747b421",
+			"isFromCollection": true,
+			"collectionRequestId": "a9018a6f-f118-861b-f0d2-6457b06e7e64"
+		}
 	]
 }

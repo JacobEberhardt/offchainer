@@ -42,7 +42,10 @@ contract Financials {
 		rootHashes[_index] = _rootHash;
 	}
 
-	function getAllRecordEntries() constant returns(RecordEntry[]) {
+
+//Currently all these functions are not possible for our use case 
+
+	/* function getAllRecordEntries() constant returns(RecordEntry[]) {
 	    RecordEntry[] memory currentRecordEntries = new RecordEntry[](recordIndex);
 	    for(uint i = 0; i < recordIndex; i++){
 	        currentRecordEntries[i] = recordEntries[i];
@@ -61,9 +64,11 @@ contract Financials {
 	function getRecordEntry(uint indexOfRecord) constant returns(RecordEntry) {
 	    return recordEntries[indexOfRecord];
 	}
+ */
 
+ //Getting the hash of the record entry 
 	function getRootHash(uint indexOfRecord) constant returns(bytes32) {
-	    return recordEntries[indexOfRecord].rootHash;
+	    return rootHashes[indexOfRecord];
 	}
 
 	function checkIntegrityOfRecord() constant{
