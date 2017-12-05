@@ -7,11 +7,13 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
-const sha3 = require('web3-utils').soliditySha3
+const sha3 = require('../utils/sha3')
+const type = require('../utils/type')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
 INITIAL_GAS = 4700000
+COLUMN_NAMES = ['counter_one', 'counter_two', 'counter_three', 'counter_four']
 
 // Import contract data
 const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BUILD_FILE)))
@@ -48,38 +50,34 @@ const db = new Database(
 function create() {
 	// https://ethereum.stackexchange.com/questions/2632/how-does-soliditys-sha3-keccak256-hash-uints
 	// transform int to uint8 bytes because that is what being done in SC.
-	const leaves = [0, 0, 0, 0].map(x => sha3({value: x.toString(), type: 'uint8'}))
+	const leaves = [0, 0, 0, 0].map(sha3)
 	const tree = new MerkleTree(leaves, sha3)
 
 	// Initialize four counters to zero
 	const rootHash = tree.getRoot()
-	return new Promise((resolve, reject) => {
-		db.create({
-			root_hash: rootHash,
-			counter_one: 0,
-			counter_two: 0,
-			counter_three: 0,
-			counter_four: 0
-		}).then(result => {
-			contract.rowId = result.dataValues.id // Store the rowId for the used instance in a new property of the "global" contract object
-			const promise = promisify(contract.new)({
-				args: [
-					rootHash,
-					{
-						from: web3.eth.accounts[0],
-						data: contractData.bytecode,
-						gas: INITIAL_GAS
-					}
-				],
-				requiredProperty: 'address',
-				context: contract
-			})
-			resolve(promise)
-		}).catch(err => {
-			reject({err: err, message: "Please Try Again Later"})
-		})
+	const newFunction = promisify(contract.new)
+
+	return db.create({
+		root_hash: rootHash,
+		counter_one: 0,
+		counter_two: 0,
+		counter_three: 0,
+		counter_four: 0
 	})
-	
+	.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
+	.then(result => newFunction({
+		args: [
+			rootHash,
+			{
+				from: web3.eth.accounts[0],
+				data: contractData.bytecode,
+				gas: INITIAL_GAS
+			}
+		],
+		requiredProperty: 'address',
+		context: contract
+	}))
+
 }
 
 /**
@@ -119,36 +117,39 @@ function increaseCounter(index) {
 
 		// Set event listeners
 		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
+			.then(result => db.read({
+				root_hash: result.args.integrityHash,
+				id: contract.rowId
+			}))
 			.then(result => {
-				db.read({
-					root_hash: result.args.integrityHash,
-					id: contract.rowId
-				}).then(result => {
 
-					const leaves = [
-						result.counter_one,
-						result.counter_two,
-						result.counter_three,
-						result.counter_four
+				const leaves = [
+					result.counter_one,
+					result.counter_two,
+					result.counter_three,
+					result.counter_four
+				]
+
+				// Transform int to uint8 bytes because that is what being done in SC.
+				const tree = new MerkleTree(leaves.map(sha3), sha3)
+				const proof = tree.getProof(index)
+
+				return doCounterIncrease({
+					args: [
+						leaves[index],
+						proof.proofData,
+						proof.proofPosition,
+						{gas: 300000}
 					]
-
-					// transform int to uint8 bytes because that is what being done in SC.
-					const tree = new MerkleTree(leaves.map(x => sha3({value: x.toString(), type: 'uint8'})), sha3)
-					const proof = tree.getProof(index)
-					doCounterIncrease({
-						args: [
-							leaves[index],
-							proof.proofData,
-							proof.proofPosition,
-							{gas: 300000}
-						]
-					}).then(result => rootHashStateChangeTxHash = result) //store the transaction hash where a state is being changed
 				})
-			}).catch(handler)
+
+			})
+			.then(result => rootHashStateChangeTxHash = result) // Store the transaction hash where a state is being changed
+			.catch(handler)
 
 		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
 			.then(result => {
-				const prevRootHash = result.args.prevRootHash // saved for reverting when DB cannot update. 
+				const prevRootHash = result.args.prevRootHash // Saved for reverting when DB cannot update. 
 				var newRootHash = result.args.newRootHash
 				var newCounterValue = result.args.newCounterValue.c[0]
 
@@ -165,18 +166,11 @@ function increaseCounter(index) {
 				            	// uses the new roothash, but the state of SC has not been changed yet. 
 				            
 					        	if(block.transactions[i].hash === rootHashStateChangeTxHash) {
-					        		var colName;
-									if(index === 0) {
-								  		colName = "counter_one"
-									} else if(index === 1) {
-										colName = "counter_two"
-									} else if (index === 2) {
-										colName = "counter_three"
-									} else if (index === 3) {
-										colName = "counter_four"
-									}		
 
-									var counterUpdate = {};
+					        		var colName
+									colName = !type.isInt(index) || index < 0 || index > 3 ? colName : COLUMN_NAMES[index]
+
+									var counterUpdate = {}
 									counterUpdate[colName] = newCounterValue
 									counterUpdate["root_hash"] = newRootHash
 
@@ -186,12 +180,14 @@ function increaseCounter(index) {
 									db.update(
 										{id: contract.rowId},
 										counterUpdate
-									).then(() => resolve("Update Complete"))
+									)
+									.then(() => resolve("Update Complete"))
 									.catch(err => {
 										// revert back the old transaction
 										revertRootHash({
 											args: [prevRootHash]
-										}).then(() => reject("DB cannot update new state. State is reverted. ERR: " + err)) //reject or resolve? 
+										})
+										.then(() => reject("DB cannot update new state. State is reverted. ERR: " + err)) //reject or resolve? 
 										.catch(handler)
 									}) 
 					        	}
@@ -203,7 +199,8 @@ function increaseCounter(index) {
 						reject(error)
 					}
 				})
-			}).catch(handler)
+			})
+			.catch(handler)
 
 		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
 			.then(() => reject('Integrity check failed.'))
