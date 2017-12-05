@@ -2,7 +2,7 @@
 pragma solidity ^0.4.17;
 
 // Import dependencies
-//import './Standard.sol';
+import './Standard.sol';
 
 contract Offchainer {
 	
