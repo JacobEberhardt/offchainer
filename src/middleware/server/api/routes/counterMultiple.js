@@ -27,16 +27,16 @@ router.post('/add', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Get all Counters from DB
+// Get all Counters from database
 router.get('/', (req, res, next) => {
-	counterMultiple.getAllFromDb()
+	counterMultiple.getAllFromDatabase()
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
 
-// Get roothash of given id from SC
-router.get('/:id', (req, res, next) => {
-	counterMultiple.getRootHashFromSc(req.params.id)
+// Get roothash of given id from smart contract
+router.get('/:id/root-hash', (req, res, next) => {
+	counterMultiple.getRootHashFromSmartContract(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
