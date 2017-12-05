@@ -1,6 +1,6 @@
 // Import dependencies
 const router = require('express').Router()
-const counterMultiple = require('../../models/counter')
+const counterMultiple = require('../../models/counterMultiple')
 const db = require('../../models/database')
 const res = require('../../utils/response')
 
