@@ -51,7 +51,7 @@ router.post('/:rowId/column/:colId/increase', (req, res, next) => {
 	catch (err) {
 		badRequest()
 	}
-	if (typeof(colId) !== 'number' ||colId < 0 || colId > 4) return badRequest()
+	if (typeof(colId) !== 'number' ||colId < 0 || colId > 3) return badRequest()
 	counterMultiple.increaseSingle(req.params.rowId, colId)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
