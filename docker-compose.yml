@@ -9,6 +9,7 @@ services:
       - database
     volumes:
       - ./src/middleware/server:/middleware/server
+      - ./src/blockchain/build:/blockchain/build
     environment:
       - PG_HOST=database
       - PG_PORT=5432
