@@ -161,6 +161,7 @@ function increaseCounter(index) {
 				return transactions.waitForBlock(web3, newRootTransactionHash)
 
 			})
+			.catch(handler)
 			.then(() => {
 				const colName = COLUMN_NAMES[index]
 
@@ -175,9 +176,10 @@ function increaseCounter(index) {
 			})
 			.then(result => resolve(result))
 			.catch(error => {
-				return revertRootHash({args: oldRootHash})
-			}).then((result) => {
-				reject("Reverting previous roothash. Transaction: " + result)
+				revertRootHash({args: oldRootHash})
+				.then(result => {
+					reject("Reverting previous roothash. Transaction: " + result)
+				})
 			})
 			
 		// 3.b Given data failed the integrity check
