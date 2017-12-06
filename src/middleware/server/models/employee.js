@@ -68,24 +68,39 @@ function create() {
  * @returns {Promise} A promise that depends on the successful employee insert
  */
 function add(employee) {
-	// Insert new Employee
-	return db.create({
-		first_name: employee.firstName,
-		last_name: employee.lastName,
-		start_date: employee.startDate,
-		department: employee.department,
-		salary: employee.salary
+	return new Promise((resolve, reject) => {
+		const leaves = [
+			employee.firstName,
+			employee.lastName,
+			employee.startDate,
+			employee.department,
+			employee.salary
+		].map(x => sha3(x))
+
+		const tree = new MerkleTree(leaves, sha3)
+		const rootHash = tree.getRoot()
+		
+		db.create({
+			first_name: employee.firstName,
+			last_name: employee.lastName,
+			start_date: employee.startDate,
+			department: employee.department,
+			salary: employee.salary
+		})
+			.then(result => {
+				promisify(contract.instance.add)({
+					args: [
+						result.dataValues.id,
+						rootHash
+					]
+				})
+					.then(result => {
+						resolve(result)
+					})
+					.catch(err => reject(err))
+			})
+			.catch(err => reject(err))
 	})
-	// .then(result => {
-	// 	// Create merkle tree first
-	// 	// TODO
-
-	// 	// Send index and merkle root to SC
-	// 	// TODO
-
-	// 	// For now just return result
-	// 	return result
-	// })
 }
 
 /**
@@ -104,7 +119,7 @@ function getAll() {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function importEmployees(employees) {
-	return db.createMany(employees)
+	return Promise.all(employees.map(add));
 }
 
 /**
@@ -134,9 +149,6 @@ function setInstance(address) {
 function hasInstance() {
 	return contract.instance != undefined
 }
-
-
-
 
 // Export functions
 module.exports = {
