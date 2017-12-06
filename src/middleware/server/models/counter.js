@@ -163,7 +163,7 @@ function increaseCounter(index) {
 				return transactions.waitForBlock(web3, newRootTransactionHash)
 
 			})
-			.catch(handler)
+			.catch(handler) // catches transaction error
 			.then(() => {
 				const colName = COLUMN_NAMES[index]
 
@@ -177,7 +177,7 @@ function increaseCounter(index) {
 
 			})
 			.then(result => resolve(result))
-			.catch(error => {
+			.catch(error => { // catches db update error, and then perform reverts
 				revertRootHash({args: oldRootHash})
 				.then(result => {
 					reject("Reverting previous roothash. Transaction: " + result)
