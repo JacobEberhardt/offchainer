@@ -164,7 +164,6 @@ function increaseCounter(index) {
 
 			})
 			.then(() => {
-
 				const colName = COLUMN_NAMES[index]
 
 				return db.update(
@@ -174,14 +173,14 @@ function increaseCounter(index) {
 						root_hash: newRootHash
 					}
 				)
-					.catch(error => {
-						revertRootHash({args: oldRootHash})
-						reject(error)
-					})
 
 			})
 			.then(result => resolve(result))
-			.catch(handler)
+			.catch(error => {
+				return revertRootHash({args: oldRootHash})
+			}).then((result) => {
+				reject("Reverting previous roothash. Transaction: " + result)
+			})
 			
 		// Given data failed the integrity check
 		events.watch(contract.instance.IntegrityCheckFailedEvent)
