@@ -160,8 +160,7 @@ function increaseCounter(index) {
 
 				return transactions.waitForBlock(web3, newRootTransactionHash)
 
-			})
-			.catch(handler) // catches transaction error
+			}) 
 			.then(() => {
 				const colName = COLUMN_NAMES[index]
 
@@ -175,11 +174,16 @@ function increaseCounter(index) {
 
 			})
 			.then(result => resolve(result))
-			.catch(error => { // catches db update error, and then perform reverts
-				revertRootHash({args: oldRootHash})
-				.then(result => {
-					reject("Reverting previous roothash. Transaction: " + result)
-				})
+			.catch(error => {
+				if(error.name) { // if it is an Error based, which is thrown by DB. Going forward we should use custom Error types
+					revertRootHash({args: oldRootHash})
+					.then(result => {
+						reject("Reverting previous roothash. Transaction: " + result)
+					})
+				} else {
+					reject(error)
+				}
+				
 			})
 			
 		// 3.b Given data failed the integrity check
