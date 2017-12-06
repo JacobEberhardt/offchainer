@@ -2,13 +2,17 @@
 const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
-const promisify = require('../utils/promisify')
-const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
+
+// Import utilities
+const promisify = require('../utils/promisify')
+const events = require('../utils/events')
 const MerkleTree = require('../utils/merkleTree')
 const sha3 = require('../utils/sha3')
 const type = require('../utils/type')
+const web3Util = require('../utils/web3')
+const transactions = require('../utils/transactions')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Counter.json'
@@ -22,12 +26,7 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 const contract = web3.eth.contract(contractData.abi)
 
 // Set default account
-var interval = setInterval(function() { // Poll to wait for web3 connection
-	if (web3.isConnected()) {
-		web3.eth.defaultAccount = web3.eth.accounts[0] // Set default account
-		clearInterval(interval)
-	}
-}, 500)
+web3Util.setDefaultAccount(web3, 0)
 
 // Establish database connection
 const db = new Database(
@@ -113,10 +112,17 @@ function increaseCounter(index) {
 		const handler = (err) => reject(err)
 		const doCounterIncrease = promisify(contract.instance.doCounterIncrease)
 		const revertRootHash = promisify(contract.instance.rollBack)
-		var rootHashStateChangeTxHash
+
+		// Define variables
+		var newRootTransactionHash,
+			oldRootHash,
+			newRootHash,
+			newCounterValue
 
 		// Set event listeners
-		events.watch(contract.instance.RequestedCounterIncreaseEvent) // Smart contract needs data
+
+		// Smart contract needs data
+		events.watch(contract.instance.RequestedCounterIncreaseEvent)
 			.then(result => db.read({
 				root_hash: result.args.integrityHash,
 				id: contract.rowId
@@ -130,7 +136,6 @@ function increaseCounter(index) {
 					result.counter_four
 				]
 
-				// Transform int to uint8 bytes because that is what being done in SC.
 				const tree = new MerkleTree(leaves.map(sha3), sha3)
 				const proof = tree.getProof(index)
 
@@ -144,79 +149,43 @@ function increaseCounter(index) {
 				})
 
 			})
-			.then(result => rootHashStateChangeTxHash = result) // Store the transaction hash where a state is being changed
+			.then(result => newRootTransactionHash = result) // Store the transaction hash where a state is being changed
 			.catch(handler)
 
-		events.watch(contract.instance.returnNewRootHash) // Return the new root hash
+		// Smart contract returns new root hash
+		events.watch(contract.instance.returnNewRootHash)
 			.then(result => {
-				const prevRootHash = result.args.prevRootHash // Saved for reverting when DB cannot update. 
-				var newRootHash = result.args.newRootHash
-				var newCounterValue = result.args.newCounterValue.c[0]
+				
+				oldRootHash = result.args.prevRootHash
+				newRootHash = result.args.newRootHash
+				newCounterValue = result.args.newCounterValue.c[0]
 
-				// start watching for the tx to be mined.
-				// might not be a good idea to do it from block 1, might get very long.
-				var filter = web3.eth.filter({ fromBlock:1, toBlock: "latest" })
-				filter.watch((error, blockHash) => {
-				    if (!error) {
-				        var block = web3.eth.getBlock(blockHash.blockHash, true)     
-				        if (block.transactions.length > 0) {
-				            for(var i = 0; i < block.transactions.length; i++) {
-				            	// if that state change transaction is mined, we want to update the db now
-				            	// we do not want to update the db first, because of consistency, what if someone 
-				            	// uses the new roothash, but the state of SC has not been changed yet. 
-				            
-					        	if(block.transactions[i].hash === rootHashStateChangeTxHash) {
+				return transactions.waitForBlock(web3, newRootTransactionHash)
 
-					        		var colName
-									colName = !type.isInt(index) || index < 0 || index > 3 ? colName : COLUMN_NAMES[index]
-
-									var counterUpdate = {}
-									counterUpdate[colName] = newCounterValue
-									counterUpdate["root_hash"] = newRootHash
-
-									//stop watching for the mining.
-									filter.stopWatching()
-
-									db.update(
-										{id: contract.rowId},
-										counterUpdate
-									)
-									.then(() => resolve("Update Complete"))
-									.catch(err => {
-										// revert back the old transaction
-										revertRootHash({
-											args: [prevRootHash]
-										})
-										.then(() => reject("DB cannot update new state. State is reverted. ERR: " + err)) //reject or resolve? 
-										.catch(handler)
-									}) 
-					        	}
-				        	}
-				    	} else {
-				            console.log("no transaction in block: " + blockHash)
-				    	}
-					} else {
-						reject(error)
-					}
-				})
 			})
 			.catch(handler)
+			.then(() => {
 
-		events.watch(contract.instance.IntegrityCheckFailedEvent) // Given data failed the integrity check
+				const colName = COLUMN_NAMES[index]
+
+				return db.update(
+					{id: contract.rowId},
+					{
+						[colName]: newCounterValue,
+						root_hash: newRootHash
+					}
+				)
+
+			})
+			.then(result => resolve(result))
+			.catch(error => {
+				revertRootHash({args: oldRootHash})
+				reject(error)
+			})
+
+		// Given data failed the integrity check
+		events.watch(contract.instance.IntegrityCheckFailedEvent)
 			.then(() => reject('Integrity check failed.'))
-			.catch(handler)
-
-		events.watch(contract.instance.CounterIncreasedEvent) // Counter was successfully increased
-			.then(result => db.update(
-				{id: contract.rowId},
-				{
-					counter_one: result.args.counters[0].c[0],
-					counter_two: result.args.counters[1].c[0],
-					counter_three: result.args.counters[2].c[0],
-					counter_four: result.args.counters[3].c[0]
-				}
-			))
-			.then(result => resolve(result[1][0])) // Resolve with the resulting row
 			.catch(handler)
 
 		// Request counter increase
