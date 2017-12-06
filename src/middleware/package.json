@@ -5,7 +5,7 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "./node_modules/nodemon/bin/nodemon.js server/server.js"
+    "dev": "nodemon server/server.js"
   },
   "dependencies": {
     "express": "^4.16.2",
@@ -14,8 +14,5 @@
     "sequelize": "^4.22.7",
     "web3": "^0.19.0",
     "web3-utils": "^1.0.0-beta.26"
-  },
-  "devDependencies": {
-    "nodemon": "^1.12.1"
   }
 }
