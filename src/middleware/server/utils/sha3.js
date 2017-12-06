@@ -24,6 +24,9 @@ function customSha3(value) {
 	// Call soliditySha3 depending on the type of the given value
 	switch (typeof(value)) {
 
+		case 'string':
+			return soliditySha3(value)
+
 		case 'number':
 			if (type.isStrictInt(value)) return soliditySha3({value: value.toString(), type: 'uint8'})
 
