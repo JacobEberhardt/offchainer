@@ -9,7 +9,6 @@ contract Counter {
 	// Declare events
 	event RequestedCounterIncreaseEvent(bytes32 integrityHash);
 	event IntegrityCheckFailedEvent();
-	event CounterIncreasedEvent(uint8[4] counters);
 	event returnNewRootHash(bytes32 prevRootHash, bytes32 newRootHash, uint8 newCounterValue);
 
 	// Define public functions
