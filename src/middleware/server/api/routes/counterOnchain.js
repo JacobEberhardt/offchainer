@@ -15,9 +15,9 @@ const error = res.error
  */
 router.post('/create', (req, res, next) => {
 	counter.create()
-		.then(contract => {
-			counter.setInstance(contract.address) // Store the address
-			response(res, 200, {address: contract.address})
+		.then(result => {
+			counter.setInstance(result.contract.address) // Store the address
+			response(res, 200, {address: result.contract.address, transaction: result.receipt})
 		})
 		.catch(err => error(res, 500, err))
 })

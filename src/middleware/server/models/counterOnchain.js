@@ -47,35 +47,35 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	// https://ethereum.stackexchange.com/questions/2632/how-does-soliditys-sha3-keccak256-hash-uints
-	// transform int to uint8 bytes because that is what being done in SC.
-	const leaves = [0, 0, 0, 0].map(sha3)
-	const tree = new MerkleTree(leaves, sha3)
 
-	// Initialize four counters to zero
-	const rootHash = tree.getRoot()
 	const newFunction = promisify(contract.new)
 
 	return db.create({
-		root_hash: rootHash,
+		root_hash: '0xabcdef',
 		counter_one: 0,
 		counter_two: 0,
 		counter_three: 0,
 		counter_four: 0
 	})
 	.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
-	.then(result => newFunction({
-		args: [
-			0, 0, 0, 0,
-			{
-				from: web3.eth.accounts[0],
-				data: contractData.bytecode,
-				gas: INITIAL_GAS
-			}
-		],
-		requiredProperty: 'address',
-		context: contract
-	}))
+	.then(result => {
+		return promisify (contract.new)({
+			args: [
+				0, 0, 0, 0,
+				{
+					from: web3.eth.accounts[0],
+					data: contractData.bytecode,
+					gas: INITIAL_GAS
+				}
+			],
+			requiredProperty: 'address',
+			context: contract
+		})
+			.then(result => {
+				var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
+				return {contract: result, receipt: receipt} //resolve(receipt)
+			})
+	})
 
 }
 
@@ -112,29 +112,14 @@ function increaseCounter(index) {
 		const handler = (err) => reject(err)
 		const doCounterIncrease = promisify(contract.instance.doCounterIncrease)
 
-		// Define variables
-		var newRootTransactionHash,
-			oldRootHash,
-			newRootHash,
-			newCounterValue
-
-		// Set event listeners
-
-		// Smart contract needs data
-
-
 		// Request counter increase
 		promisify(contract.instance.doCounterIncrease)({args: [2, index]})
-			.then(() => {
-				console.log('methode aufgerufen')
-				console.log('contract:')
-				console.log(contract.instance)
+			.then(result => {
+				var receipt = web3.eth.getTransactionReceipt(result);
+				resolve(receipt)
 			})
 			.catch(handler)
-
-
 	})
-
 }
 
 // Export functions
