@@ -1,8 +1,8 @@
 // Required version
 pragma solidity ^0.4.17;
 
-contract Counter {
-    
+contract CounterOnchain {
+
     uint256 counter_one;
     uint256 counter_two;
     uint256 counter_three;
@@ -12,7 +12,7 @@ contract Counter {
 	/**
 	 * Create a new contract instance.
 	 */
-	function Counter(uint256 _counter_one, uint256 _counter_two, 
+	function CounterOnchain(uint256 _counter_one, uint256 _counter_two, 
 	    uint256 _counter_three, uint256 _counter_four) public {
 		counter_one = _counter_one;
         counter_two = _counter_two;
