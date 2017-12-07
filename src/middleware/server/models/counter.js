@@ -175,7 +175,7 @@ function increaseCounter(index) {
 			})
 			.then(result => resolve(result))
 			.catch(error => {
-				if(error.name) { // if it is an Error based, which is thrown by DB. Going forward we should use custom Error types
+				if(error.code === "database") { // Error type Database will result in a revert
 					revertRootHash({args: oldRootHash})
 					.then(result => {
 						reject("Reverting previous roothash. Transaction: " + result)
