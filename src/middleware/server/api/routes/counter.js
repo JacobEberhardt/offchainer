@@ -7,7 +7,6 @@ const type = require('../../utils/type')
 
 // Set response functions
 const response = res.response
-const error = res.error
 
 // Routes
 /**
@@ -19,7 +18,7 @@ router.post('/create', (req, res, next) => {
 			counter.setInstance(contract.address) // Store the address
 			response(res, 200, {address: contract.address})
 		})
-		.catch(err => error(res, 500, err))
+		.catch(err => res.status(err.status || 500).send(err))
 })
 
 router.post('/increase/:index', (req, res, next) => {
@@ -34,7 +33,7 @@ router.post('/increase/:index', (req, res, next) => {
 	if (!type.isInt(index) || index < 0 || index > 4) return badRequest()
 	counter.increaseCounter(index)
 		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
+		.catch(err => res.status(err.status || 500).send(err))
 })
 
 // Export module
