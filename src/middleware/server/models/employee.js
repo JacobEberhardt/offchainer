@@ -7,6 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
+const sha3 = require('web3-utils').soliditySha3
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Employee.json'
@@ -69,6 +70,7 @@ function create() {
  */
 function add(employee) {
 	return new Promise((resolve, reject) => {
+		
 		const leaves = [
 			employee.firstName,
 			employee.lastName,
@@ -76,7 +78,7 @@ function add(employee) {
 			employee.department,
 			employee.salary
 		].map(x => sha3(x))
-
+		console.log(leaves)
 		const tree = new MerkleTree(leaves, sha3)
 		const rootHash = tree.getRoot()
 		
@@ -88,6 +90,7 @@ function add(employee) {
 			salary: employee.salary
 		})
 			.then(result => {
+				
 				promisify(contract.instance.add)({
 					args: [
 						result.dataValues.id,
@@ -128,7 +131,95 @@ function importEmployees(employees) {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function increaseSalary(payRaiseContractAddress) {
+	return new Promise ((resolve, reject) => {
+		// Define functions
+		const handler = (err) => reject(err)
+		const increaseSalary = promisify(contract.instance.increaseSalarySingleEmployee)
+		const revertRootHash = promisify(contract.instance.rollBack)
 
+		// Define variables
+		var newRootTransactionHash,
+			oldRootHash,
+			newRootHash,
+			newCounterValue
+
+		// Set event listeners
+
+		// Smart contract needs data
+		events.watch(contract.instance.RetrieveDataEvent)
+			.then(result => db.readAll({
+				department: result.args.department
+				// start_date: contract.rowId
+			}))
+			.then(result => {
+				console.log(result);
+				// const leaves = [
+				// 	result.counter_one,
+				// 	result.counter_two,
+				// 	result.counter_three,
+				// 	result.counter_four
+				// ]
+
+				// const tree = new MerkleTree(leaves.map(sha3), sha3)
+				// const proof = tree.getProof(index)
+
+				// return doCounterIncrease({
+				// 	args: [
+				// 		leaves[index],
+				// 		proof.proofData,
+				// 		proof.proofPosition,
+				// 		{gas: 300000}
+				// 	]
+				// })
+
+			})
+			// .then(result => newRootTransactionHash = result) // Store the transaction hash where a state is being changed
+			// .catch(handler)
+
+		// Smart contract returns new root hash
+		events.watch(contract.instance.ReturnNewValues)
+			.then(result => {
+				
+				// oldRootHash = result.args.prevRootHash
+				// newRootHash = result.args.newRootHash
+				// newCounterValue = result.args.newCounterValue.c[0]
+
+				// return transactions.waitForBlock(web3, newRootTransactionHash)
+
+			})
+			// .then(() => {
+
+			// 	const colName = COLUMN_NAMES[index]
+
+			// 	return db.update(
+			// 		{id: contract.rowId},
+			// 		{
+			// 			[colName]: newCounterValue,
+			// 			root_hash: newRootHash
+			// 		}
+			// 	)
+			// 		.catch(error => {
+			// 			revertRootHash({args: oldRootHash})
+			// 			reject(error)
+			// 		})
+
+			// })
+			// .then(result => resolve(result))
+			// .catch(handler)
+		// Given data failed the integrity check
+		events.watch(contract.instance.IntegrityCheckFailedEvent)
+			.then(() => reject('Integrity check failed.'))
+			.catch(handler)
+
+		// Request counter increase
+		promisify(contract.instance.requestIncreaseSalary)({
+					args: [
+						payRaiseContractAddress
+					]
+				})
+			.catch(handler)
+
+	})
 }
 
 /**

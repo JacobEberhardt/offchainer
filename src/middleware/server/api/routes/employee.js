@@ -42,7 +42,7 @@ router.post('/import', (req, res, next) => {
 
 // Increase Salary
 router.post('/increase-salary', (req, res, next) => {
-	employee.increaseSalary()
+	employee.increaseSalary(req.body.contractAddress)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
