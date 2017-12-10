@@ -44,6 +44,13 @@ contract Employee {
 	function update(uint _index, bytes32 _rootHash) public {
 		employeesRootHashes[_index] = _rootHash;
 	}
+
+	/**
+	 * Revert to previous hash. A Rollback function.
+	 */
+	 function rollBack(uint _index, bytes32 _prevRootHash) public {
+	    employeesRootHashes[_index] = _prevRootHash;
+	 }
 	
 
 	/**
@@ -62,7 +69,7 @@ contract Employee {
 	 *  Increases salary of a single employee.
 	 * 
 	 * @param _rowId The address of the payraise contract 
-	 * @param _counterValue The address of the payraise contract
+	 * @param _currentSalary The address of the payraise contract
 	 * @param _proof The address of the payraise contract
 	 * @param _proofPosition The address of the payraise contract
 	 */
