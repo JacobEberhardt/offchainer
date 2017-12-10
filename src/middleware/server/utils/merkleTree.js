@@ -1,5 +1,11 @@
+// Import dependencies
+const type = require('./type')
+
 // Define values
 const DEFAULT_CACHE = false
+
+// Map functions to be able to easily remove dependencies if necessary 
+const isInt = type.isInt
 
 // Define class
 /**
@@ -26,7 +32,8 @@ class MerkleTree {
 		// Set variables
 		this.leaves = leaves
 		this.hashFunction = hashFunction
-		this.tree = this._constructTree()
+		this.constructed = false
+		this._constructTree()
 
 		// Set options
 		this.cache = options.hasOwnProperty('cache') ? !!options.cache : DEFAULT_CACHE
@@ -41,7 +48,7 @@ class MerkleTree {
 	 * @returns {String} The root hash of the Merkle tree
 	 */
 	getRoot() {
-		return this.tree[0]
+		return this.constructed ? this.tree[0] : this._constructTree()
 	}
 
 	/**
@@ -61,6 +68,12 @@ class MerkleTree {
 	}
 	
 	// Define pseudo-private functions
+	/**
+	 * Get the overall number of nodes in the tree for the given number of leaf nodes
+	 *
+	 * @param {Number} numberOfLeaves The given number of leaf nodes
+	 * @returns {Number} The overall number of nodes in the tree
+	 */
 	_getNumberOfNodes(numberOfLeaves) {
 		let height = Math.ceil(Math.log(numberOfLeaves) / Math.log(2))
 		let numberOfNodesWithoutLastLevel = parseInt(new Array(height).join('1'), 2) // This creates a string of (height - 1) times '1' and parses that as a binary number, effectively giving the overall number of nodes without those on the last level
@@ -68,27 +81,57 @@ class MerkleTree {
 		return numberOfNodesWithoutLastLevel + 2 * (numberOfLeaves - numberOfNodesOnBeforeLastLevel) 
 	}
 
+	/**
+	 * Get the index of the parent node for the node with the given index
+	 *
+	 * @param {Number} index The given index
+	 * @returns {Number} The index of the parent node
+	 */
 	_parent(index) { 
 		if (index === 0) return null
 		return (index - 1) >> 1 
 	}
 
+	/**
+	 * Get the index of the left child node for the node with the given index
+	 *
+	 * @param {Number} index The given index
+	 * @returns {Number} The index of the left child node
+	 */
 	_leftChild(index) {
 		let childIndex = index * 2 + 1
 		return childIndex > this.tree.length - 1 ? null : childIndex
 	}
 
+	/**
+	 * Get the index of the right child node for the node with the given index
+	 *
+	 * @param {Number} index The given index
+	 * @returns {Number} The index of the right child node
+	 */
 	_rightChild(index) {
 		let childIndex = index * 2 + 2
 		return childIndex > this.tree.length - 1 ? null : childIndex
 	}
 
+	/**
+	 * Concat an array of hash strings with '0x' prefix to one string with '0x' prefix
+	 *
+	 * @param {Array] array The array of hash string to concatenate
+	 * @returns {String} The resulting concatenated hash string
+	 */
 	_concatHashes(array) {
 		let removePrefix = string => string.indexOf('0x') === 0 ? string.substring(2) : string
 		let string = array.map(removePrefix).join('')
 		return '0x'.concat(string)
 	}
 
+	/**
+	 * Compute the hash for the node with the given index
+	 *
+	 * @param {Number} index The given index
+	 * @returns {String} The resulting hash
+	 */
 	_computeHash(index) {
 		if (this.tree[index] === null) {
 			let leftHash = this._computeHash(this._leftChild(index))
@@ -100,35 +143,53 @@ class MerkleTree {
 		}
 	}
 
+	/**
+	 * Compute the hashes to construct a Merkle tree
+	 *
+	 * @returns {String} The Merkle root of the constructed tree
+	 */
 	_constructTree() {
 		let numberOfNonLeaveNodes = this._getNumberOfNodes(this.leaves.length) - this.leaves.length
 		this.tree = new Array(numberOfNonLeaveNodes).fill(null).concat(this.leaves.map(this.hashFunction))
-		let root = this._computeHash(0)
-		return this.tree
+		this._computeHash(0) // This computes all hashes in the tree recursively, starting from the root
+		this.constructed = true
+		return this.tree[0]
 	}
 
+	/**
+	 * Create a proof for the given array of indices
+	 *
+	 * @param {Array} indices The array of indices to create the proof for
+	 * @returns {Object} The generated proof
+	 */
 	_createProof(indices) {
+
+		// Construct tree if necessary
+		if (!this.constructed) this._constructTree()
 		
+		// Check arguments
+		indices = isInt(indices) ? [indices] : indices
+
+		// Declare variables
 		let proof = {}
+		let hashes = [],
+			values = []
+		let checks = new Array(this.tree.length).fill(false)
 		let indexOfFirstLeaf = this.tree.length - this.leaves.length
 
-		// Determine which hashes need to be computed
-		let checks = new Array(this.tree.length).fill(false)
-		indices.forEach(index => {
-			index += indexOfFirstLeaf
+		// Define functions
+		let needsComputation = index => {
+			index += indexOfFirstLeaf // Translate leaf index to tree array index
 			checks[index] = true
-			while ((index = this._parent(index)) !== null) {
+			while ((index = this._parent(index)) !== null) { // Set the parent of a node that requires computation to require computation as well, recursively
 				if (checks[index] === true) break
 				checks[index] = true
 			}
-		})
-		proof.checks = checks
+		}
 
-		// Determine the hashes which are given with the proof
-		let hashes = []
-		let addHashes = index => {
+		let addHashes = index => { // Add the hashes in-order, recursively
 			if (index === null) return;
-			if (checks[index]) {
+			if (checks[index]) { // Here is the in-order (first the left subtree, then right one)
 				addHashes(this._leftChild(index))
 				addHashes(this._rightChild(index))
 			}
@@ -136,14 +197,19 @@ class MerkleTree {
 				hashes.push(this.tree[index])
 			}
 		}
-		addHashes(0)
+
+		let addLeave = index => values.push(this.leaves[index])
+
+		// Determine which hashes need to be computed
+		indices.forEach(needsComputation)
+		proof.checks = checks
+
+		// Determine the hashes which are given with the proof
+		addHashes(0) // This adds all hashed required for the proof recursively, starting from the root
 		proof.hashes = hashes
 		
 		// Include the leaves for the proof
-		let values = []
-		indices.forEach(index => {
-			values.push(this.leaves[index])
-		})
+		indices.forEach(addLeave)
 		proof.values = values
 
 		return proof
