@@ -15,11 +15,6 @@ services:
       - PG_PORT=5432
       - PG_USER=postgres
       - PG_DATABASE=offchainer
-      - WEBTHREE_HOST=testrpc
+      - WEBTHREE_HOST=localhost
   database:
     build: docker/database
-  testrpc:
-    image: dougvk/testrpc:latest
-    command: bash -c "testrpc -h 0.0.0.0"
-    ports:
-      - "8545:8545"
