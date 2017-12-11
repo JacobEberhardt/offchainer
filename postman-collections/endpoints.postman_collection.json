@@ -1,0 +1,86 @@
+{
+	"info": {
+		"name": "CloudPrototyping Endpoint Tests",
+		"_postman_id": "ada765ad-3191-a7cb-92bd-01f2a8e99a65",
+		"description": "This collection includes basic tests for the endpoints of the prototype.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Contract",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:8000/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"create"
+					]
+				},
+				"description": "This request creates a new contract."
+			},
+			"response": []
+		},
+		{
+			"name": "Set Message",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"message\": \"Hello, world!\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/message",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"message"
+					]
+				},
+				"description": "This request sets the message which is stored in the database and which hash is stored in the blockchain."
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Message",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"hash\": \"\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/verify",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"verify"
+					]
+				},
+				"description": "This request verifies a message stored in the database for a given hash on-chain."
+			},
+			"response": []
+		}
+	]
+}
