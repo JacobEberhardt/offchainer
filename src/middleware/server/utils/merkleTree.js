@@ -171,11 +171,11 @@ class MerkleTree {
 		indices = isInt(indices) ? [indices] : indices
 
 		// Declare variables
-		let proof = {}
-		let hashes = [],
-			values = []
-		let checks = new Array(this.tree.length).fill(false)
-		let indexOfFirstLeaf = this.tree.length - this.leaves.length
+		let proof = {},
+			hashes = new Array(this.tree.length).fill(null),
+			values = new Array(this.tree.length).fill(null),
+			checks = new Array(this.tree.length).fill(false),
+			indexOfFirstLeaf = this.tree.length - this.leaves.length
 
 		// Define functions
 		let needsComputation = index => {
@@ -194,15 +194,18 @@ class MerkleTree {
 				addHashes(this._rightChild(index))
 			}
 			else {
-				hashes.push(this.tree[index])
+				hashes[index] = this.tree[index]
 			}
 		}
 
-		let addLeave = index => values.push(this.leaves[index])
+		let addLeave = index => values[indexOfFirstLeaf + index] = this.leaves[index]
 
 		// Determine which hashes need to be computed
 		indices.forEach(needsComputation)
 		proof.checks = checks
+
+		// Set index of first leaf node
+		proof.indexOfFirstLeaf = indexOfFirstLeaf
 
 		// Determine the hashes which are given with the proof
 		addHashes(0) // This adds all hashed required for the proof recursively, starting from the root
