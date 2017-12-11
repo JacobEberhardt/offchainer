@@ -156,7 +156,6 @@ function increaseCounter(index) {
 				oldRootHash = result.args.oldMerkleRoot
 				newRootHash = result.args.newMerkleRoot
 				newCounterValue = result.args.newCounterValue.c[0]
-				console.log(oldRootHash, newRootHash)
 
 				return transactions.waitForBlock(web3, newRootTransactionHash)
 
