@@ -160,9 +160,8 @@ function increaseCounter(index) {
 
 				return transactions.waitForBlock(web3, newRootTransactionHash)
 
-			})
+			}) 
 			.then(() => {
-
 				const colName = COLUMN_NAMES[index]
 
 				return db.update(
@@ -172,14 +171,22 @@ function increaseCounter(index) {
 						root_hash: newRootHash
 					}
 				)
-					.catch(error => {
-						revertRootHash({args: oldRootHash})
-						reject(error)
-					})
 
 			})
 			.then(result => resolve(result))
-			.catch(handler)
+			.catch(error => {
+				if(error.code === "database") { // Error type Database will result in a revert
+					revertRootHash({args: oldRootHash})
+					.then(result => {
+						reject("Reverting previous roothash. Transaction: " + result)
+					})
+				} else {
+					reject(error)
+				}
+				
+			})
+			
+			
 			
 		// 3.b Given data failed the integrity check
 		events.watch(contract.instance.IntegrityCheckFailedEvent)
