@@ -15,7 +15,6 @@ function Database(tableName, scheme) {
 			freezeTableName: true // Use table name as-is
 		}
 	)
-	this.db.sync()
 
 	// Define functions	
 	/**
