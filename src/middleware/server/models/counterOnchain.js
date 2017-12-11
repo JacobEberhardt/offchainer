@@ -59,9 +59,13 @@ function create() {
 	})
 	.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
 	.then(result => {
+		var counterData = [];
+		for (var i = 0; i < 64; i++) {
+		   counterData.push(0);
+		}
 		return promisify (contract.new)({
 			args: [
-				0, 0, 0, 0,
+				counterData,
 				{
 					from: web3.eth.accounts[0],
 					data: contractData.bytecode,

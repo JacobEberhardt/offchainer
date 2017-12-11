@@ -31,7 +31,7 @@ router.post('/increase/:index', (req, res, next) => {
 	catch (err) {
 		badRequest()
 	}
-	if (!type.isInt(index) || index < 0 || index > 3) return badRequest()
+	if (!type.isInt(index) || index < 0 || index > 15) return badRequest()
 	counter.increaseCounter(index)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
