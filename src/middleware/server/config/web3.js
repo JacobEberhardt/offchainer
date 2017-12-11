@@ -2,7 +2,7 @@
 const web3 = require('web3')
 
 // Define values
-WEBTHREE_HOST = process.env.WEBTHREE_HOST || 'localhost'
+WEBTHREE_HOST = process.env.WEBTHREE_HOST || process.env.DOCKERHOST || '127.0.0.1'
 WEBTHREE_PORT = process.env.WEBTHREE_PORT || '7545'
 PROVIDER_URL = 'http://' + WEBTHREE_HOST + ':' + WEBTHREE_PORT
 
