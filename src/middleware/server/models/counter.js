@@ -161,8 +161,8 @@ function increaseCounter(index) {
 
 			}) 
 			.then(() => {
-				const colName = COLUMN_NAMES[index]
 
+				const colName = COLUMN_NAMES[index]
 				return db.update(
 					{id: contract.rowId},
 					{
@@ -174,6 +174,7 @@ function increaseCounter(index) {
 			})
 			.then(result => resolve(result))
 			.catch(error => {
+
 				if(error.code === "database") { // Error type Database will result in a revert
 					revertRootHash({args: oldRootHash})
 					.then(result => {
@@ -182,7 +183,7 @@ function increaseCounter(index) {
 				} else {
 					reject(error)
 				}
-				
+
 			})
 			
 		// 3.b Given data failed the integrity check
