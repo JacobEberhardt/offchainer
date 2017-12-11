@@ -117,7 +117,7 @@ class MerkleTree {
 	/**
 	 * Concat an array of hash strings with '0x' prefix to one string with '0x' prefix
 	 *
-	 * @param {Array] array The array of hash string to concatenate
+	 * @param {Array} array The array of hash string to concatenate
 	 * @returns {String} The resulting concatenated hash string
 	 */
 	_concatHashes(array) {
