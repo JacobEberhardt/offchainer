@@ -28,7 +28,7 @@ function customSha3(value) {
 			return soliditySha3(value)
 
 		case 'number':
-			if (type.isStrictInt(value)) return soliditySha3({value: value.toString(), type: 'uint8'})
+			if (type.isStrictInt(value)) return soliditySha3({value: value.toString()})
 
 		default:
 			throwBadType(value)
