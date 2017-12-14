@@ -33,6 +33,13 @@ router.get('/', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+// Get Single Employees from DB
+router.get('/:id/root-hash', (req, res, next) => {
+	employee.get(req.params.id)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
 // Add multiple Employees to contract
 router.post('/import', (req, res, next) => {
 	employee.importEmployees(req.body.employees)
@@ -46,6 +53,7 @@ router.post('/increase-salary', (req, res, next) => {
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
+
 
 // Export module
 module.exports = router
