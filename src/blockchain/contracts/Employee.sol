@@ -13,7 +13,7 @@ contract Employee {
 	// Events
 	event RetrieveDataEvent(bytes32 department, bytes32 fromEntryDate);
 	event IntegrityCheckFailedEvent(uint rowId, bytes32 proof1, bytes32 proof2);
-	event ReturnNewValues(uint rowId, bytes32 proof, uint newCounterValue);
+	event ReturnNewValues(uint rowId, bytes32 oldRoot, bytes32 newRoot, uint newSalary);
 
 	// Constructor
 	/**
@@ -35,6 +35,9 @@ contract Employee {
 		employeesRootHashes[_index] = _rootHash;
 	}
 
+	function get(uint _index) public constant returns(bytes32) {
+		return employeesRootHashes[_index];
+	}
 	/**
 	 * Updates the root hash of an employee record
 	 *
@@ -47,12 +50,13 @@ contract Employee {
 
 	/**
 	 * Revert to previous hash. A Rollback function.
+	 * @param _index The index of the employee record
+	 * @param _prevRootHash The previous root hash of the employee record 
 	 */
 	 function rollBack(uint _index, bytes32 _prevRootHash) public {
 	    employeesRootHashes[_index] = _prevRootHash;
 	 }
 	
-
 	/**
 	 * Initializes the operation to raise the salary of affected employees (depending on departmen and entry date)
 	 * Function trigges Event and passes department and fromEntryDate
@@ -75,11 +79,12 @@ contract Employee {
 	 */
 	function increaseSalarySingleEmployee(uint _rowId, uint _currentSalary, bytes32[] _proof, uint[] _proofPosition) public {
 	    bytes32 computedHash = _createTree(_currentSalary, _proof, _proofPosition);
+		bytes32 existingHash = employeesRootHashes[_rowId];
 		uint percentage = payRaiseContract.getPercentage();
-        if (computedHash == employeesRootHashes[_rowId]) {
+        if (computedHash == existingHash) {
             uint newSalary = _currentSalary + _currentSalary * percentage / 100;
             employeesRootHashes[_rowId] = _createTree(newSalary, _proof, _proofPosition);
-            ReturnNewValues(_rowId, employeesRootHashes[_rowId], newSalary);
+            ReturnNewValues(_rowId, existingHash, employeesRootHashes[_rowId], newSalary);
         } else {
 			IntegrityCheckFailedEvent(_rowId, employeesRootHashes[_rowId], computedHash);
         }
