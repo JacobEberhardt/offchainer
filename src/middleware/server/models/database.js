@@ -15,7 +15,6 @@ function Database(tableName, scheme) {
 			freezeTableName: true // Use table name as-is
 		}
 	)
-	this.db.sync()
 
 	// Define functions	
 	/**
@@ -24,7 +23,11 @@ function Database(tableName, scheme) {
 	 * @throws Throws an error if there is no database connection
 	 */
 	this.checkConnection = function () {
-		if (this.db == undefined) throw Error('No database connection. Please retry again later.')
+		if (this.db == undefined) {
+			var error = new Error('No database connection. Please retry again later.')
+			error.code = "database"
+			throw error
+		}
 	}
 
 	// "Low level" wrapper functions
@@ -37,6 +40,17 @@ function Database(tableName, scheme) {
 	this.create = function (data) {
 		this.checkConnection()
 		return this.db.create(data)
+	}
+
+	/**
+	 * Insert multiple row.
+	 *
+	 * @param {Object[]} data The rows to insert
+	 * @returns {Promise} The database response
+	 */
+	this.createMany = function (data) {
+		this.checkConnection()
+		return this.db.bulkCreate(data)
 	}
 
 	/**
@@ -53,6 +67,17 @@ function Database(tableName, scheme) {
 
 	/**
 	 * Read all rows.
+	 *
+	 * @param {Object} criteria The criteria for the row to read
+	 * @returns {Promise} The database response
+	 */
+	this.readAll = function (criteria) {
+		this.checkConnection()
+		return this.db.findAll({where: criteria})
+	}
+
+	/**
+	 * Read all row.
 	 *
 	 * @param {Object} criteria The criteria for the row to read
 	 * @returns {Promise} The database response

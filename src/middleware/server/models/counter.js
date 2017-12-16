@@ -47,14 +47,10 @@ const db = new Database(
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	// https://ethereum.stackexchange.com/questions/2632/how-does-soliditys-sha3-keccak256-hash-uints
-	// transform int to uint8 bytes because that is what being done in SC.
-	const leaves = [0, 0, 0, 0].map(sha3)
-	const tree = new MerkleTree(leaves, sha3)
 
-	// Initialize four counters to zero
+	const leaves = [0, 0, 0, 0]
+	const tree = new MerkleTree(leaves, sha3)
 	const rootHash = tree.getRoot()
-	const newFunction = promisify(contract.new)
 
 	return db.create({
 		root_hash: rootHash,
@@ -64,7 +60,7 @@ function create() {
 		counter_four: 0
 	})
 	.then(result => contract.rowId = result.dataValues.id) // Store the rowId for the used instance in a new property of the "global" contract object
-	.then(result => newFunction({
+	.then(result => promisify(contract.new)({
 		args: [
 			rootHash,
 			{
@@ -111,7 +107,7 @@ function increaseCounter(index) {
 		// Define functions
 		const handler = (err) => reject(err)
 		const doCounterIncrease = promisify(contract.instance.doCounterIncrease)
-		const revertRootHash = promisify(contract.instance.rollBack)
+		const revertRootHash = promisify(contract.instance.setMerkleRoot)
 
 		// Define variables
 		var newRootTransactionHash,
@@ -120,11 +116,10 @@ function increaseCounter(index) {
 			newCounterValue
 
 		// Set event listeners
-
-		// Smart contract needs data
+		// 2. Smart contract needs data
 		events.watch(contract.instance.RequestedCounterIncreaseEvent)
 			.then(result => db.read({
-				root_hash: result.args.integrityHash,
+				root_hash: result.args.merkleRoot,
 				id: contract.rowId
 			}))
 			.then(result => {
@@ -136,14 +131,16 @@ function increaseCounter(index) {
 					result.counter_four
 				]
 
-				const tree = new MerkleTree(leaves.map(sha3), sha3)
+				const tree = new MerkleTree(leaves, sha3)
 				const proof = tree.getProof(index)
 
 				return doCounterIncrease({
 					args: [
-						leaves[index],
-						proof.proofData,
-						proof.proofPosition,
+						index,
+						proof.checks,
+						proof.indexOfFirstLeaf,
+						proof.hashes,
+						proof.values,
 						{gas: 300000}
 					]
 				})
@@ -152,21 +149,20 @@ function increaseCounter(index) {
 			.then(result => newRootTransactionHash = result) // Store the transaction hash where a state is being changed
 			.catch(handler)
 
-		// Smart contract returns new root hash
-		events.watch(contract.instance.returnNewRootHash)
+		// 3.a Smart contract returns new root hash
+		events.watch(contract.instance.RootHashChangedEvent)
 			.then(result => {
 				
-				oldRootHash = result.args.prevRootHash
-				newRootHash = result.args.newRootHash
+				oldRootHash = result.args.oldMerkleRoot
+				newRootHash = result.args.newMerkleRoot
 				newCounterValue = result.args.newCounterValue.c[0]
 
 				return transactions.waitForBlock(web3, newRootTransactionHash)
 
-			})
+			}) 
 			.then(() => {
 
 				const colName = COLUMN_NAMES[index]
-
 				return db.update(
 					{id: contract.rowId},
 					{
@@ -174,22 +170,30 @@ function increaseCounter(index) {
 						root_hash: newRootHash
 					}
 				)
-					.catch(error => {
-						revertRootHash({args: oldRootHash})
-						reject(error)
-					})
 
 			})
 			.then(result => resolve(result))
-			.catch(handler)
+			.catch(error => {
+
+				if(error.code === "database") { // Error type Database will result in a revert
+					revertRootHash({args: oldRootHash})
+					.then(result => {
+						reject("Reverting previous roothash. Transaction: " + result)
+					})
+				} else {
+					reject(error)
+				}
+
+			})
 			
-		// Given data failed the integrity check
+		// 3.b Given data failed the integrity check
 		events.watch(contract.instance.IntegrityCheckFailedEvent)
 			.then(() => reject('Integrity check failed.'))
 			.catch(handler)
 
-		// Request counter increase
-		promisify(contract.instance.requestCounterIncrease)({args: index})
+		// Execute function
+		// 1. Request counter increase
+		promisify(contract.instance.requestCounterIncrease)()
 			.catch(handler)
 
 	})
