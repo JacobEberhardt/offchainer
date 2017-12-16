@@ -43,6 +43,17 @@ function Database(tableName, scheme) {
 	}
 
 	/**
+	 * Insert multiple row.
+	 *
+	 * @param {Object[]} data The rows to insert
+	 * @returns {Promise} The database response
+	 */
+	this.createMany = function (data) {
+		this.checkConnection()
+		return this.db.bulkCreate(data)
+	}
+
+	/**
 	 * Read a row.
 	 *
 	 * @param {Object} criteria The criteria for the row to read
@@ -56,6 +67,17 @@ function Database(tableName, scheme) {
 
 	/**
 	 * Read all rows.
+	 *
+	 * @param {Object} criteria The criteria for the row to read
+	 * @returns {Promise} The database response
+	 */
+	this.readAll = function (criteria) {
+		this.checkConnection()
+		return this.db.findAll({where: criteria})
+	}
+
+	/**
+	 * Read all row.
 	 *
 	 * @param {Object} criteria The criteria for the row to read
 	 * @returns {Promise} The database response
