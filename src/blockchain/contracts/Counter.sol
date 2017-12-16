@@ -4,91 +4,96 @@ pragma solidity ^0.4.17;
 contract Counter {
 
 	// Declare variables
-	bytes32 integrityHash; // The integrity hash of the counters array
+	bytes32 merkleRoot; // The integrity hash of the counters array
 
 	// Declare events
-	event RequestedCounterIncreaseEvent(bytes32 integrityHash);
+	event RequestedCounterIncreaseEvent(bytes32 merkleRoot);
 	event IntegrityCheckFailedEvent();
-	event returnNewRootHash(bytes32 prevRootHash, bytes32 newRootHash, uint8 newCounterValue);
+	event RootHashChangedEvent(bytes32 oldMerkleRoot, bytes32 newMerkleRoot, uint8 newCounterValue);
 
 	// Define public functions
 	/**
 	 * Create a new contract instance.
 	 */
-	function Counter(bytes32 _rootHash) public {
-		integrityHash = _rootHash;
+	function Counter(bytes32 _merkleRoot) public {
+		merkleRoot = _merkleRoot;
 	}
 	
 	/**
-	 * Revert to previous hash. A Rollback function.
+	 * Set the Merkle root to the given value
+	 * 
+	 * @param _merkleRoot The given value for the Merkle root 
 	 */
-	 function rollBack(bytes32 _prevRootHash) public {
-	    integrityHash = _prevRootHash;
+	 function setMerkleRoot(bytes32 _merkleRoot) public {
+	    merkleRoot = _merkleRoot;
 	 }
 	
 
 	/**
 	 * Request the increase of the counter with the given index.
-	 *
-	 * @param _index The index of the counter to increase (zero-based)
 	 */
-	function requestCounterIncrease(uint8 _index) public {
-		RequestedCounterIncreaseEvent(integrityHash);
+	function requestCounterIncrease() public {
+		RequestedCounterIncreaseEvent(merkleRoot);
 	}
 
 	/**
 	 * Perform an increase of the counter with the given index.
 	 *
-	 * @param _counterValue value of the counter in int
-	 * @param _proof proof
-	 * @param _proofPosition proof positions
+	 * @param _index The index of the counter to increase
+	 * @param _checks An array that contains information which hashes need to be computed
+	 * @param _indexOfFirstLeaf The index of the first leaf node
+	 * @param _hashes The hashes which do not need to be computed
+	 * @param _values The values of the leaf nodes which changed in this function
 	 */
-	function doCounterIncrease(uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) public {
-	    //Perform integrity check by reconstrcuting the merkle tree.
-	    bytes32 computedHash = _createTree(_counterValue, _proof, _proofPosition);
+	function doCounterIncrease(uint8 _index, bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, uint8[] _values) public {
 
-        if(computedHash == integrityHash) {
-            uint8 newCounterValue = _counterValue + 1;
-            bytes32 prevHash = integrityHash;
-            // get new roothash after increasing the counter
-            integrityHash = _createTree(newCounterValue, _proof, _proofPosition);
-            returnNewRootHash(prevHash, integrityHash, newCounterValue);
-        } else {
-            IntegrityCheckFailedEvent();
-        }
+		// Check integrity
+	    if (_createTree(_checks, _indexOfFirstLeaf, _hashes, _values) != merkleRoot) {
+			IntegrityCheckFailedEvent();
+			return;
+		}
+
+		// Increase counter
+		_values[_indexOfFirstLeaf + _index] += 1;
+
+		// Update merkle root and throw event
+		bytes32 oldMerkleRoot = merkleRoot;
+		merkleRoot = _createTree(_checks, _indexOfFirstLeaf, _hashes, _values);
+		RootHashChangedEvent(oldMerkleRoot, merkleRoot, _values[_indexOfFirstLeaf + _index]);
+
 	}
 
 	// Define private functions
-	/**
-	 * Compute the hash of a given array of integers.
-	 *
-	 * @param _counters The array of integers to compute the hash for
-	 * @return The computed hash
-	 */
-	function _computeHash(uint8[4] _counters) private pure returns (bytes32 hash) {
-		return keccak256(_counters);
+	function _createTree(bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, uint8[] _values) private view returns (bytes32 hash) {
+		return _computeHash(0, _checks, _indexOfFirstLeaf, _hashes, _values);
 	}
 
-	/**
-	 * Check the integrity of a given array of integers against the stored hash.
-	 *
-	 * @param _counterValue value of the counter in int
-	 * @param _proof proof
-	 * @param _proofPosition proof positions
-	 * @return the newly computed hash
-	 */
-	function _createTree(uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) private returns (bytes32) {
-	    bytes32 computedHash = keccak256(_counterValue);
+	function _computeHash(uint8 _index, bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, uint8[] _values) private constant returns (bytes32 hash) {
 
-	    for(uint8 i = 0; i < _proof.length; i++) {
-	        if(_proofPosition[i] == 0) {
-	            // if left
-	            computedHash = keccak256(_proof[i], computedHash);
-	        } else {
-	            // if right
-	            computedHash = keccak256(computedHash, _proof[i]);
-	        }
-	    }
-	    return computedHash;
+		// Check if hash is given
+		if (!_checks[_index]) {
+			return _hashes[_index];
+		}
+
+		// Check if value is given
+		if (_index >= _indexOfFirstLeaf) {
+			return keccak256(_values[_index]);
+		}
+
+		// Compute hash from the children hashes
+		return keccak256(
+			_computeHash(_leftChild(_index), _checks, _indexOfFirstLeaf, _hashes, _values),
+			_computeHash(_rightChild(_index), _checks, _indexOfFirstLeaf, _hashes, _values)
+		);
+
 	}
+
+	function _leftChild(uint8 _index) private pure returns (uint8) {
+		return _index * 2 + 1;
+	}
+
+	function _rightChild(uint8 _index) private pure returns (uint8) {
+		return _index * 2 + 2;
+	}
+
 }
