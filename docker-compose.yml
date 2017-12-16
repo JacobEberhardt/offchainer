@@ -16,6 +16,7 @@ services:
       - PG_USER=postgres
       - PG_DATABASE=offchainer
       # - WEBTHREE_HOST=docker.for.mac.localhost
+      # - WEBTHREE_HOST=10.0.2.2
       - WEBTHREE_PORT=7545
   database:
     build: docker/database
