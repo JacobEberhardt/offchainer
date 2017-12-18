@@ -3,6 +3,7 @@ const type = require('./type')
 
 // Define values
 const DEFAULT_CACHE = false
+const DEFAULT_HASH_LEAVES = true
 
 // Map functions to be able to easily remove dependencies if necessary 
 const isInt = type.isInt
@@ -32,11 +33,12 @@ class MerkleTree {
 		// Set variables
 		this.leaves = leaves
 		this.hashFunction = hashFunction
-		this.constructed = false
 		this._constructTree()
 
 		// Set options
-		this.cache = options.hasOwnProperty('cache') ? !!options.cache : DEFAULT_CACHE
+		this.options = {}
+		this.options.cache = options.hasOwnProperty('cache') ? !!options.cache : DEFAULT_CACHE
+		this.options.hashLeaves = options.hasOwnProperty('hashLeaves') ? !!options.hashLeaves : DEFAULT_HASH_LEAVES
 
 		// Return instance
 		return this
@@ -48,7 +50,7 @@ class MerkleTree {
 	 * @returns {String} The root hash of the Merkle tree
 	 */
 	getRoot() {
-		return this.constructed ? this.tree[0] : this._constructTree()
+		return this.tree[0]
 	}
 
 	/**
@@ -58,7 +60,7 @@ class MerkleTree {
 	 * @returns {Object} The proof
 	 */
 	getProof(indices) {
-		if (this.cache) {
+		if (this.options.cache) {
 			let key = indices.map(x => x.toString()).join()	
 			return this.proof[key] ? this.proof[key] : this.proof[key] = this._createProof(indices)
 		}
@@ -150,10 +152,9 @@ class MerkleTree {
 	 */
 	_constructTree() {
 		let numberOfNonLeaveNodes = this._getNumberOfNodes(this.leaves.length) - this.leaves.length
-		this.tree = new Array(numberOfNonLeaveNodes).fill(null).concat(this.leaves.map(this.hashFunction))
+		const leaves = this.options.hashLeaves ? this.leaves.map(this.hashFunction) : this.leaves
+		this.tree = new Array(numberOfNonLeaveNodes).fill(null).concat(leaves)
 		this._computeHash(0) // This computes all hashes in the tree recursively, starting from the root
-		this.constructed = true
-		return this.tree[0]
 	}
 
 	/**
@@ -164,9 +165,6 @@ class MerkleTree {
 	 */
 	_createProof(indices) {
 
-		// Construct tree if necessary
-		if (!this.constructed) this._constructTree()
-		
 		// Check arguments
 		indices = isInt(indices) ? [indices] : indices
 
@@ -187,11 +185,11 @@ class MerkleTree {
 			}
 		}
 
-		let addHashes = index => { // Add the hashes in-order, recursively
+		let addHash = index => { // Add the hashes in-order, recursively
 			if (index === null) return;
 			if (checks[index]) { // Here is the in-order (first the left subtree, then right one)
-				addHashes(this._leftChild(index))
-				addHashes(this._rightChild(index))
+				addHash(this._leftChild(index))
+				addHash(this._rightChild(index))
 			}
 			else {
 				hashes[index] = this.tree[index]
@@ -208,7 +206,7 @@ class MerkleTree {
 		proof.indexOfFirstLeaf = indexOfFirstLeaf
 
 		// Determine the hashes which are given with the proof
-		addHashes(0) // This adds all hashed required for the proof recursively, starting from the root
+		addHash(0) // This adds all hashed required for the proof recursively, starting from the root
 		proof.hashes = hashes
 		
 		// Include the leaves for the proof
