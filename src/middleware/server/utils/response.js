@@ -22,7 +22,7 @@ function response(res, status, content) {
  */
 function error(res, status, err) {
 	console.error(typeof(err) === 'object' && err.hasOwnProperty('stack') ? err.stack : err)
-	response(res, status)
+	response(res, status, err)
 }
 
 // Export module
