@@ -30,15 +30,15 @@ class MerkleTree {
 		if (typeof hashFunction !== 'function') throw Error('Second argument must be a function')
 		if (typeof options !== 'object') throw Error('Third argument must be an object')
 
-		// Set variables
-		this.leaves = leaves
-		this.hashFunction = hashFunction
-		this._constructTree()
-
 		// Set options
 		this.options = {}
 		this.options.cache = options.hasOwnProperty('cache') ? !!options.cache : DEFAULT_CACHE
 		this.options.hashLeaves = options.hasOwnProperty('hashLeaves') ? !!options.hashLeaves : DEFAULT_HASH_LEAVES
+
+		// Set variables
+		this.leaves = leaves
+		this.hashFunction = hashFunction
+		this._constructTree()
 
 		// Return instance
 		return this
