@@ -48,8 +48,9 @@ const db = new Database(
  */
 function create() {
 
-	const leaves = [0, 0, 0, 0].map(x => sha3({value: x.toString(), type: 'uint8'}))
-	const tree = new MerkleTree(leaves, sha3, {hashLeaves: false})
+	const leaves = [0, 0, 0, 0]
+	const hashes = leaves.map(x => sha3({value: x.toString(), type: 'uint8'}))
+	const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 	const rootHash = tree.getRoot()
 
 	return db.create({
@@ -129,10 +130,12 @@ function increaseCounter(index) {
 					result.counter_two,
 					result.counter_three,
 					result.counter_four
-				].map(x => sha3({value: x.toString(), type: 'uint8'}))
+				]
+				const hashes = leaves.map(x => sha3({value: x.toString(), type: 'uint8'}))
 
-				const tree = new MerkleTree(leaves, sha3, {hashLeaves: false})
+				const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 				const proof = tree.getProof(index)
+				console.log(tree.getRoot())
 
 				return doCounterIncrease({
 					args: [

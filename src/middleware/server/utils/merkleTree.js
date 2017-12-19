@@ -34,6 +34,7 @@ class MerkleTree {
 		this.options = {}
 		this.options.cache = options.hasOwnProperty('cache') ? !!options.cache : DEFAULT_CACHE
 		this.options.hashLeaves = options.hasOwnProperty('hashLeaves') ? !!options.hashLeaves : DEFAULT_HASH_LEAVES
+		this.options.values = options.hasOwnProperty('values') ? options.values : null
 
 		// Set variables
 		this.leaves = leaves
@@ -196,7 +197,13 @@ class MerkleTree {
 			}
 		}
 
-		let addLeave = index => values[indexOfFirstLeaf + index] = this.leaves[index]
+		let addLeave
+		if (this.options.hashLeaves) {
+			addLeave = index => values[indexOfFirstLeaf + index] = this.leaves[index]
+		}
+		else {
+			addLeave = index => values[indexOfFirstLeaf + index] = this.options.values[index]
+		}
 
 		// Determine which hashes need to be computed
 		indices.forEach(needsComputation)
