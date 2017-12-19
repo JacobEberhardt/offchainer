@@ -48,7 +48,7 @@ const db = new Database(
  */
 function create() {
 
-	const leaves = [0, 0, 0, 0].map(x => sha3({value: x.toString, type: 'uint'}))
+	const leaves = [0, 0, 0, 0].map(x => sha3({value: x.toString(), type: 'uint8'}))
 	const tree = new MerkleTree(leaves, sha3, {hashLeaves: false})
 	const rootHash = tree.getRoot()
 
