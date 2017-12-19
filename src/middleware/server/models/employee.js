@@ -9,6 +9,7 @@ const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
 const sha3 = require('web3-utils').soliditySha3
 const transactions = require('../utils/transactions')
+const web3Util = require('../utils/web3')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Employee.json'
@@ -22,12 +23,7 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 const contract = web3.eth.contract(contractData.abi)
 
 // Set default account
-var interval = setInterval(function () { // Poll to wait for web3 connection
-	if (web3.isConnected()) {
-		web3.eth.defaultAccount = web3.eth.accounts[0] // Set default account
-		clearInterval(interval)
-	}
-}, 500)
+web3Util.setDefaultAccount(web3, 0)
 
 // Establish database connection
 const db = new Database(
@@ -68,6 +64,7 @@ function create() {
  * @returns {Promise} A promise that depends on the successful employee insert
  */
 function add(employee) {
+
 	return new Promise((resolve, reject) => {
 		
 		const leaves = [
@@ -76,9 +73,11 @@ function add(employee) {
 			employee.startDate,
 			employee.department,
 			employee.salary
-		].map(x => sha3(x))
+		]
+
 		const tree = new MerkleTree(leaves, sha3)
 		const rootHash = tree.getRoot()
+
 		db.create({
 			first_name: employee.firstName,
 			last_name: employee.lastName,
@@ -86,25 +85,19 @@ function add(employee) {
 			department: employee.department,
 			salary: employee.salary
 		})
-			.then(result => {
-				return Promise.all([promisify(contract.instance.add)({
-					args: [
-						result.dataValues.id,
-						rootHash
-					]
-				}), result])
-					// .then(([result, previous]) => {
-					// 	console.log(result)
-					// 	console.log(previous)
-					// 	return Promise.all([transactions.waitForBlock(web3, result), previous])
-					// })
-					.then(([result, previous]) => {
-						resolve(previous)
-					})
-					.catch(err => reject(err))
-			})
-			.catch(err => reject(err))
+		.then(result => Promise.all([promisify(contract.instance.add)({
+			args: [
+				result.dataValues.id,
+				rootHash
+			]
+		}), result]))
+		.then(([result, previous]) => {
+			resolve(previous)
+		})
+		.catch(err => reject(err))
+
 	})
+
 }
 
 /**
@@ -113,7 +106,7 @@ function add(employee) {
  * @return {Promise} A promise that depends on the contract creation
  */
 function getAll() {
-	return db.readAll();
+	return db.readAll()
 }
 
 /**
@@ -122,11 +115,7 @@ function getAll() {
  * @return {Promise} A promise that depends on the contract creation
  */
 function getRootHash(index) {
-	return promisify(contract.instance.get)({
-		args: [
-			index
-		]
-	})
+	return promisify(contract.instance.get)({args: index})
 }
 
 /**
@@ -136,7 +125,7 @@ function getRootHash(index) {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function importEmployees(employees) {
-	return Promise.all(employees.map(add));
+	return Promise.all(employees.map(add))
 }
 
 /**
@@ -146,7 +135,9 @@ function importEmployees(employees) {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function increaseSalarySingleEmployee(employee) {
+
 	return new Promise ((resolve, reject) => {
+
 		// Error Handler
 		const handler = (error) => reject({
 			'id': employee.id,
@@ -178,16 +169,11 @@ function increaseSalarySingleEmployee(employee) {
 							previous.args.prevRootHash
 						]
 					})
-					reject({
-						'id' : employee.id,
-						'error' : error
-					})
-				} else {
-					reject({
-						'id' : employee.id,
-						'error' : error
-					})
 				}
+				reject({
+					'id' : employee.id,
+					'error' : error
+				})
 			})
 
 		// Integrity check of data record failed
@@ -204,11 +190,11 @@ function increaseSalarySingleEmployee(employee) {
 		const indexOfSalary = Object.keys(employee).indexOf('salary') - 1
 
 		// Create array of leaves from employee object and shift id
-		const leaves =  Object.values(employee)
+		const leaves = Object.values(employee)
 		leaves.shift()
 
 		// Construct merkle tree and get proof
-		const tree = new MerkleTree(leaves.map(x => sha3(x)), sha3)
+		const tree = new MerkleTree(leaves, sha3)
 		const proof = tree.getProof(indexOfSalary)
 
 		// Increase salary request for single employee
@@ -232,7 +218,9 @@ function increaseSalarySingleEmployee(employee) {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function increaseSalary(payRaiseContractAddress) {
+
 	return new Promise ((resolve, reject) => {
+
 		const handler = (err) => reject(err)
 		let finalResult = []
 
@@ -240,33 +228,25 @@ function increaseSalary(payRaiseContractAddress) {
 		events.watch(contract.instance.RetrieveDataEvent)
 			.then(result => {
 				let department = web3.toUtf8(result.args.department)
-				return db.readAll({
-					department: department
-				})
+				return db.readAll({department: department})
 			})
 			.then(result => {
-				console.log(result)
-				// Sequential promise chain
-				return result.reduce((promise, item) => {
+				return result.reduce((promise, item) => { // Create one promise chain for all items
 					return promise
-						.then((result) => {
-							return increaseSalarySingleEmployee(item.dataValues)
-						})
+						.then((result) => increaseSalarySingleEmployee(item.dataValues))
 						.then(result => finalResult.push(result[1][0]))
 						.catch(error => finalResult.push(error))
-				}, Promise.resolve());
+				}, Promise.resolve())
 			})
 			.then(result => resolve(finalResult))
 			.catch(handler)
 
 		// Increase salary request for all employees, which are returned from the database
-		promisify(contract.instance.requestIncreaseSalary)({
-			args: [
-				payRaiseContractAddress
-			]
-		})
+		promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
 			.catch(handler)
+
 	})
+
 }
 
 /**
