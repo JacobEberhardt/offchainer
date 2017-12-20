@@ -135,7 +135,6 @@ function increaseCounter(index) {
 
 				const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 				const proof = tree.getProof(index)
-				console.log(tree.getRoot())
 
 				return doCounterIncrease({
 					args: [
