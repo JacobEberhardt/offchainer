@@ -6,7 +6,7 @@ const DEFAULT_CACHE = false
 const DEFAULT_HASH_LEAVES = true
 
 // Map functions to be able to easily remove dependencies if necessary 
-const isInt = type.isInt
+const isStrictInt = type.isStrictInt
 
 // Define class
 /**
@@ -167,7 +167,7 @@ class MerkleTree {
 	_createProof(indices) {
 
 		// Check arguments
-		indices = isInt(indices) ? [indices] : indices
+		indices = isStrictInt(indices) ? [indices] : indices
 
 		// Declare variables
 		let proof = {},
