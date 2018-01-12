@@ -7,6 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
+const web3Util = require('../utils/web3')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/PayRaise.json'
