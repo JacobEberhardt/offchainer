@@ -19,14 +19,6 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 // Create contract object
 const contract = web3.eth.contract(contractData.abi)
 
-// Set default account
-var interval = setInterval(function () { // Poll to wait for web3 connection
-	if (web3.isConnected()) {
-		web3.eth.defaultAccount = web3.eth.accounts[0] // Set default account
-		clearInterval(interval)
-	}
-}, 500)
-
 // Establish database connection
 const db = new Database(
 	'financials',
@@ -100,9 +92,6 @@ function add(financials) {
 			}
 			const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 			const rootHash = tree.getRoot()
-			console.log(hashes)
-			console.log(tree)
-			console.log(rootHash)
 			promisify(contract.instance.addRecordEntry)({
 				args: [
 					result.dataValues.id,
