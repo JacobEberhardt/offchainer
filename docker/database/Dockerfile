@@ -5,5 +5,4 @@ FROM postgres
 ENV POSTGRES_DB offchainer
 
 # Copy setup command
-COPY createTableOffchainer.sql /docker-entrypoint-initdb.d/
-COPY createTableCounter.sql /docker-entrypoint-initdb.d/
+COPY createTableOffchainer.sql createTableCounter.sql createTableEmployee.sql /docker-entrypoint-initdb.d/
