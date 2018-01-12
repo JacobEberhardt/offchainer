@@ -4,6 +4,9 @@ pragma solidity ^0.4.17;
 import "./PayRaise.sol";
 
 contract Employee {
+
+	// Define constants
+	uint8 constant SALARY_INDEX_OFFSET = 4;
 	
 	// Define variables
 	address creator;
@@ -12,7 +15,7 @@ contract Employee {
 	
 	// Define events
 	event RetrieveDataEvent(bytes32 department, bytes32 fromEntryDate);
-	event IntegrityCheckFailedEvent(uint rowId, bytes32 proof1, bytes32 proof2);
+	event IntegrityCheckFailedEvent();
 	event ReturnNewValues(uint rowId, bytes32 oldRoot, bytes32 newRoot, uint newSalary);
 
 	// Constructor
@@ -21,7 +24,7 @@ contract Employee {
 	 * 
 	 */
 	function Employee() public {
-	    creator = msg.sender;
+		creator = msg.sender;
 	}
 	
 	// Public functions
@@ -54,7 +57,7 @@ contract Employee {
 	 * @param _prevRootHash The previous root hash of the employee record 
 	 */
 	 function rollBack(uint _index, bytes32 _prevRootHash) public {
-	    employeesRootHashes[_index] = _prevRootHash;
+		employeesRootHashes[_index] = _prevRootHash;
 	 }
 	
 	/**
@@ -64,53 +67,70 @@ contract Employee {
 	 */
 	function requestIncreaseSalary(address _payRaiseContractAddress) public {
 		payRaiseContract = PayRaise(_payRaiseContractAddress);
-	    bytes32 department = payRaiseContract.getDepartment();
-	    bytes32 beforeStartdate = payRaiseContract.getBeforeStartDate();
-	    RetrieveDataEvent(department, beforeStartdate);
+		bytes32 department = payRaiseContract.getDepartment();
+		bytes32 beforeStartdate = payRaiseContract.getBeforeStartDate();
+		RetrieveDataEvent(department, beforeStartdate);
 	}
 
 	/**
-	 *  Increases salary of a single employee.
+	 *	Increases salary of a single employee.
 	 * 
 	 * @param _rowId The address of the payraise contract 
-	 * @param _currentSalary The address of the payraise contract
-	 * @param _proof The address of the payraise contract
-	 * @param _proofPosition The address of the payraise contract
+	 * @param _checks An array that contains information which hashes need to be computed
+	 * @param _indexOfFirstLeaf The index of the first leaf node
+	 * @param _hashes The hashes which do not need to be computed
+	 * @param _values The values of the leaf nodes which change in this function
 	 */
-	function increaseSalarySingleEmployee(uint _rowId, uint _currentSalary, bytes32[] _proof, uint[] _proofPosition) public {
-	    bytes32 computedHash = _createTree(_currentSalary, _proof, _proofPosition);
-		bytes32 existingHash = employeesRootHashes[_rowId];
+	function increaseSalarySingleEmployee(uint _rowId, bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, bytes32[] _values) public {
+
+		// Check integrity
+		bytes32 computedHash = _createTree(_checks, _indexOfFirstLeaf, _hashes, _values);
+		if (computedHash != employeesRootHashes[_rowId]) {
+			IntegrityCheckFailedEvent();
+			return;
+		}
+
 		uint percentage = payRaiseContract.getPercentage();
-        if (computedHash == existingHash) {
-            uint newSalary = _currentSalary + _currentSalary * percentage / 100;
-            employeesRootHashes[_rowId] = _createTree(newSalary, _proof, _proofPosition);
-            ReturnNewValues(_rowId, existingHash, employeesRootHashes[_rowId], newSalary);
-        } else {
-			IntegrityCheckFailedEvent(_rowId, employeesRootHashes[_rowId], computedHash);
-        }
+		uint8 salaryIndex = _indexOfFirstLeaf + SALARY_INDEX_OFFSET;
+		uint256 salary = uint256(_values[salaryIndex]);
+		uint newSalary = salary + salary * percentage / 100;
+		_values[salaryIndex] = bytes32(newSalary);
+		employeesRootHashes[_rowId] = _createTree(_checks, _indexOfFirstLeaf, _hashes, _values);
+		ReturnNewValues(_rowId, computedHash, employeesRootHashes[_rowId], newSalary);
+
 	}
 	
-	// Private functions
-	/**
-	 * Check the integrity of a given array of integers against the stored hash.
-	 *
-	 * @param _counterValue value of the counter in int
-	 * @param _proof proof
-	 * @param _proofPosition proof positions
-	 * @return the newly computed hash
-	 */
-	function _createTree(uint _counterValue, bytes32[] _proof, uint[] _proofPosition) private returns (bytes32) {
-	    bytes32 computedHash = keccak256(_counterValue);
-	    for (uint i = 0; i < _proof.length; i++) {
-	        if (_proofPosition[i] == 0) {
-	            // if left
-	            computedHash = keccak256(_proof[i], computedHash);
-	        } else {
-	            // if right
-	            computedHash = keccak256(computedHash, _proof[i]);
-	        }
-	    }
-	    return computedHash;
+	// Define private functions
+	function _createTree(bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, bytes32[] _values) private view returns (bytes32 hash) {
+		return _computeHash(0, _checks, _indexOfFirstLeaf, _hashes, _values);
 	}
+
+	function _computeHash(uint8 _index, bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, bytes32[] _values) private constant returns (bytes32 hash) {
+
+		// Check if hash is given
+		if (!_checks[_index]) {
+			return _hashes[_index];
+		}
+
+		// Check if value is given
+		if (_index >= _indexOfFirstLeaf) {
+			return keccak256(_values[_index]);
+		}
+
+		// Compute hash from the children hashes
+		return keccak256(
+			_computeHash(_leftChild(_index), _checks, _indexOfFirstLeaf, _hashes, _values),
+			_computeHash(_rightChild(_index), _checks, _indexOfFirstLeaf, _hashes, _values)
+		);
+
+	}
+
+	function _leftChild(uint8 _index) private pure returns (uint8) {
+		return _index * 2 + 1;
+	}
+
+	function _rightChild(uint8 _index) private pure returns (uint8) {
+		return _index * 2 + 2;
+	}	
 
 }
