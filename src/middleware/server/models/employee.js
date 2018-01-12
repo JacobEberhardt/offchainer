@@ -74,7 +74,7 @@ function addEmployeeToDatabase(employee) {
 			employee.salary
 		]
 
-		const tree = new MerkleTree(leaves, sha3)
+		const tree = new MerkleTree(leaves.map(x => sha3({value: x, type: 'string'})), sha3, {hashLeaves: false})
 		const rootHash = tree.getRoot()
 
 		db.create({
@@ -199,9 +199,10 @@ function increaseSalarySingleEmployee(employee) {
 		promisify(contract.instance.increaseSalarySingleEmployee)({
 			args: [
 				employee.id,
-				employee.salary,
-				proof.proofData,
-				proof.proofPosition
+				proof.checks,
+				proof.indexOfFirstLeaf,
+				proof.hashes,
+				proof.values
 			]
 		})
 			.then(result => transactionHash = result)
@@ -219,7 +220,7 @@ function increaseSalarySingleEmployee(employee) {
  */
 function increaseSalary(payRaiseContractAddress) {
 
-	return new Promise ((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 
 		const handler = (err) => reject(err)
 		let finalResult = []
@@ -271,7 +272,7 @@ function hasInstance() {
 // Export functions
 module.exports = {
 	create,
-	add,
+	addEmployeeToDatabase,
 	getRootHash,
 	getAll,
 	importEmployees,
