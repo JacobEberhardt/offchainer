@@ -53,6 +53,13 @@ router.post('/increase-salary', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+//Get single Employee
+router.post('/getSalary/:id', (req, res, next) => {
+	employee.getEmployeeSalary(req.params.id)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
 
 // Export module
 module.exports = router

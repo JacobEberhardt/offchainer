@@ -82,8 +82,8 @@ function getAll() {
  *
  * @return {Promise} A promise that depends on the contract creation
  */
-function getRootHash(index) {
-	return promisify(contract.instance.get)({args: index})
+function getEmployeeSalary(index) {
+	return promisify(contract.instance.getSalary)({args: index})
 }
 
 /**
@@ -142,7 +142,7 @@ function hasInstance() {
 module.exports = {
 	create,
 	add,
-	getRootHash,
+	getEmployeeSalary,
 	getAll,
 	importEmployees,
 	increaseSalary,

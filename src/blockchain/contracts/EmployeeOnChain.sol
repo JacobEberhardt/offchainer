@@ -45,6 +45,11 @@ contract EmployeeOnChain {
 	function get(uint _index) public constant returns(Employee_Struct) {
 		return employees[_index];
 	}
+
+  function getSalary(uint _index) public constant returns(uint256) {
+		return employees[_index].salary;
+	}
+
 	/**
 	 * Updates the root hash of an employee record
 	 *
