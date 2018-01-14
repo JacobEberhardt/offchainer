@@ -69,15 +69,6 @@ function add(employee) {
 }
 
 /**
- * Return all employees in the database.
- *
- * @return {Promise} A promise that depends on the contract creation
- */
-function getAll() {
-	return db.readAll()
-}
-
-/**
  * Return the root hash of an employee stored in the smart contract.
  *
  * @return {Promise} A promise that depends on the contract creation
@@ -143,7 +134,6 @@ module.exports = {
 	create,
 	add,
 	getEmployeeSalary,
-	getAll,
 	importEmployees,
 	increaseSalary,
 	setInstance,
