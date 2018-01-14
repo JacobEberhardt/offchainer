@@ -3,12 +3,6 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
-const events = require('../utils/events')
-const Database = require('./database')
-const Sequelize = require('sequelize')
-const MerkleTree = require('../utils/merkleTree')
-const sha3 = require('web3-utils').soliditySha3
-const transactions = require('../utils/transactions')
 const web3Util = require('../utils/web3')
 
 // Define values
@@ -24,18 +18,6 @@ const contract = web3.eth.contract(contractData.abi, {gas: 6000000})
 
 // Set default account
 web3Util.setDefaultAccount(web3, 0)
-
-// Establish database connection
-const db = new Database(
-	'employee',
-	{
-		first_name: { type: Sequelize.STRING },
-		last_name: { type: Sequelize.STRING },
-		start_date: { type: Sequelize.STRING },
-		department: { type: Sequelize.STRING },
-		salary: { type: Sequelize.INTEGER }
-	}
-)
 
 /**
  * Create a new contract instance.
@@ -67,49 +49,6 @@ function add(employee) {
 
 	return new Promise((resolve, reject) => {
 
-/*		const leaves = [
-			employee.firstName,
-			employee.lastName,
-			employee.startDate,
-			employee.department,
-			employee.salary
-		]
-
-		const tree = new MerkleTree(leaves, sha3)
-		const rootHash = tree.getRoot()
-*/
-/*		db.create({
-			first_name: employee.firstName,
-			last_name: employee.lastName,
-			start_date: employee.startDate,
-			department: employee.department,
-			salary: employee.salary
-		})
-		.then(result => */
-//    Promise.all([
-    /*console.log("employee parameter:")
-    console.log(employee)
-    console.log("contract.options")
-    console.log(contract.options)
-    console.log("contract.instance.options")
-    console.log(contract.instance.options)
-    console.log("employee.firstName")
-    console.log(employee.firstName)
-    console.log("employee.lastName")
-    console.log(employee.lastName)
-    console.log("employee.startDate")
-    console.log(employee.startDate)
-    console.log("employee.department")
-    console.log(employee.department)
-    console.log("employee.salary")
-    console.log(employee.salary)*/
-  /*  console.log("Gas estimation:")
-    console.log(web3.eth.estimateGas(contract.instance.add("a", "b", 11, "d", 14)))
-    console.log(contract.instance.add("a", "b", 11, "d", 14).estimateGas({gas: 5000000}, function(error, gasAmount){
-          if(gasAmount == 5000000)
-              console.log('Method ran out of gas');
-      })
-    )*/
     return promisify(contract.instance.add)({
 			args: [
         employee.firstName,
@@ -158,89 +97,6 @@ function importEmployees(employees) {
 }
 
 /**
- * Increase the salary of a single employee.
- *
- * @param {Object} employee The employee
- * @returns {Promise} A promise that depends on the successful salary increase
- */
-/*function increaseSalarySingleEmployee(employee) {
-
-	return new Promise ((resolve, reject) => {
-
-		// Error Handler
-		const handler = (error) => reject({
-			'id': employee.id,
-			'error': error
-		})
-
-		// Smart contract returns new values
-		events.watch(contract.instance.ReturnNewValues)
-			.then(result => {
-				// Wait for transaction to be mined, pass return values to next chain
-				return Promise.all([transactions.waitForBlock(web3, transactionHash), result])
-			})
-			.then(([result, previous])  => {
-				// Write new salary from previous chain results to database
-				return Promise.all([db.update(
-					{id: previous.args.rowId.c[0]},
-					{
-						['salary']: previous.args.newSalary.c[0]
-					}
-				), previous])
-			})
-			.then(([result, previous]) => resolve(result))
-			.catch(([error, previous]) => {
-				if(error.code === "database") {
-					// Rollback in case database write failed
-					promisify(contract.instance.rollBack)({
-						args: [
-							previous.args.rowId.c[0],
-							previous.args.prevRootHash
-						]
-					})
-				}
-				reject({
-					'id' : employee.id,
-					'error' : error
-				})
-			})
-
-		// Integrity check of data record failed
-/*		events.watch(contract.instance.IntegrityCheckFailedEvent)
-			.then((result) => {
-				console.log('Integrity check failed.')
-				reject({
-					'id' : employee.id,
-					'error' : 'Integrity check failed.'
-				})
-			})
-*/
-		// Position of salary in employee record (-1 because id is shifted)
-/*		const indexOfSalary = Object.keys(employee).indexOf('salary') - 1
-
-		// Create array of leaves from employee object and shift id
-		const leaves = Object.values(employee)
-		leaves.shift()
-
-		// Construct merkle tree and get proof
-		const tree = new MerkleTree(leaves, sha3)
-		const proof = tree.getProof(indexOfSalary)
-
-		// Increase salary request for single employee
-		promisify(contract.instance.increaseSalarySingleEmployee)({
-			args: [
-				employee.id//,
-/*				employee.salary,
-				proof.proofData,
-				proof.proofPosition
-			]
-/*		})
-			.then(result => transactionHash = result)
-			.catch(handler)
-	})
-}
-*/
-/**
  * Increase the salary of all affected employee. Affected employees are defined in a payraise contract.
  *
  * @param {String} payRaiseContractAddress The address of the payraise contract
@@ -251,26 +107,8 @@ function increaseSalary(payRaiseContractAddress) {
 	return new Promise ((resolve, reject) => {
 
 		const handler = (err) => reject(err)
-		let finalResult = []
 
-		// Smart contract needs data
-/*		events.watch(contract.instance.RetrieveDataEvent)
-			.then(result => {
-				let department = web3.toUtf8(result.args.department)
-				return db.readAll({department: department})
-			})
-			.then(result => {
-				return result.reduce((promise, item) => { // Create one promise chain for all items
-					return promise
-						.then((result) => increaseSalarySingleEmployee(item.dataValues))
-						.then(result => finalResult.push(result[1][0]))
-						.catch(error => finalResult.push(error))
-				}, Promise.resolve())
-			})
-			.then(result => resolve(finalResult))
-			.catch(handler)
-*/
-		// Increase salary request for all employees, which are returned from the database
+		// Increase salary request for all employees in the specified department of the payraise contract
 		promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
       .then((result) => {
   			resolve(result)

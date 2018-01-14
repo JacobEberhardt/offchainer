@@ -1,7 +1,6 @@
 // Import dependencies
 const router = require('express').Router()
 const employee = require('../../models/employeeOnchain')
-const db = require('../../models/database')
 const res = require('../../utils/response')
 
 // Set response functions
