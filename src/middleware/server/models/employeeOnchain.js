@@ -87,7 +87,7 @@ function add(employee) {
 		})
 		.then(result => */
 //    Promise.all([
-    console.log("employee parameter:")
+    /*console.log("employee parameter:")
     console.log(employee)
     console.log("contract.options")
     console.log(contract.options)
@@ -102,7 +102,7 @@ function add(employee) {
     console.log("employee.department")
     console.log(employee.department)
     console.log("employee.salary")
-    console.log(employee.salary)
+    console.log(employee.salary)*/
   /*  console.log("Gas estimation:")
     console.log(web3.eth.estimateGas(contract.instance.add("a", "b", 11, "d", 14)))
     console.log(contract.instance.add("a", "b", 11, "d", 14).estimateGas({gas: 5000000}, function(error, gasAmount){
@@ -272,6 +272,9 @@ function increaseSalary(payRaiseContractAddress) {
 */
 		// Increase salary request for all employees, which are returned from the database
 		promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
+      .then((result) => {
+  			resolve(result)
+  		})
 			.catch(handler)
 
 	})

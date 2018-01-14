@@ -2,12 +2,12 @@
 pragma solidity ^0.4.17;
 
 contract PayRaiseOnChain {
-	
+
 	// Variables
 	address private creator;
 	uint private percentage;
 	bytes32 private department;
-	bytes32 private beforeStartDate;
+	uint256 private beforeStartDate;
 
 	// Constructor
 	/**
@@ -16,7 +16,7 @@ contract PayRaiseOnChain {
 	 * @param _department The affected department
 	 * @param _beforeStartDate The start date as a condition whether an employee gets a pay raise (Employee start date < beforeStartDate)
 	 */
-	function PayRaiseOnChain(uint _percentage, bytes32 _department, bytes32 _beforeStartDate) public {
+	function PayRaiseOnChain(uint _percentage, bytes32 _department, uint256 _beforeStartDate) public {
 	    creator = msg.sender;
 		percentage = _percentage;
 		department = _department;
@@ -24,7 +24,7 @@ contract PayRaiseOnChain {
 	}
 
 	// Public functions
-	
+
 	/**
 	 * Gets the department which is affected by the pay raise
 	 * @return The department
@@ -32,7 +32,7 @@ contract PayRaiseOnChain {
 	function getDepartment() public constant returns (bytes32) {
 		return department;
 	}
-	
+
 	/**
 	 * Gets the percentage of the pay raise
 	 * @return The percentage
@@ -45,21 +45,21 @@ contract PayRaiseOnChain {
 	 * Gets the start date, which indicates whether the employee should be considered in the pay raise
 	 * @return The start date
 	 */
-	function getBeforeStartDate() public constant returns (bytes32) {
+	function getBeforeStartDate() public constant returns (uint256) {
 		return beforeStartDate;
 	}
 
 	/**
 	 * Sets the department which is affected by the pay raise
-	 * @param _newDepartment The department to be replaced 
+	 * @param _newDepartment The department to be replaced
 	 */
 	function setDepartment(bytes32 _newDepartment) public {
 		department = _newDepartment;
 	}
-	
+
 	/**
 	 * Set the percentage of the pay raise
-	 * @param _newPercentage The percentage to be replaced 
+	 * @param _newPercentage The percentage to be replaced
 	 */
 	function setPercentage(uint _newPercentage) public {
 		percentage = _newPercentage;
@@ -67,12 +67,12 @@ contract PayRaiseOnChain {
 
 	/**
 	 * Set the start date, which indicates whether the employee should be considered in the pay raise
-	 * @param _newBeforeStartDate The start date to be replaced 
+	 * @param _newBeforeStartDate The start date to be replaced
 	 */
-	function setBeforeStartDate(bytes32 _newBeforeStartDate) public {
+	function setBeforeStartDate(uint256 _newBeforeStartDate) public {
 		beforeStartDate = _newBeforeStartDate;
 	}
-	
+
 
 	// Private functions
 

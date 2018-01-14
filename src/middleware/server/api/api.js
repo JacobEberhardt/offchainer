@@ -6,6 +6,7 @@ const counter = require('./routes/counter')
 const counterMutiple = require('./routes/counterMultiple')
 const counterOnchain = require('./routes/counterOnchain')
 const employeeOnchain = require('./routes/employeeOnchain')
+const payraiseOnchain = require('./routes/payraiseOnchain')
 
 // Set response functions
 const error = res.error
@@ -16,6 +17,7 @@ router.use('/counter', counter)
 router.use('/counter-multiple', counterMutiple)
 router.use('/counterOnchain', counterOnchain)
 router.use('/employeeOnchain', employeeOnchain)
+router.use('/payraiseOnchain', payraiseOnchain)
 
 // 404 fallback
 router.all('/*', (req, res, next) => error(res, 404))
