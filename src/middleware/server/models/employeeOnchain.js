@@ -103,18 +103,26 @@ function add(employee) {
     console.log(employee.department)
     console.log("employee.salary")
     console.log(employee.salary)
-    promisify(contract.instance.add)({
+  /*  console.log("Gas estimation:")
+    console.log(web3.eth.estimateGas(contract.instance.add("a", "b", 11, "d", 14)))
+    console.log(contract.instance.add("a", "b", 11, "d", 14).estimateGas({gas: 5000000}, function(error, gasAmount){
+          if(gasAmount == 5000000)
+              console.log('Method ran out of gas');
+      })
+    )*/
+    return promisify(contract.instance.add)({
 			args: [
         employee.firstName,
   			employee.lastName,
   			employee.startDate,
   			employee.department,
-  			employee.salary
+  			employee.salary,
+        {gas: 6000000}
 			]
 		}) //, result]))
-		/*.then(([result, previous]) => {
-			resolve(previous)
-		})*/
+		.then((result) => {
+			resolve(result)
+		})
 		.catch(err => reject(err))
 
 	})
