@@ -13,17 +13,11 @@ contract EmployeeOnChain {
         uint256 salary;
     }
 
-
 	// Variables
 	address creator;
 	mapping(uint => Employee_Struct) employees;
     uint counter;
 	PayRaiseOnChain payRaiseContract;
-
-	// Events
-	//event RetrieveDataEvent(bytes32 department, bytes32 fromEntryDate);
-	//event IntegrityCheckFailedEvent(uint rowId, bytes32 proof1, bytes32 proof2);
-	//event ReturnNewValues(uint rowId, bytes32 oldRoot, bytes32 newRoot, uint newSalary);
 
 	// Constructor
 	/**
@@ -63,15 +57,6 @@ contract EmployeeOnChain {
 	}
 
 	/**
-	 * Revert to previous hash. A Rollback function.
-	 * param _index The index of the employee record
-	 * param _prevRootHash The previous root hash of the employee record
-	 */
-//	 function rollBack(uint _index, bytes32 _prevRootHash) public {
-//	    employeesRootHashes[_index] = _prevRootHash;
-//	 }
-
-	/**
 	 * Initializes the operation to raise the salary of affected employees (depending on departmen and entry date)
 	 * Function trigges Event and passes department and fromEntryDate
 	 * @param _payRaiseContractAddress The address of the payraise contract
@@ -79,8 +64,7 @@ contract EmployeeOnChain {
 	function requestIncreaseSalary(address _payRaiseContractAddress) public {
 		payRaiseContract = PayRaiseOnChain(_payRaiseContractAddress);
 	    bytes32 department = payRaiseContract.getDepartment();
-	    bytes32 beforeStartdate = payRaiseContract.getBeforeStartDate();
-//TODO	    RetrieveDataEvent(department, beforeStartdate);
+	  //  bytes32 beforeStartdate = payRaiseContract.getBeforeStartDate();
 
     // Iterate over every item in the list to find those belonging to the requested department and call the
     // increaseSalarySingleEmployee function for every employee that fits to the right department.
@@ -100,10 +84,8 @@ contract EmployeeOnChain {
 	 * param _proofPosition The address of the payraise contract
 	 */
 	function increaseSalarySingleEmployee(uint _rowId) public {
-//	    bytes32 computedHash = _createTree(_currentSalary, _proof, _proofPosition);
-		Employee_Struct existingEmployee = employees[_rowId];
 		uint percentage = payRaiseContract.getPercentage();
-		existingEmployee.salary = existingEmployee.salary + existingEmployee.salary * percentage / 100;
+		employees[_rowId].salary = employees[_rowId].salary + employees[_rowId].salary * percentage / 100;
 	}
 
 }
