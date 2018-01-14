@@ -20,7 +20,7 @@ COLUMN_NAMES = ['first_name', 'last_name', 'start_date', 'department', 'salary']
 const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BUILD_FILE)))
 
 // Create contract object
-const contract = web3.eth.contract(contractData.abi)
+const contract = web3.eth.contract(contractData.abi, {gas: 6000000})
 
 // Set default account
 web3Util.setDefaultAccount(web3, 0)
@@ -78,26 +78,43 @@ function add(employee) {
 		const tree = new MerkleTree(leaves, sha3)
 		const rootHash = tree.getRoot()
 */
-		db.create({
+/*		db.create({
 			first_name: employee.firstName,
 			last_name: employee.lastName,
 			start_date: employee.startDate,
 			department: employee.department,
 			salary: employee.salary
 		})
-		.then(result => Promise.all([promisify(contract.instance.add)({
+		.then(result => */
+//    Promise.all([
+    console.log("employee parameter:")
+    console.log(employee)
+    console.log("contract.options")
+    console.log(contract.options)
+    console.log("contract.instance.options")
+    console.log(contract.instance.options)
+    console.log("employee.firstName")
+    console.log(employee.firstName)
+    console.log("employee.lastName")
+    console.log(employee.lastName)
+    console.log("employee.startDate")
+    console.log(employee.startDate)
+    console.log("employee.department")
+    console.log(employee.department)
+    console.log("employee.salary")
+    console.log(employee.salary)
+    promisify(contract.instance.add)({
 			args: [
-				result.dataValues.id,
         employee.firstName,
   			employee.lastName,
   			employee.startDate,
   			employee.department,
   			employee.salary
 			]
-		}), result]))
-		.then(([result, previous]) => {
+		}) //, result]))
+		/*.then(([result, previous]) => {
 			resolve(previous)
-		})
+		})*/
 		.catch(err => reject(err))
 
 	})
@@ -138,7 +155,7 @@ function importEmployees(employees) {
  * @param {Object} employee The employee
  * @returns {Promise} A promise that depends on the successful salary increase
  */
-function increaseSalarySingleEmployee(employee) {
+/*function increaseSalarySingleEmployee(employee) {
 
 	return new Promise ((resolve, reject) => {
 
@@ -191,7 +208,7 @@ function increaseSalarySingleEmployee(employee) {
 			})
 */
 		// Position of salary in employee record (-1 because id is shifted)
-		const indexOfSalary = Object.keys(employee).indexOf('salary') - 1
+/*		const indexOfSalary = Object.keys(employee).indexOf('salary') - 1
 
 		// Create array of leaves from employee object and shift id
 		const leaves = Object.values(employee)
@@ -208,13 +225,13 @@ function increaseSalarySingleEmployee(employee) {
 /*				employee.salary,
 				proof.proofData,
 				proof.proofPosition
-*/			]
-		})
+			]
+/*		})
 			.then(result => transactionHash = result)
 			.catch(handler)
 	})
 }
-
+*/
 /**
  * Increase the salary of all affected employee. Affected employees are defined in a payraise contract.
  *
@@ -229,7 +246,7 @@ function increaseSalary(payRaiseContractAddress) {
 		let finalResult = []
 
 		// Smart contract needs data
-		events.watch(contract.instance.RetrieveDataEvent)
+/*		events.watch(contract.instance.RetrieveDataEvent)
 			.then(result => {
 				let department = web3.toUtf8(result.args.department)
 				return db.readAll({department: department})
@@ -244,7 +261,7 @@ function increaseSalary(payRaiseContractAddress) {
 			})
 			.then(result => resolve(finalResult))
 			.catch(handler)
-
+*/
 		// Increase salary request for all employees, which are returned from the database
 		promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
 			.catch(handler)

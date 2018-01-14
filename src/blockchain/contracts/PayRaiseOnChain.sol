@@ -1,7 +1,7 @@
 // Required version
 pragma solidity ^0.4.17;
 
-contract PayRaise {
+contract PayRaiseOnChain {
 	
 	// Variables
 	address private creator;
@@ -16,7 +16,7 @@ contract PayRaise {
 	 * @param _department The affected department
 	 * @param _beforeStartDate The start date as a condition whether an employee gets a pay raise (Employee start date < beforeStartDate)
 	 */
-	function PayRaise(uint _percentage, bytes32 _department, bytes32 _beforeStartDate) public {
+	function PayRaiseOnChain(uint _percentage, bytes32 _department, bytes32 _beforeStartDate) public {
 	    creator = msg.sender;
 		percentage = _percentage;
 		department = _department;

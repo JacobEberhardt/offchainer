@@ -1,9 +1,9 @@
 // Required version
 pragma solidity ^0.4.17;
 
-import "./PayRaise.sol";
+import "./PayRaiseOnChain.sol";
 
-contract Employee {
+contract EmployeeOnChain {
 
     struct Employee_Struct {
         string firstName;
@@ -17,8 +17,8 @@ contract Employee {
 	// Variables
 	address creator;
 	mapping(uint => Employee_Struct) employees;
-  uint counter;
-	PayRaise payRaiseContract;
+    uint counter;
+	PayRaiseOnChain payRaiseContract;
 
 	// Events
 	//event RetrieveDataEvent(bytes32 department, bytes32 fromEntryDate);
@@ -30,7 +30,7 @@ contract Employee {
 	 * Create a new contract instance.
 	 *
 	 */
-	function Employee() public {
+	function EmployeeOnChain() public {
 	    creator = msg.sender;
         counter = 0;
 	}
@@ -39,12 +39,12 @@ contract Employee {
 	/**
 	 * Adds the root hash of an employee record to employeesRootHashes mapping.
 	 *
-	 * @param _index The index of the employee in the database
-	 * @param _rootHash The root hash of the merkle tree of the employee record
+	 * param _index The index of the employee in the database
+	 * param _rootHash The root hash of the merkle tree of the employee record
 	 */
 	function add(string firstName, string lastName, uint256 startDate,
         bytes32 department, uint256 salary) public {
-		employees[counter] = Employee_Struct(firstName, lastName, startDate, department, salary);
+    		employees[counter] = Employee_Struct(firstName, lastName, startDate, department, salary);
         counter++;
 	}
 
@@ -55,7 +55,7 @@ contract Employee {
 	 * Updates the root hash of an employee record
 	 *
 	 * @param _index The index of the employee record
-	 * @param _rootHash The new root hash of the employee record
+	 * param _rootHash The new root hash of the employee record
 	 */
 	function update(uint _index, string firstName, string lastName, uint256 startDate,
         bytes32 department, uint256 salary) public {
@@ -64,8 +64,8 @@ contract Employee {
 
 	/**
 	 * Revert to previous hash. A Rollback function.
-	 * @param _index The index of the employee record
-	 * @param _prevRootHash The previous root hash of the employee record
+	 * param _index The index of the employee record
+	 * param _prevRootHash The previous root hash of the employee record
 	 */
 //	 function rollBack(uint _index, bytes32 _prevRootHash) public {
 //	    employeesRootHashes[_index] = _prevRootHash;
@@ -77,7 +77,7 @@ contract Employee {
 	 * @param _payRaiseContractAddress The address of the payraise contract
 	 */
 	function requestIncreaseSalary(address _payRaiseContractAddress) public {
-		payRaiseContract = PayRaise(_payRaiseContractAddress);
+		payRaiseContract = PayRaiseOnChain(_payRaiseContractAddress);
 	    bytes32 department = payRaiseContract.getDepartment();
 	    bytes32 beforeStartdate = payRaiseContract.getBeforeStartDate();
 //TODO	    RetrieveDataEvent(department, beforeStartdate);
@@ -95,9 +95,9 @@ contract Employee {
 	 *  Increases salary of a single employee.
 	 *
 	 * @param _rowId The address of the payraise contract
-	 * @param _currentSalary The address of the payraise contract
-	 * @param _proof The address of the payraise contract
-	 * @param _proofPosition The address of the payraise contract
+	 * param _currentSalary The address of the payraise contract
+	 * param _proof The address of the payraise contract
+	 * param _proofPosition The address of the payraise contract
 	 */
 	function increaseSalarySingleEmployee(uint _rowId) public {
 //	    bytes32 computedHash = _createTree(_currentSalary, _proof, _proofPosition);
