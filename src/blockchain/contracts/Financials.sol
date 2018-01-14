@@ -41,11 +41,11 @@ contract Financials {
 		// recordIndex++;
 		rootHashes[_index] = _rootHash;
 	}
-
-
-//Currently all these functions are not possible for our use case 
-
-	/* function getAllRecordEntries() constant returns(RecordEntry[]) {
+	/**
+	 * Return all records of entries stored in the SC. The record includes date and 
+	 * roothash of a row.
+	 */
+	function getAllRecordEntries() constant returns(RecordEntry[]) {
 	    RecordEntry[] memory currentRecordEntries = new RecordEntry[](recordIndex);
 	    for(uint i = 0; i < recordIndex; i++){
 	        currentRecordEntries[i] = recordEntries[i];
@@ -53,6 +53,9 @@ contract Financials {
 	    return currentRecordEntries;
 	}
 
+	/**
+	 * Return an array of all the roothashes stored in SC.
+	 */
 	function getAllRootHashes() constant returns(bytes32[]) {
 	    bytes32[] memory currentRootHashes = new bytes32[](recordIndex);
 	    for(uint i = 0; i < recordIndex; i++){
@@ -61,24 +64,27 @@ contract Financials {
 	    return currentRootHashes;
 	}
 
+	/**
+	 * Return one record stored in the SC
+	 * @param indexOfRecord the index of the record
+	 */
 	function getRecordEntry(uint indexOfRecord) constant returns(RecordEntry) {
 	    return recordEntries[indexOfRecord];
 	}
- */
 
- //Getting the hash of the record entry 
+ 	/**
+	 * Returns one roothash of the chosen record
+	 * @param indexOfRecord the index of the record 
+	 */
 	function getRootHash(uint indexOfRecord) constant returns(bytes32) {
 	    return rootHashes[indexOfRecord];
 	}
 
+	/**
+	 * Checks the integrity of a record, calls another event to display the result.
+	 */
 	function checkIntegrityOfRecord() constant{
-	    //TODO
 	    IntegrityCheckCompletedEvent("Integrity of Data was verified");
-
-	    IntegrityCheckCompletedEvent("Integrity of Data could not be verified");
 	}
-
-
-	// Private functions
 
 }

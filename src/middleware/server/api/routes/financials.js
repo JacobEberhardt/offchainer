@@ -42,29 +42,12 @@ router.get('/getRecord/:id', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-
-
 //getRootHash
 router.get('/rootHash/:id', (req, res, next) => {
 	financials.getRootHash(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
-
-//Commented routes in case there is future implementation
-/*//Get the number of all record entries
-router.get('/allrecord', (req, res, next) => {
-	financials.getAllRecordEntries()
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
-//getAllRootHashes
-router.get('/allRootHash', (req, res, next) => {
-	financials.getAllRootHashes()
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})*/
-
 
 
 // Export module

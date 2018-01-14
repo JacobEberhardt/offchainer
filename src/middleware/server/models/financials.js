@@ -35,9 +35,13 @@ const db = new Database(
 )
 
 //Contract construction
-
-
-function create(contractDetails) {
+/**
+ * Create a new contract instance.
+ *
+ * @return {Promise} A promise that depends on the contract creation
+ */
+function create() {
+	console.log(web3.eth.accounts)
 	return promisify(contract.new)({
 		args: [
 			{
@@ -112,24 +116,11 @@ function getAllFinancials() {
 	return db.readAll();
 }
 
-/* Commented if in any case these functions are implemented for our Use case 
-//Get the number of Record Entries
-function getAllRecordEntries() {
-	//return promisify(contract.instance.getAllRecordEntries)
-	return new promisify(contract.at(contract.currentAddress).getAllRecordEntries)
-}
-//Get a specific record entry by a specific index
-function getRecordEntry(indexOfRecord) {
-	return new promisify(contract.instance.getRecordEntry)({args: indexOfRecord})
-}
-//Get all the roothashes of all entries
-function getAllRootHashes() {
-	return new promisify(contract.at(contract.currentAddress).getAllRootHashes)
-}
-*/
-
-
-//Get Root has fro a specific entry specified by index
+/**
+ * Return Root has for a specific entry specified by index
+ *
+ * @return {Promise} A pormise that contains the return value: roothash
+ */
 function getRootHash(indexOfRecord){
 	return new promisify(contract.instance.getRootHash)({args: indexOfRecord})
 }
@@ -152,9 +143,6 @@ function setInstance(address) {
 function hasInstance() {
 	return contract.instance != undefined
 }
-
-
-
 
 // Export functions
 module.exports = {
