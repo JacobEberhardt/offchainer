@@ -95,19 +95,16 @@ function importEmployees(employees) {
  */
 function increaseSalary(payRaiseContractAddress) {
 
-	return new Promise ((resolve, reject) => {
+  return new Promise ((resolve, reject) => {
+    const handler = (err) => reject(err)
 
-		const handler = (err) => reject(err)
-
-		// Increase salary request for all employees in the specified department of the payraise contract
-		promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
+    // Increase salary request for all employees in the specified department of the payraise contract
+    promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
       .then((result) => {
-  			resolve(result)
-  		})
-			.catch(handler)
-
+        resolve(result)
+      })
+      .catch(handler)
 	})
-
 }
 
 /**
