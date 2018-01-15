@@ -74,7 +74,7 @@ function addEmployeeToDatabase(employee) {
 			employee.salary
 		]
 
-		const tree = new MerkleTree(leaves.map(x => sha3({value: x, type: 'string'})), sha3, {hashLeaves: false})
+		const tree = new MerkleTree(leaves, sha3)
 		const rootHash = tree.getRoot()
 
 		db.create({
