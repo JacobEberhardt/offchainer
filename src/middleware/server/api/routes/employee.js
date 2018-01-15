@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
 
 // Get single employee from database
 router.get('/:id/root-hash', (req, res, next) => {
-	employee.get(req.params.id)
+	employee.getRootHash(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
