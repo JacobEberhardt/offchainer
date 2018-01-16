@@ -3,9 +3,10 @@ const type = require('./type')
 
 // Define values
 const DEFAULT_CACHE = false
+const DEFAULT_HASH_LEAVES = true
 
 // Map functions to be able to easily remove dependencies if necessary 
-const isInt = type.isInt
+const isStrictInt = type.isStrictInt
 
 // Define class
 /**
@@ -29,14 +30,16 @@ class MerkleTree {
 		if (typeof hashFunction !== 'function') throw Error('Second argument must be a function')
 		if (typeof options !== 'object') throw Error('Third argument must be an object')
 
+		// Set options
+		this.options = {}
+		this.options.cache = options.hasOwnProperty('cache') ? !!options.cache : DEFAULT_CACHE
+		this.options.hashLeaves = options.hasOwnProperty('hashLeaves') ? !!options.hashLeaves : DEFAULT_HASH_LEAVES
+		this.options.values = options.hasOwnProperty('values') ? options.values : null
+
 		// Set variables
 		this.leaves = leaves
 		this.hashFunction = hashFunction
-		this.constructed = false
 		this._constructTree()
-
-		// Set options
-		this.cache = options.hasOwnProperty('cache') ? !!options.cache : DEFAULT_CACHE
 
 		// Return instance
 		return this
@@ -48,7 +51,7 @@ class MerkleTree {
 	 * @returns {String} The root hash of the Merkle tree
 	 */
 	getRoot() {
-		return this.constructed ? this.tree[0] : this._constructTree()
+		return this.tree[0]
 	}
 
 	/**
@@ -58,7 +61,7 @@ class MerkleTree {
 	 * @returns {Object} The proof
 	 */
 	getProof(indices) {
-		if (this.cache) {
+		if (this.options.cache) {
 			let key = indices.map(x => x.toString()).join()	
 			return this.proof[key] ? this.proof[key] : this.proof[key] = this._createProof(indices)
 		}
@@ -150,10 +153,9 @@ class MerkleTree {
 	 */
 	_constructTree() {
 		let numberOfNonLeaveNodes = this._getNumberOfNodes(this.leaves.length) - this.leaves.length
-		this.tree = new Array(numberOfNonLeaveNodes).fill(null).concat(this.leaves.map(this.hashFunction))
+		const leaves = this.options.hashLeaves ? this.leaves.map(x => this.hashFunction(x)) : this.leaves
+		this.tree = new Array(numberOfNonLeaveNodes).fill(null).concat(leaves)
 		this._computeHash(0) // This computes all hashes in the tree recursively, starting from the root
-		this.constructed = true
-		return this.tree[0]
 	}
 
 	/**
@@ -164,11 +166,8 @@ class MerkleTree {
 	 */
 	_createProof(indices) {
 
-		// Construct tree if necessary
-		if (!this.constructed) this._constructTree()
-		
 		// Check arguments
-		indices = isInt(indices) ? [indices] : indices
+		indices = isStrictInt(indices) ? [indices] : indices
 
 		// Declare variables
 		let proof = {},
@@ -187,18 +186,24 @@ class MerkleTree {
 			}
 		}
 
-		let addHashes = index => { // Add the hashes in-order, recursively
+		let addHash = index => { // Add the hashes in-order, recursively
 			if (index === null) return;
 			if (checks[index]) { // Here is the in-order (first the left subtree, then right one)
-				addHashes(this._leftChild(index))
-				addHashes(this._rightChild(index))
+				addHash(this._leftChild(index))
+				addHash(this._rightChild(index))
 			}
 			else {
 				hashes[index] = this.tree[index]
 			}
 		}
 
-		let addLeave = index => values[indexOfFirstLeaf + index] = this.leaves[index]
+		let addLeave
+		if (this.options.hashLeaves) {
+			addLeave = index => values[indexOfFirstLeaf + index] = this.leaves[index]
+		}
+		else {
+			addLeave = index => values[indexOfFirstLeaf + index] = this.options.values[index]
+		}
 
 		// Determine which hashes need to be computed
 		indices.forEach(needsComputation)
@@ -208,7 +213,7 @@ class MerkleTree {
 		proof.indexOfFirstLeaf = indexOfFirstLeaf
 
 		// Determine the hashes which are given with the proof
-		addHashes(0) // This adds all hashed required for the proof recursively, starting from the root
+		addHash(0) // This adds all hashed required for the proof recursively, starting from the root
 		proof.hashes = hashes
 		
 		// Include the leaves for the proof

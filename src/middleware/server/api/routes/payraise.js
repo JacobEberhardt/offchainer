@@ -8,9 +8,8 @@ const res = require('../../utils/response')
 const response = res.response
 const error = res.error
 
-// Routes
-
-// Create Pay Raise Contract
+// Define routes
+// Create pay raise contract
 router.post('/create', (req, res, next) => {
 	payraise.create(req.body, res)
 		.then(contract => response(res, 200, {address: contract.address}))
@@ -19,4 +18,3 @@ router.post('/create', (req, res, next) => {
 
 // Export module
 module.exports = router
-

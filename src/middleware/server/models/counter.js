@@ -4,12 +4,12 @@ const fs = require('fs')
 const path = require('path')
 const Database = require('./database')
 const Sequelize = require('sequelize')
+const sha3 = require('web3-utils').soliditySha3
 
 // Import utilities
 const promisify = require('../utils/promisify')
 const events = require('../utils/events')
 const MerkleTree = require('../utils/merkleTree')
-const sha3 = require('../utils/sha3')
 const type = require('../utils/type')
 const web3Util = require('../utils/web3')
 const transactions = require('../utils/transactions')
@@ -49,7 +49,8 @@ const db = new Database(
 function create() {
 
 	const leaves = [0, 0, 0, 0]
-	const tree = new MerkleTree(leaves, sha3)
+	const hashes = leaves.map(x => sha3({value: x.toString(), type: 'uint8'}))
+	const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 	const rootHash = tree.getRoot()
 
 	return db.create({
@@ -130,8 +131,9 @@ function increaseCounter(index) {
 					result.counter_three,
 					result.counter_four
 				]
+				const hashes = leaves.map(x => sha3({value: x.toString(), type: 'uint8'}))
 
-				const tree = new MerkleTree(leaves, sha3)
+				const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 				const proof = tree.getProof(index)
 
 				return doCounterIncrease({
@@ -161,6 +163,7 @@ function increaseCounter(index) {
 
 			}) 
 			.then(() => {
+
 				const colName = COLUMN_NAMES[index]
 				return db.update(
 					{id: contract.rowId},
@@ -173,6 +176,7 @@ function increaseCounter(index) {
 			})
 			.then(result => resolve(result))
 			.catch(error => {
+
 				if(error.code === "database") { // Error type Database will result in a revert
 					revertRootHash({args: oldRootHash})
 					.then(result => {
@@ -181,6 +185,7 @@ function increaseCounter(index) {
 				} else {
 					reject(error)
 				}
+
 			})
 			
 		// 3.b Given data failed the integrity check

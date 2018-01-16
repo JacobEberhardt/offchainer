@@ -56,26 +56,28 @@ function create() {
 	})
 }
 
-
 /**
- * Create and insert an employee into the database and store the root hash of the data record into the smart contract
+ * Create and insert an employee into the database and store the root hash of the data record into the smart contract.
  * 
  * @param {Object} employee The new employee to add
  * @returns {Promise} A promise that depends on the successful employee insert
  */
-function add(employee) {
+function addEmployeeToDatabase(employee) {
 
 	return new Promise((resolve, reject) => {
 		
-		const leaves = [
+		// Define values
+		let values = [
 			employee.firstName,
 			employee.lastName,
 			employee.startDate,
 			employee.department,
-			employee.salary
+			parseInt(employee.salary, 10)
 		]
+		let leaves = _hashValues(values)
 
-		const tree = new MerkleTree(leaves, sha3)
+		// Construct tree
+		const tree = new MerkleTree(leaves, sha3, {hashLeaves: false, values: values})
 		const rootHash = tree.getRoot()
 
 		db.create({
@@ -85,16 +87,16 @@ function add(employee) {
 			department: employee.department,
 			salary: employee.salary
 		})
-		.then(result => Promise.all([promisify(contract.instance.add)({
-			args: [
-				result.dataValues.id,
-				rootHash
-			]
-		}), result]))
-		.then(([result, previous]) => {
-			resolve(previous)
-		})
-		.catch(err => reject(err))
+			.then(result => {
+				return Promise.all([promisify(contract.instance.add)({
+					args: [
+						result.dataValues.id,
+						rootHash
+					]
+				}), result])
+			})
+			.then(([result, previous]) => resolve(previous))
+			.catch(err => reject(err))
 
 	})
 
@@ -125,7 +127,7 @@ function getRootHash(index) {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function importEmployees(employees) {
-	return Promise.all(employees.map(add))
+	return Promise.all(employees.map(addEmployeeToDatabase))
 }
 
 /**
@@ -161,7 +163,8 @@ function increaseSalarySingleEmployee(employee) {
 			})
 			.then(([result, previous]) => resolve(result))
 			.catch(([error, previous]) => {
-				if(error.code === "database") {
+				let finalHandler = () => reject({'id': employee.id, 'error': error})
+				if (error.code === 'database') {
 					// Rollback in case database write failed
 					promisify(contract.instance.rollBack)({
 						args: [
@@ -169,17 +172,15 @@ function increaseSalarySingleEmployee(employee) {
 							previous.args.prevRootHash
 						]
 					})
+						.then(finalHandler)
+						.catch(console.log('Something went seriously wrong!'))
 				}
-				reject({
-					'id' : employee.id,
-					'error' : error
-				})
+				else finalHandler()
 			})
 
 		// Integrity check of data record failed
 		events.watch(contract.instance.IntegrityCheckFailedEvent)
 			.then((result) => {
-				console.log('Integrity check failed.')
 				reject({
 					'id' : employee.id,
 					'error' : 'Integrity check failed.'
@@ -190,25 +191,28 @@ function increaseSalarySingleEmployee(employee) {
 		const indexOfSalary = Object.keys(employee).indexOf('salary') - 1
 
 		// Create array of leaves from employee object and shift id
-		const leaves = Object.values(employee)
-		leaves.shift()
+		let values = Object.values(employee)
+		values.shift() // Remove id field
+		let leaves = _hashValues(values)
 
-		// Construct merkle tree and get proof
-		const tree = new MerkleTree(leaves, sha3)
+		// Construct Merkle tree and get proof
+		const tree = new MerkleTree(leaves, sha3, {hashLeaves: false, values: values})
 		const proof = tree.getProof(indexOfSalary)
 
 		// Increase salary request for single employee
 		promisify(contract.instance.increaseSalarySingleEmployee)({
 			args: [
 				employee.id,
-				employee.salary,
-				proof.proofData,
-				proof.proofPosition
-			]
+				proof.checks,
+				proof.indexOfFirstLeaf,
+				proof.hashes,
+			].concat(values)
 		})
 			.then(result => transactionHash = result)
 			.catch(handler)
+
 	})
+
 }
 
 /**
@@ -219,7 +223,7 @@ function increaseSalarySingleEmployee(employee) {
  */
 function increaseSalary(payRaiseContractAddress) {
 
-	return new Promise ((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 
 		const handler = (err) => reject(err)
 		let finalResult = []
@@ -268,10 +272,27 @@ function hasInstance() {
 	return contract.instance != undefined
 }
 
+// Define private functions
+function _hashValues(values) {
+	let hashes = []
+	for (let value of values) {
+		var hash
+		switch (typeof value) {
+			case 'number':
+				hash = sha3({value: value.toString(), type: 'uint256'})
+				break
+			case 'string':
+				hash = sha3({value: value, type: 'string'})
+		}
+		hashes.push(hash)
+	}
+	return hashes
+}
+
 // Export functions
 module.exports = {
 	create,
-	add,
+	addEmployeeToDatabase,
 	getRootHash,
 	getAll,
 	importEmployees,

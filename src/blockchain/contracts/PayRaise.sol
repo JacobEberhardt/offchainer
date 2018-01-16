@@ -3,7 +3,7 @@ pragma solidity ^0.4.17;
 
 contract PayRaise {
 	
-	// Variables
+	// Define variables
 	address private creator;
 	uint private percentage;
 	bytes32 private department;
@@ -24,7 +24,6 @@ contract PayRaise {
 	}
 
 	// Public functions
-	
 	/**
 	 * Gets the department which is affected by the pay raise
 	 * @return The department
@@ -72,8 +71,5 @@ contract PayRaise {
 	function setBeforeStartDate(bytes32 _newBeforeStartDate) public {
 		beforeStartDate = _newBeforeStartDate;
 	}
-	
-
-	// Private functions
 
 }

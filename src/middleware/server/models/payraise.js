@@ -7,6 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
+const web3Util = require('../utils/web3')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/PayRaise.json'
@@ -19,12 +20,7 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 const contract = web3.eth.contract(contractData.abi)
 
 // Set default account
-var interval = setInterval(function () { // Poll to wait for web3 connection
-	if (web3.isConnected()) {
-		web3.eth.defaultAccount = web3.eth.accounts[0] // Set default account
-		clearInterval(interval)
-	}
-}, 500)
+web3Util.setDefaultAccount(web3, 0)
 
 // Define functions
 /**

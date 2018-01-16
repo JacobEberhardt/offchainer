@@ -7,6 +7,7 @@ const type = require('../../utils/type')
 
 // Set response functions
 const response = res.response
+const error = res.error
 
 // Routes
 /**

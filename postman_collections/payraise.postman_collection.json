@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "CP: Increase Salary Use Case",
+		"name": "Employee Pay Raise Use Case",
 		"_postman_id": "d11a6599-b43b-7bec-e3cc-bc9f47df0ecd",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
