@@ -1,7 +1,7 @@
 // Required version
 pragma solidity ^0.4.17;
 
-contract Financials {
+contract FinancialsOnchain {
 
 	// Variables
 	address creator;
@@ -14,7 +14,6 @@ contract Financials {
 
 
 	struct RecordEntry {
-        uint256 date;
         string company_name;
 		string recording_date;
 		uint256 total_sales;
@@ -33,7 +32,7 @@ contract Financials {
 	 * Create a new contract instance.
 	 *
 	 */
-	function Financials() public {
+	function FinancialsOnchain() public {
 	    creator = msg.sender;
 	}
 
@@ -43,7 +42,7 @@ contract Financials {
 	 *  _index The index of the record entry
 	 *  _rootHash The root hash of the merkle tree of the record entry
 	 */
-	function addRecordEntry( uint256 date, string company_name, string recording_date, 
+	function addRecordEntry(string company_name, string recording_date, 
 	uint256 total_sales, uint256 cogs, uint256 inventory_stock, uint256 cash_counter,
 	uint256 accounts_receivables, uint256 accounts_payable) public {
 	    // datesToHashes[now] = _rootHash;
@@ -51,8 +50,9 @@ contract Financials {
 		// recordEntries[recordIndex] = recordEntry;
 		// recordIndex++;
 		
-		recordEntries[recordIndex] = RecordEntry(date, company_name, recording_date,
+		recordEntries[recordIndex] = RecordEntry(company_name, recording_date,
 		total_sales, cogs, inventory_stock, cash_counter, accounts_receivables, accounts_payable);
+        recordIndex++;
 	}
 	/**
 	 * Return all records of entries stored in the SC. The record includes date and 
