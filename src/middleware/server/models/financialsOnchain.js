@@ -4,10 +4,6 @@ const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
 const events = require('../utils/events')
-const Database = require('./database')
-const Sequelize = require('sequelize')
-const MerkleTree = require('../utils/merkleTree')
-const sha3 = require('web3-utils').soliditySha3
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/FinancialsOnchain.json'
@@ -20,7 +16,7 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 const contract = web3.eth.contract(contractData.abi)
 
 // Establish database connection
-const db = new Database(
+/*const db = new Database(
 	'financials',
 	{
 		company_name: { type: Sequelize.STRING },
@@ -32,7 +28,7 @@ const db = new Database(
 		accounts_receivables: { type: Sequelize.INTEGER },
 		accounts_payable: { type: Sequelize.INTEGER },
 	}
-)
+)*/
 
 //Contract construction
 /**
@@ -64,41 +60,8 @@ function create() {
  */
 function add(financials) {
 	return new Promise((resolve, reject) => {
-		// Insert new Employee
-		/*db.create({
-			company_name: financials.companyName,
-			recording_date: financials.recordingDate,
-			total_sales: financials.totalSales,
-			cogs: financials.cogs,
-			inventory_stock: financials.inventoryStock,
-			cash_counter: financials.cashCounter,
-			accounts_receivables: financials.accountsReceivables,
-			accounts_payable: financials.accountsPayable
-		}).then(result => {
-            */
-            //Create Merkle Tree
-            /*
-			const leaves = [
-				financials.companyName,
-				financials.recordingDate,
-				financials.totalSales,
-				financials.cogs,
-				financials.inventoryStock,
-				financials.cashCounter,
-				financials.accountsReceivables,
-				financials.accountsPayable
-			]
-			const hashes = [];
-			for(let i = 0; i < leaves.length; i++) {
-				if(typeof leaves[i] === "number") {
-					hashes.push(sha3({value: leaves[i].toString(), type: 'uint8'}))
-				} else {
-					hashes.push(sha3({value: leaves[i], type: 'string'}))
-				}
-			}
-			const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
-            const rootHash = tree.getRoot()
-            */
+		// Insert new company entry
+		
 			promisify(contract.instance.addRecordEntry)({
 				args: [
 					financials.companyName,
@@ -116,22 +79,14 @@ function add(financials) {
 
 }
 
-/**
- * Return all financial records in the database.
- *
- * @return {Promise} A promise that depends on the contract creation
- */
-function getAllFinancials() {
-	return db.readAll();
-}
 
 /**
  * Return Root has for a specific entry specified by index
  *
- * @return {Promise} A pormise that contains the return value: roothash
+ * @return {Promise} A promise that contains the return value: RecordingData
  */
-function getRootHash(indexOfRecord){
-	return new promisify(contract.instance.getRootHash)({args: indexOfRecord})
+function getRecordingDateRootHash(indexOfRecord){
+	return new promisify(contract.instance.getRecordingDateRootHash)({args: indexOfRecord})
 }
 
 /**
@@ -157,8 +112,7 @@ function hasInstance() {
 module.exports = {
 	create,
 	add,
-	getAllFinancials,
 	setInstance,
-	getRootHash,
+	getRecordingDateRootHash,
 	hasInstance
 }

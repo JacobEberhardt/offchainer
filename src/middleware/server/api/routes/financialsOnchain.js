@@ -20,12 +20,6 @@ router.post('/create', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Get all financials records from DB
-router.get('/', (req, res, next) => {
-	financials.getAllFinancials()
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
 
 
 //add a record entry to DB and compute the record's root Hash
@@ -35,16 +29,10 @@ router.post('/addEntry', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-//Get the Record entry by an index
-router.get('/getRecord/:id', (req, res, next) => {
-	financials.getRecordEntry(req.params.id)
-		.then(result => response(res, 200, result))
-		.catch(err => error(res, 500, err))
-})
 
 //getRootHash
-router.get('/rootHash/:id', (req, res, next) => {
-	financials.getRootHash(req.params.id)
+router.get('/getRecordingDateRootHash/:id', (req, res, next) => {
+	financials.getRecordingDateRootHash(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })

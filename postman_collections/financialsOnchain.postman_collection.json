@@ -1,0 +1,45 @@
+{
+	"variables": [],
+	"info": {
+		"name": "financialsOnchain",
+		"_postman_id": "62ad9b7f-d32b-6f81-76f6-55015f79772a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"request": {
+				"url": "192.168.99.100:8000/financialsOnchain/create",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "addEntry",
+			"request": {
+				"url": "192.168.99.100:8000/financialsOnchain/addEntry",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : \"01.01.2010\",\n    \"totalSales\" : \"4213\",\n    \"cogs\" : \"322\",\n    \"inventoryStock\" : \"412\",\n    \"cashCounter\" : \"5123\",\n    \"accountsReceivables\" :\"321\",\n    \"accountsPayable\" : \"5123\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

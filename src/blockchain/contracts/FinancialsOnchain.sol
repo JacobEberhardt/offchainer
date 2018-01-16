@@ -7,9 +7,6 @@ contract FinancialsOnchain {
 	address creator;
 	uint private recordIndex = 0;
 	mapping(uint => RecordEntry) recordEntries;
-	//mapping(uint => bytes32) datesToHashes;
-
-	//mapping(uint => bytes32) rootHashes;
 
 
 
@@ -24,14 +21,8 @@ contract FinancialsOnchain {
 	    uint256 accounts_payable;
     }
 
-	// Events
-	//event IntegrityCheckCompletedEvent(string resultOfIntegrityCheck);
 
 	// Constructor
-	/**
-	 * Create a new contract instance.
-	 *
-	 */
 	function FinancialsOnchain() public {
 	    creator = msg.sender;
 	}
@@ -66,16 +57,6 @@ contract FinancialsOnchain {
 	    return currentRecordEntries;
 	}
 
-	/**
-	 * Return an array of all the roothashes stored in SC.
-	 */
-	/*function getAllRootHashes() constant returns(bytes32[]) {
-	    bytes32[] memory currentRootHashes = new bytes32[](recordIndex);
-	    for(uint i = 0; i < recordIndex; i++){
-	        currentRootHashes[i] = recordEntries[i].rootHash;
-	    }
-	    return currentRootHashes;
-	}*/
 
 	/**
 	 * Return one record stored in the SC
@@ -89,7 +70,7 @@ contract FinancialsOnchain {
 	 * Returns one roothash of the chosen record
 	 * @param indexOfRecord the index of the record 
 	 */
-	function getRootHash(uint indexOfRecord) constant returns(string) {
+	function getRecordingDateRootHash(uint indexOfRecord) constant returns(string) {
 	    return recordEntries[indexOfRecord].recording_date;
 	}
 
