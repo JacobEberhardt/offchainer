@@ -31,8 +31,8 @@ router.post('/addEntry', (req, res, next) => {
 
 
 //getRecordingDataRootHash
-router.get('/getRecordingDateRootHash/:id', (req, res, next) => {
-	financials.getRecordingDateRootHash(req.params.id)
+router.get('/getRecordingDate/:id', (req, res, next) => {
+	financials.getRecordingDate(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })

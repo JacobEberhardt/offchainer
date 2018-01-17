@@ -14,21 +14,6 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 // Create contract object
 const contract = web3.eth.contract(contractData.abi)
 
-// Establish database connection
-/*const db = new Database(
-	'financials',
-	{
-		company_name: { type: Sequelize.STRING },
-		recording_date: { type: Sequelize.STRING },
-		total_sales: { type: Sequelize.INTEGER },
-		cogs: { type: Sequelize.INTEGER },
-		inventory_stock: { type: Sequelize.INTEGER },
-		cash_counter: { type: Sequelize.INTEGER },
-		accounts_receivables: { type: Sequelize.INTEGER },
-		accounts_payable: { type: Sequelize.INTEGER },
-	}
-)*/
-
 //Contract construction
 /**
  * Create a new contract instance.
@@ -84,8 +69,8 @@ function add(financials) {
  *
  * @return {Promise} A promise that contains the return value: RecordingData
  */
-function getRecordingDateRootHash(indexOfRecord){
-	return new promisify(contract.instance.getRecordingDateRootHash)({args: indexOfRecord})
+function getRecordingDate(indexOfRecord){
+	return new promisify(contract.instance.getRecordingDate)({args: indexOfRecord})
 }
 
 /**
@@ -112,6 +97,6 @@ module.exports = {
 	create,
 	add,
 	setInstance,
-	getRecordingDateRootHash,
+	getRecordingDate,
 	hasInstance
 }

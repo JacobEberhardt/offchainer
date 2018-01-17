@@ -67,10 +67,10 @@ contract FinancialsOnchain {
 	}
 
  	/**
-	 * Returns one roothash of the chosen record
+	 * Returns one recordingDate of the chosen record
 	 * @param indexOfRecord the index of the record 
 	 */
-	function getRecordingDateRootHash(uint indexOfRecord) constant returns(string) {
+	function getRecordingDate(uint indexOfRecord) constant returns(string) {
 	    return recordEntries[indexOfRecord].recording_date;
 	}
 

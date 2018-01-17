@@ -1,41 +1,88 @@
 {
-	"variables": [],
 	"info": {
 		"name": "financialsOnchain",
-		"_postman_id": "62ad9b7f-d32b-6f81-76f6-55015f79772a",
+		"_postman_id": "793b8698-ce15-b369-ef71-f9a7fdb107e4",
 		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Create",
 			"request": {
-				"url": "192.168.99.100:8000/financialsOnchain/create",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "192.168.99.100:8000/financialsOnchain/create",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"financialsOnchain",
+						"create"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "addEntry",
 			"request": {
-				"url": "192.168.99.100:8000/financialsOnchain/addEntry",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : \"01.01.2010\",\n    \"totalSales\" : \"4213\",\n    \"cogs\" : \"322\",\n    \"inventoryStock\" : \"412\",\n    \"cashCounter\" : \"5123\",\n    \"accountsReceivables\" :\"321\",\n    \"accountsPayable\" : \"5123\"\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/financialsOnchain/addEntry",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"financialsOnchain",
+						"addEntry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRecordingDateRootHash",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:8000/financialsOnchain/getRecordingDate/012",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"financialsOnchain",
+						"getRecordingDate",
+						"012"
+					]
 				},
 				"description": ""
 			},
