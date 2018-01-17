@@ -36,10 +36,7 @@ contract FinancialsOnchain {
 	function addRecordEntry(string company_name, string recording_date, 
 	uint256 total_sales, uint256 cogs, uint256 inventory_stock, uint256 cash_counter,
 	uint256 accounts_receivables, uint256 accounts_payable) public {
-	    // datesToHashes[now] = _rootHash;
-	    // RecordEntry memory recordEntry = RecordEntry(now, _rootHash);
-		// recordEntries[recordIndex] = recordEntry;
-		// recordIndex++;
+
 		
 		recordEntries[recordIndex] = RecordEntry(company_name, recording_date,
 		total_sales, cogs, inventory_stock, cash_counter, accounts_receivables, accounts_payable);
