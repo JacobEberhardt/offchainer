@@ -30,7 +30,7 @@ router.post('/addEntry', (req, res, next) => {
 })
 
 
-//getRootHash
+//getRecordingDataRootHash
 router.get('/getRecordingDateRootHash/:id', (req, res, next) => {
 	financials.getRecordingDateRootHash(req.params.id)
 		.then(result => response(res, 200, result))

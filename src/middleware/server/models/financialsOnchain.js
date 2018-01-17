@@ -3,7 +3,6 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
-const events = require('../utils/events')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/FinancialsOnchain.json'
