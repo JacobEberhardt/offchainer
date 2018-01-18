@@ -31,11 +31,8 @@ This project is implemented and consists of the following team members:
 7. In your local repo root, run "docker-compose up"
 8. Repeat steps 6 and 7 whenever something changes in your smart contracts, no need to rebuild
 
-### Contributing
-- Please create a branch from our ``origin/develop`` branch, and use the ticketID(clickup) and name for the branch's title. 
-- Include the ticketID into the commit messages as well 
-- ALWAYS run the command below to test the bulk of the current implementation to make sure you have not broken anything.
+### Testing
+- run the command below to test the bulk of the current implementation to make sure you have not broken anything.
 ```
 node src/middleware/server/test/testMerkleTree.js
 ```
-- Create a PR to develop!
