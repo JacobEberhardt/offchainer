@@ -153,7 +153,7 @@ class MerkleTree {
 	 */
 	_constructTree() {
 		let numberOfNonLeaveNodes = this._getNumberOfNodes(this.leaves.length) - this.leaves.length
-		const leaves = this.options.hashLeaves ? this.leaves.map(this.hashFunction) : this.leaves
+		const leaves = this.options.hashLeaves ? this.leaves.map(x => this.hashFunction(x)) : this.leaves
 		this.tree = new Array(numberOfNonLeaveNodes).fill(null).concat(leaves)
 		this._computeHash(0) // This computes all hashes in the tree recursively, starting from the root
 	}
