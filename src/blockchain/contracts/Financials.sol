@@ -15,7 +15,7 @@ contract Financials {
 	mapping(uint => bytes32) databaseIndexToRootHashes;
 
 	bytes32 rootHashAllRows;
-	bytes32 concatenatedRows;
+	//bytes32 concatenatedRows;
 
 	// Events
 	event IntegrityCheckCompletedEvent(string resultOfIntegrityCheck);
@@ -28,7 +28,7 @@ contract Financials {
 	function Financials() public {
 	    creator = msg.sender;
 	    rootHashAllRows = 0;
-	    concatenatedRows = 0;
+	    //concatenatedRows = 0;
 	}
 
 
@@ -50,9 +50,9 @@ contract Financials {
 	    }
 	}
 
-	function checkRowDataSCIndex(uint scIndex, uint[] rowDataToVerify) constant public returns(bool){
+	function checkRowDataSCIndex(uint scIndex, uint rowDataToVerify, bytes32[] proof, uint[] _proofPosition) constant public returns(bool){
 	    //TODO: perform Merkle Hashing on rowDataToVerify
-	    bytes32 resultingRootHash = 0;
+	    bytes32 resultingRootHash = _createTree(rowDataToVerify, proof, _proofPosition);
 	    if(recordIndexToRootHashes[scIndex] == resultingRootHash){
 	        return true;
 	    }
@@ -61,15 +61,29 @@ contract Financials {
 	    }
 	}
 
-	function checkRowDataDatabaseIndex(uint dbIndex, uint[] rowDataToVerify) constant public returns(bool){
+	function checkRowDataDatabaseIndex(uint dbIndex, uint rowDataToVerify, bytes32[] proof, uint[] _proofPosition) constant public returns(bool){
 	    //TODO: perform Merkle Hashing on rowDataToVerify
-	    bytes32 resultingRootHash = 0;
+	    bytes32 resultingRootHash = _createTree(rowDataToVerify, proof, _proofPosition);
 	    if(databaseIndexToRootHashes[dbIndex] == resultingRootHash){
 	        return true;
 	    }
 	    else{
 	        return false;
 	    }
+	}
+
+	function _createTree(uint rowDataToVerify, bytes32[] _proof, uint[] _proofPosition) private returns (bytes32) {
+	    bytes32 computedHash = keccak256(rowDataToVerify);
+	    for(uint8 i = 0; i < _proof.length; i++) {
+	        if(_proofPosition[i] == 0) {
+	            // if left
+	            computedHash = keccak256(_proof[i], computedHash);
+	        } else {
+	            // if right
+	            computedHash = keccak256(computedHash, _proof[i]);
+	        }
+	    }
+	    return computedHash;
 	}
 
 	function checkAllRows(bytes32[] roothashesToVerify) constant public returns(bool){
@@ -106,24 +120,36 @@ contract Financials {
 	    recordIndexToDatabaseIndex[recordIndex] = dbIndex;
 	    databaseIndexToRootHashes[dbIndex] = roothashToAppend;
 
-	    calcConcatHash(roothashToAppend);
+	    calcConcatHash();
 
 	    recordIndex ++;
 	    return (recordIndex - 1);
 	}
 
-	function calcConcatHash(bytes32 roothashToAppend) private {
-	    if(concatenatedRows != 0){
+	function calcConcatHash() private {
+	    //if(concatenatedRows != 0){
 	        //concatenate concatenatedRows and roothashToAppend
 	        //https://ethereum.stackexchange.com/questions/729/how-to-concatenate-strings-in-solidity
 	        //https://ethereum.stackexchange.com/questions/1081/how-to-concatenate-a-bytes32-array-to-a-string
-	        concatenatedRows = concatenatedRows & roothashToAppend; //not concatenated but added, should serve same cause
-	        rootHashAllRows = keccak256(concatenatedRows);
-	    }
-	    else{
+	        //concatenatedRows = concatenatedRows & roothashToAppend; //not concatenated but added, should serve same cause
+	        //rootHashAllRows = keccak256(concatenatedRows);
+	    //}
+	    //else{
 	        //first entry
-	        concatenatedRows = roothashToAppend;
-	        rootHashAllRows = keccak256(concatenatedRows);
-	    }
+	        //concatenatedRows = roothashToAppend;
+	        //rootHashAllRows = keccak256(concatenatedRows);
+	    //}
+	    bytes32[] memory arrayRowHashes = createRowsArray();
+	    rootHashAllRows = keccak256(arrayRowHashes);
+
 	}
+
+	function createRowsArray() private constant returns(bytes32[]){
+	    bytes32[] arrayRowHashes;
+	    for(uint i = 0; i < recordIndex; i++){
+	        arrayRowHashes.push(recordIndexToRootHashes[i]);
+	    }
+	    return arrayRowHashes;
+	}
+
 }
