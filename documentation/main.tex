@@ -1,0 +1,204 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Off-chaining Smart Contract Data to DBMS}
+\author{Thanh Tuan Tenh Cong, 
+Simon Fallnich,
+Patrick Friedrich,
+Tarek Higazi,\\
+Vincent Jonany,
+Dukagjin Ramosaj,
+Kevin Marcel Styp-Rekowski}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Your abstract.
+\end{abstract}
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction / Motivation}
+
+Your introduction goes here! 
+\begin{itemize}
+\item Blockchain new future technology, very important, etc.
+\item Cite Jacobs paper here [\cite{Eberhardt2017}]
+\item Mention transactions costs and the problems which araise from that (Maybe a new section \"{}Problems\"{}out of that, which comes after foundations, as we will need some foundations for that?)
+\end{itemize}
+
+
+\section{Foundations}
+The question will be how detailled this will need to be
+\begin{itemize}
+\item Blockchain
+\item Proof of Stake
+\item Transactions and Transaction costs
+\item Ethereum and Smart Contracts
+\item Hashing basics?
+\end{itemize}
+
+
+\section{Off-Chaining with merkle trees and SHA-3}
+\begin{itemize}
+\item Explain shortly how this approach shall work (maybe reference section 4.3 from Jacobs Paper [\cite{Eberhardt2017}] )
+\end{itemize}
+
+\subsection{Architecture}
+\begin{itemize}
+\item Figure of our architecture
+\item Explanation of systems / subsystems in our architecture
+\item How they interact with each other
+\item Also, describe which parts are assumed to be trusted
+\end{itemize}
+
+\subsection{Functionality (TODO: find a better title for that)}
+
+\subsubsection{Design Decisions}
+\begin{itemize}
+\item Explain in-depth (together with the architecture) how our approach works
+\end{itemize}
+
+
+\subsection{Financials Use Case}
+\begin{itemize}
+\item Explain use case
+\item Explain how this use case was implemented
+\end{itemize}
+
+\subsection{Employee Use Case}
+\begin{itemize}
+\item Explain use case
+\item Explain how this use case was implemented
+\end{itemize}
+
+
+\section{Maybe second method on how to off-chain}
+TODO
+
+\section{Evaluation}
+\begin{itemize}
+\item See \href{https://drive.google.com/drive/folders/1KhEb6TT2YXKUlSJx2sdfR44ZhWUSHnXN}{Benchmarking strategy google sheet}
+\item See what the results of those benchmarks are, make some nice figures out of them and put them in here
+\item Evaluate / Conclude from those figures which findings were made
+\end{itemize}
+
+\section{How to Deploy / How to use / User Guide}
+
+\section{How to Build Off-Chained Contracts}
+
+Describe the whole process which would be needed in order to change a on-chain contract to its off-chained counterpart.
+
+\begin{itemize}
+\item Use Library
+\item Use Events, routes
+\item Listen for events, add database models
+\end{itemize}
+
+
+\section{Summary}
+\begin{itemize}
+\item Shortly summarize the findings we made with this project
+\item This includes like a short summary of the evaluation so everybody who reads only the summary understands what pros and cons our approach has
+\end{itemize}
+
+
+\section{Future Work}
+\begin{itemize}
+\item Essentially, copy our future work parts from the presentations :)
+\end{itemize}
+
+
+\newpage
+Some examples of commonly used commands and features are listed below, to help you get started. If you have a question, please use the help menu (``?'') on the top bar to search for help or ask us a question. 
+\newpage
+empty
+\newpage
+
+\section{Some examples to get started}
+
+\subsection{How to add Comments}
+
+Comments can be added to your project by clicking on the comment icon in the toolbar above. % * <john.hammersley@gmail.com> 2014-09-03T09:54:16.211Z:
+%
+% Here's an example comment!
+%
+To reply to a comment, simply click the reply button in the lower right corner of the comment, and you can close them when you're done.
+
+\subsection{How to include Figures}
+
+First you have to upload the image file from your computer using the upload link the project menu. Then use the includegraphics command to include it in your document. Use the figure environment and the caption command to add a number and a caption to your figure. See the code for Figure \ref{fig:frog} in this section for an example.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{frog.jpg}
+\caption{\label{fig:frog}This frog was uploaded via the project menu.}
+\end{figure}
+
+\subsection{How to add Tables}
+
+Use the table and tabular commands for basic tables --- see Table~\ref{tab:widgets}, for example. 
+
+\begin{table}
+\centering
+\begin{tabular}{l|r}
+Item & Quantity \\\hline
+Widgets & 42 \\
+Gadgets & 13
+\end{tabular}
+\caption{\label{tab:widgets}An example table.}
+\end{table}
+
+\subsection{How to write Mathematics}
+
+\LaTeX{} is great at typesetting mathematics. Let $X_1, X_2, \ldots, X_n$ be a sequence of independent and identically distributed random variables with $\text{E}[X_i] = \mu$ and $\text{Var}[X_i] = \sigma^2 < \infty$, and let
+\[S_n = \frac{X_1 + X_2 + \cdots + X_n}{n}
+      = \frac{1}{n}\sum_{i}^{n} X_i\]
+denote their mean. Then as $n$ approaches infinity, the random variables $\sqrt{n}(S_n - \mu)$ converge in distribution to a normal $\mathcal{N}(0, \sigma^2)$.
+
+
+\subsection{How to create Sections and Subsections}
+
+Use section and subsections to organize your document. Simply use the section and subsection buttons in the toolbar to create them, and we'll handle all the formatting and numbering automatically.
+
+\subsection{How to add Lists}
+
+You can make lists with automatic numbering \dots
+
+\begin{enumerate}
+\item Like this,
+\item and like this.
+\end{enumerate}
+\dots or bullet points \dots
+\begin{itemize}
+\item Like this,
+\item and like this.
+\end{itemize}
+
+\subsection{How to add Citations and a References List}
+
+You can upload a \verb|.bib| file containing your BibTeX entries, created with JabRef; or import your \href{https://www.overleaf.com/blog/184}{Mendeley}, CiteULike or Zotero library as a \verb|.bib| file. You can then cite entries from it, like this: \cite{greenwade93}. Just remember to specify a bibliography style, as well as the filename of the \verb|.bib|.
+
+You can find a \href{https://www.overleaf.com/help/97-how-to-include-a-bibliography-using-bibtex}{video tutorial here} to learn more about BibTeX.
+
+We hope you find Overleaf useful, and please let us know if you have any feedback using the help menu above --- or use the contact form at \url{https://www.overleaf.com/contact}!
+
+\bibliographystyle{alpha}
+\bibliography{sample}
+
+\end{document}
