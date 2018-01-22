@@ -15,7 +15,6 @@ contract Financials {
 	mapping(uint => bytes32) databaseIndexToRootHashes;
 
 	bytes32 rootHashAllRows;
-	//bytes32 concatenatedRows;
 
 	// Events
 	event IntegrityCheckCompletedEvent(string resultOfIntegrityCheck);
@@ -27,7 +26,6 @@ contract Financials {
 	 */
 	function Financials() public {
 	    creator = msg.sender;
-	    //concatenatedRows = 0;
 	}
 
 	//Public functions
@@ -173,18 +171,6 @@ contract Financials {
 
 	//hashes an array with all the rows' stored root hashes and stores the result
 	function calcConcatHash() private {
-	    //if(concatenatedRows != 0){
-	        //concatenate concatenatedRows and roothashToAppend
-	        //https://ethereum.stackexchange.com/questions/729/how-to-concatenate-strings-in-solidity
-	        //https://ethereum.stackexchange.com/questions/1081/how-to-concatenate-a-bytes32-array-to-a-string
-	        //concatenatedRows = concatenatedRows & roothashToAppend; //not concatenated but added, should serve same cause
-	        //rootHashAllRows = keccak256(concatenatedRows);
-	    //}
-	    //else{
-	        //first entry
-	        //concatenatedRows = roothashToAppend;
-	        //rootHashAllRows = keccak256(concatenatedRows);
-	    //}
 	    bytes32[] memory arrayRowHashes = createRowsArray();
 	    rootHashAllRows = keccak256(arrayRowHashes);
 
