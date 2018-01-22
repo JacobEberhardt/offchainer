@@ -18,7 +18,7 @@ contract FinancialsOnchain {
 		uint256 inventory_stock;
 		uint256 cash_counter;
 		uint256 accounts_receivables;
-	    uint256 accounts_payable;
+		uint256 accounts_payable;
     }
 
 
@@ -40,7 +40,7 @@ contract FinancialsOnchain {
 		
 		recordEntries[recordIndex] = RecordEntry(company_name, recording_date,
 		total_sales, cogs, inventory_stock, cash_counter, accounts_receivables, accounts_payable);
-        recordIndex++;
+		recordIndex++;
 	}
 	/**
 	 * Return all records of entries stored in the SC. The record includes date and 
@@ -75,7 +75,6 @@ contract FinancialsOnchain {
 	 * Checks the integrity of a record, calls another event to display the result.
 	 */
 	function checkIntegrityOfRecord() constant{
-	    //TODO
-	    //IntegrityCheckCompletedEvent("Integrity of Data was verified");
+
 	}
 }

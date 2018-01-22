@@ -3,6 +3,7 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
+const web3Util = require('../utils/web3')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/FinancialsOnchain.json'
@@ -13,6 +14,9 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 
 // Create contract object
 const contract = web3.eth.contract(contractData.abi)
+
+// Set default account
+web3Util.setDefaultAccount(web3,0)
 
 //Contract construction
 /**
