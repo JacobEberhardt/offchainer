@@ -3,6 +3,7 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
+const web3Util = require('../utils/web3')
 
 // Define values
 CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/PayRaiseOnChain.json'
