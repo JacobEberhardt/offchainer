@@ -34,5 +34,5 @@ This project is implemented and consists of the following team members:
 ### Testing
 - run the command below to test the bulk of the current implementation to make sure you have not broken anything.
 ```
-node src/middleware/server/test/testMerkleTree.js
+npm test
 ```
