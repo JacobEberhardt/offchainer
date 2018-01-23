@@ -36,8 +36,6 @@ const db = new Database(
 	}
 )
 
-const handler = (err) => reject(err)
-
 //Contract construction
 /**
  * Create a new contract instance.
@@ -61,13 +59,15 @@ function create() {
 
 
 /**
- * Create and insert an financial records into the database and store the root hash of the data record into the smart contract
+ * Create the root, store the root into the SC, and then store the SC id, the root hash, and the raw data in DB.
  * 
  * @param {Object} financials The new financial record to add
  * @returns {Promise} A promise that depends on the successful  insert of financials object
  */
 function add(financials) {
 	return new Promise((resolve, reject) => {
+
+		const handler = (err) => reject(err)
 
 		const dbRow = {
 			company_name: financials.companyName,
@@ -95,29 +95,15 @@ function add(financials) {
 		events.watch(contract.instance.PostAppendEvent).then(result => {
 			// save the index to the db with the row
 			if(result.args != null) {
-				console.log(sha3(result.args.rootHash))
-				console.log(result.args)
-				// dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
+				dbRow["sc_id"] = result.args.indexInSmartContract.toNumber();
+				dbRow["root_hash"] = result.args.rootHash;
 				// just needs to update the DB now.
-				// return db.create(dbRow)
+				return db.create(dbRow)
 			} 
 
 		}).then(result => {
 			resolve("ADDED new financial entry")
-		})
-
-
-		events.watch(contract.instance.print).then(result => {
-			// save the index to the db with the row
-			console.log(result.args)
-			// dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
-			// just needs to update the DB now.
-			// return db.create(dbRow)
-
-
-		})
-
-
+		}).catch(handler)
 
 
 		// create the merkle root hash
