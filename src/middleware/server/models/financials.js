@@ -23,6 +23,7 @@ const contract = web3.eth.contract(contractData.abi)
 const db = new Database(
 	'financials',
 	{
+		sc_id: { type: Sequelize.INTEGER },
 		company_name: { type: Sequelize.STRING },
 		recording_date: { type: Sequelize.STRING },
 		total_sales: { type: Sequelize.INTEGER },
@@ -64,8 +65,11 @@ function create() {
  */
 function add(financials) {
 	return new Promise((resolve, reject) => {
-		// Insert new Employee
-		db.create({
+
+		const handler = (err) => reject(err)
+
+
+		const dbRow = {
 			company_name: financials.companyName,
 			recording_date: financials.recordingDate,
 			total_sales: financials.totalSales,
@@ -74,35 +78,48 @@ function add(financials) {
 			cash_counter: financials.cashCounter,
 			accounts_receivables: financials.accountsReceivables,
 			accounts_payable: financials.accountsPayable
-		}).then(result => {
-			//Create Merkle Tree
-			const leaves = [
-				financials.companyName,
-				financials.recordingDate,
-				financials.totalSales,
-				financials.cogs,
-				financials.inventoryStock,
-				financials.cashCounter,
-				financials.accountsReceivables,
-				financials.accountsPayable
-			]
-			const hashes = [];
-			for(let i = 0; i < leaves.length; i++) {
-				if(typeof leaves[i] === "number") {
-					hashes.push(sha3({value: leaves[i].toString(), type: 'uint8'}))
-				} else {
-					hashes.push(sha3({value: leaves[i], type: 'string'}))
-				}
+		}
+
+		const leaves = [
+			financials.companyName,
+			financials.recordingDate,
+			financials.totalSales,
+			financials.cogs,
+			financials.inventoryStock,
+			financials.cashCounter,
+			financials.accountsReceivables,
+			financials.accountsPayable
+		]
+
+		// watch for the returned index
+		events.watch(contract.instance.ReturnCurrentId).then(result => {
+			// save the index to the db with the row
+			if(result != null) {
+				dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
+				// just needs to update the DB now.
+				return db.create(dbRow)
 			}
-			const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
-			const rootHash = tree.getRoot()
-			promisify(contract.instance.addRecordEntry)({
-				args: [
-					result.dataValues.id,
-					rootHash
-				]
-			}).then(result => resolve(result));
+		}).then(result => {
+			console.log(result)
+			resolve(result)
 		})
+
+		// create the merkle root hash
+		const hashes = [];
+		for(let i = 0; i < leaves.length; i++) {
+			if(typeof leaves[i] === "number") {
+				hashes.push(sha3({value: leaves[i].toString(), type: 'uint8'}))
+			} else {
+				hashes.push(sha3({value: leaves[i], type: 'string'}))
+			}
+		}
+		const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
+		const rootHash = tree.getRoot()
+
+		promisify(contract.instance.append)({
+			args: rootHash
+		}).catch(handler)
+
 	})
 
 }
