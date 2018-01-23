@@ -5,7 +5,8 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
+    "dev": "nodemon server/server.js",
+    "test": "node server/test/testMerkleTree.js"
   },
   "dependencies": {
     "express": "^4.16.2",
