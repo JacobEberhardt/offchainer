@@ -24,6 +24,7 @@ const db = new Database(
 	'financials',
 	{
 		sc_id: { type: Sequelize.INTEGER },
+		root_hash: {type : Sequelize.STRING},
 		company_name: { type: Sequelize.STRING },
 		recording_date: { type: Sequelize.STRING },
 		total_sales: { type: Sequelize.INTEGER },
@@ -34,6 +35,8 @@ const db = new Database(
 		accounts_payable: { type: Sequelize.INTEGER },
 	}
 )
+
+const handler = (err) => reject(err)
 
 //Contract construction
 /**
@@ -66,9 +69,6 @@ function create() {
 function add(financials) {
 	return new Promise((resolve, reject) => {
 
-		const handler = (err) => reject(err)
-
-
 		const dbRow = {
 			company_name: financials.companyName,
 			recording_date: financials.recordingDate,
@@ -92,17 +92,33 @@ function add(financials) {
 		]
 
 		// watch for the returned index
-		events.watch(contract.instance.ReturnCurrentId).then(result => {
+		events.watch(contract.instance.PostAppendEvent).then(result => {
 			// save the index to the db with the row
-			if(result != null) {
-				dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
+			if(result.args != null) {
+				console.log(sha3(result.args.rootHash))
+				console.log(result.args)
+				// dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
 				// just needs to update the DB now.
-				return db.create(dbRow)
-			}
+				// return db.create(dbRow)
+			} 
+
 		}).then(result => {
-			console.log(result)
-			resolve(result)
+			resolve("ADDED new financial entry")
 		})
+
+
+		events.watch(contract.instance.print).then(result => {
+			// save the index to the db with the row
+			console.log(result.args)
+			// dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
+			// just needs to update the DB now.
+			// return db.create(dbRow)
+
+
+		})
+
+
+
 
 		// create the merkle root hash
 		const hashes = [];

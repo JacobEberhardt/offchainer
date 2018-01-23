@@ -1,6 +1,7 @@
 CREATE TABLE financials (
 	id SERIAL UNIQUE PRIMARY KEY NOT NULL,
 	sc_id INTEGER,
+	root_hash TEXT,
 	company_name TEXT,
 	recording_date TEXT,
 	total_sales INTEGER,

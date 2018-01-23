@@ -14,7 +14,8 @@ contract Financials {
 
 	// Events
 	event IntegrityCheckCompletedEvent(string resultOfIntegrityCheck);
-	event ReturnCurrentId(uint indexInSmartContract);
+	event PostAppendEvent(uint indexInSmartContract, bytes32 rootHash, bytes32 allHashes);
+	event print(uint256 length);
 
 	// Constructor
 	/**
@@ -106,7 +107,8 @@ contract Financials {
 	    calcConcatHash();
 
 	    recordIndex ++;
-	    ReturnCurrentId(recordIndex -1);
+	    // delete roothashallrows please
+	    PostAppendEvent(recordIndex -1, roothashToAppend, rootHashAllRows);
 	}
 
 	/**
@@ -136,6 +138,7 @@ contract Financials {
 	//hashes an array with all the rows' stored root hashes and stores the result
 	function calcConcatHash() private {
 	    bytes32[] memory arrayRowHashes = createRowsArray();
+	    print( arrayRowHashes.length);
 	    rootHashAllRows = keccak256(arrayRowHashes);
 
 	}
