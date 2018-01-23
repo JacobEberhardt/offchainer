@@ -71,10 +71,4 @@ contract FinancialsOnchain {
 	    return recordEntries[indexOfRecord].recording_date;
 	}
 
-	/**
-	 * Checks the integrity of a record, calls another event to display the result.
-	 */
-	function checkIntegrityOfRecord() constant{
-
-	}
 }
