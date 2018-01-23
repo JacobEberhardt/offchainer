@@ -3,3 +3,6 @@
 **/package-lock.json
 **/*.swp
 src/blockchain/build
+documentation/main.log
+documentation/main.synctex.gz
+documentation/main.pdf
