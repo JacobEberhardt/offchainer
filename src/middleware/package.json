@@ -4,8 +4,8 @@
   "description": "A middleware for trustless data exchange between blockchain and RDBMS.",
   "main": "server/server.js",
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
+    "start": "node server/start.js",
+    "dev": "nodemon server/start.js",
     "benchmark": "node benchmarking/benchmarking.js",
     "test": "node server/test/testMerkleTree.js"
   },

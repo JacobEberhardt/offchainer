@@ -1,10 +1,13 @@
 const request = require('supertest')
 
-PG_HOST=database
-PG_PORT=5432
-PG_USER=postgres
-PG_DATABASE=offchainer
+// const express = require('express');
+//
+// const app = express();
+
 const server = require('../server/server.js')
-const api = require('../api/api.js')
+
+
+//const server = require('../server/server.js')
+//const api = require('../api/api.js')
 
 console.log("I got called.")
