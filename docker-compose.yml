@@ -1,7 +1,7 @@
 version: "3"
 services:
   middleware:
-    build: . 
+    build: .
     command: npm run dev
     ports:
       - "8000:8000"
@@ -9,6 +9,7 @@ services:
       - database
     volumes:
       - ./src/middleware/server:/middleware/server
+      - ./src/middleware/benchmarking:/middleware/benchmarking
       - ./src/blockchain/build:/blockchain/build
     environment:
       - PG_HOST=database
