@@ -7,6 +7,8 @@ const request = require('supertest')
 const server = require('../server/server.js')
 
 
+const fs = require('fs');
+
 //const server = require('../server/server.js')
 //const api = require('../api/api.js')
 
@@ -25,7 +27,7 @@ describe('first test', function() {
       .expect('Content-Type', /json/)
       .expect(200)
       .then( response => {
-        answerVar = answerVar + response.body
+        answerVar = answerVar + response.body.status
         sleep(2000).then(() => {
           request(server)
             .post('/employeeOnchain/add')
@@ -39,7 +41,7 @@ describe('first test', function() {
             .expect('Content-Type', /json/)
             .expect(200)
             .then( response => {
-              answerVar = answerVar + response.body
+              answerVar = answerVar + ', ' + response.body.status
               request(server)
               .post('/payraiseOnchain/create')
               .send({
@@ -50,15 +52,13 @@ describe('first test', function() {
               .expect('Content-Type', /json/)
               .expect(200)
               .then( response => {
-                answerVar = answerVar + response.body
+                answerVar = answerVar + ', ' + response.body.status
                 console.log("respone from payraise-create:")
                 //console.log(response)
                 console.log("relevant parts: \n\n")
                 const payraiseAddress = response.body.content.address
               //  console.log(payraiseAddress)
                 console.log("lol")
-                console.log(answerVar)
-                console.log("answerVar ende")
                 request(server)
                 .post('/employeeOnchain/increase-salary')
                 .send({
@@ -68,6 +68,15 @@ describe('first test', function() {
                 .expect(200)
                 .end(function(err, res) {
                   if (err) throw err;
+                  answerVar = answerVar + ', ' + res.body.status
+                  console.log(answerVar)
+                  console.log("answerVar ende")
+
+                  /*fs.writeFile("/middleware/benchmarking/test", answerVar, function(err) {
+                      if(err) {
+                          return console.log(err)
+                      }
+                  })*/
                   done()
                 });
               })

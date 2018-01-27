@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server/start.js",
     "dev": "nodemon server/start.js",
-    "benchmark": "node benchmarking/benchmarking.js",
+    "benchmark": "./node_modules/.bin/mocha benchmarking/benchmarking.js --timeout 15000 --exit",
     "test": "node server/test/testMerkleTree.js"
   },
   "dependencies": {
