@@ -17,64 +17,75 @@ console.log("I got called.")
 
 
 console.log("call create")
-request(server)
-  .post('/employeeOnchain/create')
-  .expect('Content-Type', /json/)
-  .expect(200)
-  .then( response => {
-    sleep(2000).then(() => {
-      request(server)
-        .post('/employeeOnchain/add')
-        .send({
-        	"firstName" : "Adam",
-        	"lastName" : "Miller",
-        	"startDate" : 1515942162,
-        	"department" : "IT",
-        	"salary" : 2000
-        })
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then( response => {
+describe('first test', function() {
+  it('first test it', function(done) {
+    var answerVar = ''
+    request(server)
+      .post('/employeeOnchain/create')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then( response => {
+        answerVar = answerVar + response.body
+        sleep(2000).then(() => {
           request(server)
-          .post('/payraiseOnchain/create')
-          .send({
-          	"percentage" : 15,
-          	"department" : "IT",
-          	"fromStartDate" : 1515942162
-          })
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .then( response => {
-            console.log("respone from payraise-create:")
-            console.log(response)
-            console.log("relevant parts: \n\n")
-            const payraiseAddress = response.body.content.address
-            console.log(payraiseAddress)
-            console.log("lol")
-            request(server)
-            .post('/employeeOnchain/increase-salary')
+            .post('/employeeOnchain/add')
             .send({
-            	"contractAddress": payraiseAddress
+            	"firstName" : "Adam",
+            	"lastName" : "Miller",
+            	"startDate" : 1515942162,
+            	"department" : "IT",
+            	"salary" : 2000
             })
             .expect('Content-Type', /json/)
             .expect(200)
-            .end(function(err, res) {
-              if (err) throw err;
-              done()
-            });
-          })
+            .then( response => {
+              answerVar = answerVar + response.body
+              request(server)
+              .post('/payraiseOnchain/create')
+              .send({
+              	"percentage" : 15,
+              	"department" : "IT",
+              	"fromStartDate" : 1515942162
+              })
+              .expect('Content-Type', /json/)
+              .expect(200)
+              .then( response => {
+                answerVar = answerVar + response.body
+                console.log("respone from payraise-create:")
+                //console.log(response)
+                console.log("relevant parts: \n\n")
+                const payraiseAddress = response.body.content.address
+              //  console.log(payraiseAddress)
+                console.log("lol")
+                console.log(answerVar)
+                console.log("answerVar ende")
+                request(server)
+                .post('/employeeOnchain/increase-salary')
+                .send({
+                	"contractAddress": payraiseAddress
+                })
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err, res) {
+                  if (err) throw err;
+                  done()
+                });
+              })
 
 
 
 
 
+            })
         })
-    })
 
-      /*.end(function(err, res) {
-        if (err) throw err;
-      });*/
-  })
+          /*.end(function(err, res) {
+            if (err) throw err;
+          });*/
+      })
+  });
+});
+
   /*.end(function(err, res) {
     if (err) throw err;
 
