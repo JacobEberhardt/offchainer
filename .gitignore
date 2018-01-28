@@ -6,3 +6,6 @@ src/blockchain/build
 documentation/main.log
 documentation/main.synctex.gz
 documentation/main.pdf
+
+src/middleware/benchmarking/
+!src/middleware/benchmarking/bencharking.js

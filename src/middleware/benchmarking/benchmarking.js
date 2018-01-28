@@ -72,11 +72,11 @@ describe('first test', function() {
                   console.log(answerVar)
                   console.log("answerVar ende")
 
-                  /*fs.writeFile("/middleware/benchmarking/test", answerVar, function(err) {
+                  fs.writeFile("/middleware/benchmarking/employee-Onchain.csv", answerVar, function(err) {
                       if(err) {
                           return console.log(err)
                       }
-                  })*/
+                  })
                   done()
                 });
               })
