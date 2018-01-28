@@ -106,7 +106,8 @@ function increaseSalary(payRaiseContractAddress) {
     // Increase salary request for all employees in the specified department of the payraise contract
     promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
       .then((result) => {
-        resolve(result)
+				var receipt = web3.eth.getTransactionReceipt(result);
+        resolve({result:result, transaction:receipt})
       })
       .catch(handler)
 	})
