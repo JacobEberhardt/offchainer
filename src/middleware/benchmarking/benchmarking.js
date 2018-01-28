@@ -3,8 +3,8 @@ const server = require('../server/server.js')
 const fs = require('fs');
 
 
-describe('first test', function() {
-  it('first test it', function(done) {
+describe('Benchmarking', function() {
+  it('Benchmarking Employee-Onchain', function(done) {
     var answerVar = 'function; gas cost;\n'
     request(server)
       .post('/employeeOnchain/create')
@@ -47,9 +47,7 @@ describe('first test', function() {
                 .expect(200)
                 .end(function(err, res) {
                   if (err) throw err;
-                  answerVar = answerVar + ', ' + res.body.status
-                  console.log(answerVar)
-                  console.log("answerVar ende")
+                  answerVar = answerVar + "increase-salary;" + res.body.content.transaction.gasUsed + "\n"
 
                   fs.writeFileSync("/middleware/benchmarking/employeeOnchain.csv", answerVar, function(err) {
                       if(err) {
