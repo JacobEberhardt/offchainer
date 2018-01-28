@@ -21,13 +21,13 @@ console.log("I got called.")
 console.log("call create")
 describe('first test', function() {
   it('first test it', function(done) {
-    var answerVar = ''
+    var answerVar = 'function; gas cost;\n'
     request(server)
       .post('/employeeOnchain/create')
       .expect('Content-Type', /json/)
       .expect(200)
       .then( response => {
-        answerVar = answerVar + response.body.status
+        answerVar = answerVar + "employee-create; " + response.body.content.transaction.gasUsed + "\n"
         sleep(2000).then(() => {
           request(server)
             .post('/employeeOnchain/add')
@@ -41,7 +41,7 @@ describe('first test', function() {
             .expect('Content-Type', /json/)
             .expect(200)
             .then( response => {
-              answerVar = answerVar + ', ' + response.body.status
+              answerVar = answerVar + "add; " + response.body.content.transaction.gasUsed + "\n"
               request(server)
               .post('/payraiseOnchain/create')
               .send({
@@ -72,7 +72,7 @@ describe('first test', function() {
                   console.log(answerVar)
                   console.log("answerVar ende")
 
-                  fs.writeFile("/middleware/benchmarking/employee-Onchain.csv", answerVar, function(err) {
+                  fs.writeFileSync("/middleware/benchmarking/employeeOnchain.csv", answerVar, function(err) {
                       if(err) {
                           return console.log(err)
                       }

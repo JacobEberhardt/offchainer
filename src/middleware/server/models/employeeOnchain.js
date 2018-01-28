@@ -64,7 +64,8 @@ function add(employee) {
 			]
 		}) //, result]))
 		.then((result) => {
-			resolve(result)
+			var receipt = web3.eth.getTransactionReceipt(result);
+			resolve({result:result, transaction:receipt})
 		})
 		.catch(err => reject(err))
 
