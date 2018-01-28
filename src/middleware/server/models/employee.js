@@ -58,14 +58,14 @@ function create() {
 
 /**
  * Create and insert an employee into the database and store the root hash of the data record into the smart contract.
- * 
+ *
  * @param {Object} employee The new employee to add
  * @returns {Promise} A promise that depends on the successful employee insert
  */
-function addEmployeeToDatabase(employee) {
+function add(employee) {
 
 	return new Promise((resolve, reject) => {
-		
+
 		// Define values
 		let values = [
 			employee.firstName,
@@ -121,8 +121,8 @@ function getRootHash(index) {
 }
 
 /**
- * Add a set of employees to the database and store the root hash of the data record into 
- * 
+ * Add a set of employees to the database and store the root hash of the data record into
+ *
  * @param {Object[]} employees The set of employees to add
  * @returns {Promise} A promise that depends on the successful salary increase
  */
@@ -153,7 +153,7 @@ function increaseSalarySingleEmployee(employee) {
 				return Promise.all([transactions.waitForBlock(web3, transactionHash), result])
 			})
 			.then(([result, previous])  => {
-				// Write new salary from previous chain results to database 
+				// Write new salary from previous chain results to database
 				return Promise.all([db.update(
 					{id: previous.args.rowId.c[0]},
 					{
@@ -186,7 +186,7 @@ function increaseSalarySingleEmployee(employee) {
 					'error' : 'Integrity check failed.'
 				})
 			})
-		
+
 		// Position of salary in employee record (-1 because id is shifted)
 		const indexOfSalary = Object.keys(employee).indexOf('salary') - 1
 
@@ -217,7 +217,7 @@ function increaseSalarySingleEmployee(employee) {
 
 /**
  * Increase the salary of all affected employee. Affected employees are defined in a payraise contract.
- * 
+ *
  * @param {String} payRaiseContractAddress The address of the payraise contract
  * @returns {Promise} A promise that depends on the successful salary increase
  */
@@ -292,7 +292,7 @@ function _hashValues(values) {
 // Export functions
 module.exports = {
 	create,
-	addEmployeeToDatabase,
+	add,
 	getRootHash,
 	getAll,
 	importEmployees,
