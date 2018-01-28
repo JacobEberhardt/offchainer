@@ -110,7 +110,7 @@ function add(financials) {
 		const hashes = [];
 		for(let i = 0; i < leaves.length; i++) {
 			if(typeof leaves[i] === "number") {
-				hashes.push(sha3({value: leaves[i].toString(), type: 'uint8'}))
+				hashes.push(sha3({value: leaves[i].toString(), type: 'uint256'}))
 			} else {
 				hashes.push(sha3({value: leaves[i], type: 'string'}))
 			}
