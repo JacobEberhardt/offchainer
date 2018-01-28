@@ -36,6 +36,10 @@ function create() {
 		requiredProperty: 'address',
 		context: contract
 	})
+		.then(result => {
+			var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
+			return {contract: result, receipt: receipt} //resolve(receipt)
+		})
 }
 
 

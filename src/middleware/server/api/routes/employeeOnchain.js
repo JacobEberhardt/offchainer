@@ -14,7 +14,7 @@ router.post('/create', (req, res, next) => {
 	employee.create(res)
 		.then(contract => {
 			employee.setInstance(contract.address) // Store the address
-			response(res, 200, {address: contract.address})
+			response(res, 200, {address: contract.address, transaction: contract.receipt})
 		})
 		.catch(err => error(res, 500, err))
 })
