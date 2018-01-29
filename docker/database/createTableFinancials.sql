@@ -3,7 +3,7 @@ CREATE TABLE financials (
 	sc_id INTEGER,
 	root_hash TEXT,
 	company_name TEXT,
-	recording_date TEXT,
+	recording_date INTEGER,
 	total_sales INTEGER,
 	cogs INTEGER,
 	inventory_stock INTEGER,

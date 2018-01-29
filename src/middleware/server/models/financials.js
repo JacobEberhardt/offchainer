@@ -26,7 +26,7 @@ const db = new Database(
 		sc_id: { type: Sequelize.INTEGER },
 		root_hash: {type : Sequelize.STRING},
 		company_name: { type: Sequelize.STRING },
-		recording_date: { type: Sequelize.STRING },
+		recording_date: { type: Sequelize.INTEGER }, // YEAR MONTH DAY 20180129
 		total_sales: { type: Sequelize.INTEGER },
 		cogs: { type: Sequelize.INTEGER },
 		inventory_stock: { type: Sequelize.INTEGER },
@@ -144,8 +144,11 @@ function queryWithDate(date) {
 		// listen to event that returns either check error, or the query results
 		db.readAllSort([["sc_id", "ASC"]]).then(result => {
 			let rootHashArr = []
+			let dateArr = []
 			// making the tree array
 			for(let i = 0; i < result.length; i++) {
+				let hashes = []
+
 				const leaves = [
 					result[i].dataValues.company_name,
 					result[i].dataValues.recording_date,
@@ -156,7 +159,10 @@ function queryWithDate(date) {
 					result[i].dataValues.accounts_receivables,
 					result[i].dataValues.accounts_payable
 				]
-				let hashes = []
+
+				// construct Int Date
+
+				dateArr.push(result[i].dataValues.total_sales) // need to process this to an easier obj
 
 				for(let j = 0; j < leaves.length; j++) {
 					if(typeof leaves[j] === "number") {
