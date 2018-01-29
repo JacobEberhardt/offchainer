@@ -32,7 +32,7 @@ const db = new Database(
 		inventory_stock: { type: Sequelize.INTEGER },
 		cash_counter: { type: Sequelize.INTEGER },
 		accounts_receivables: { type: Sequelize.INTEGER },
-		accounts_payable: { type: Sequelize.INTEGER },
+		accounts_payable: { type: Sequelize.INTEGER }
 	}
 )
 
@@ -66,8 +66,13 @@ function create() {
  */
 function add(financials) {
 	return new Promise((resolve, reject) => {
-
 		const handler = (err) => reject(err)
+
+		if(financials == null || financials.companyName == null || financials.recordingDate == null || financials.totalSales == null 
+			|| financials.cogs == null || financials.inventoryStock == null || financials.cashCounter == null 
+			|| financials.accountsReceivables == null || financials.accountsPayable == null) {
+			handler("parameter is missing")
+		}
 
 		const dbRow = {
 			company_name: financials.companyName,
@@ -95,15 +100,14 @@ function add(financials) {
 		events.watch(contract.instance.PostAppendEvent).then(result => {
 			// save the index to the db with the row
 			if(result.args != null) {
-				dbRow["sc_id"] = result.args.indexInSmartContract.toNumber();
-				dbRow["root_hash"] = result.args.rootHash;
+				dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
+				dbRow["root_hash"] = result.args.rootHash
 				// just needs to update the DB now.
 				return db.create(dbRow)
 			} 
 
-		}).then(result => {
-			resolve("ADDED new financial entry")
-		}).catch(handler)
+		}).then(resolve)
+		.catch(handler)
 
 
 		// create the merkle root hash
@@ -117,7 +121,6 @@ function add(financials) {
 		}
 		const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 		const rootHash = tree.getRoot()
-
 		promisify(contract.instance.append)({
 			args: rootHash
 		}).catch(handler)
@@ -126,6 +129,55 @@ function add(financials) {
 
 }
 
+/**
+ * Return the rows that match with the date query. The SC makes sure 
+ *
+ * @return {Promise} A promise that depends on the contract creation
+ */
+function queryWithDate(date) {
+	return new Promise((resolve, reject) => {
+
+		// get all the records in DB 
+		// it needs to be in order because the way it is ordered as in SC
+		// WE ONLY NEED THE ROOTHASH
+		// Send to SC
+		// listen to event that returns either check error, or the query results
+		db.readAllSort([["sc_id", "ASC"]]).then(result => {
+			let rootHashArr = []
+			// making the tree array
+			for(let i = 0; i < result.length; i++) {
+				const leaves = [
+					result[i].dataValues.company_name,
+					result[i].dataValues.recording_date,
+					result[i].dataValues.total_sales,
+					result[i].dataValues.cogs,
+					result[i].dataValues.inventory_stock,
+					result[i].dataValues.cash_counter,
+					result[i].dataValues.accounts_receivables,
+					result[i].dataValues.accounts_payable
+				]
+				let hashes = []
+
+				for(let j = 0; j < leaves.length; j++) {
+					if(typeof leaves[j] === "number") {
+						hashes.push(sha3({value: leaves[j].toString(), type: 'uint256'}))
+					} else {
+						hashes.push(sha3({value: leaves[j], type: 'string'}))
+					}
+				}
+
+				const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
+				rootHashArr.push(tree.getRoot())
+			}
+			console.log(rootHashArr)
+			// create the Request Obj to SC, if possible make the Date representation easier
+		})
+
+
+	})
+}
+
+ 
 /**
  * Return all financial records in the database.
  *
@@ -168,6 +220,7 @@ module.exports = {
 	create,
 	add,
 	getAllFinancials,
+	queryWithDate,
 	setInstance,
 	getRootHash,
 	hasInstance

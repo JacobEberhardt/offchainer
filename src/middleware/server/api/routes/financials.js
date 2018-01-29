@@ -20,6 +20,13 @@ router.post('/create', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+//query complete Date
+router.get('/queryWithDate', (req, res, next) => {
+	financials.queryWithDate(req.body)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
 // Get all financials records from DB
 router.get('/', (req, res, next) => {
 	financials.getAllFinancials()
