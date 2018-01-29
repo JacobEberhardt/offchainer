@@ -22,7 +22,7 @@ router.post('/create', (req, res, next) => {
 
 //query complete Date
 router.get('/queryWithDate', (req, res, next) => {
-	financials.queryWithDate(req.body)
+	financials.queryWithDate(req.query)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })

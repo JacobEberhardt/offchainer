@@ -134,8 +134,22 @@ function add(financials) {
  *
  * @return {Promise} A promise that depends on the contract creation
  */
-function queryWithDate(date) {
+function queryWithDate(query) {
 	return new Promise((resolve, reject) => {
+		const handler = (err) => reject(err)
+
+		if(query.min == null && query.max == null) {
+			handler("parameter cannot be missing")
+		} else {
+			if(query.max == null) {
+				query.max = 99999999
+			} else if(query.min == null) {
+				query.min = 0
+			} else if(query.max - query.min < 0 
+				|| typeof query.max !== "number" || typeof query.min !== "number") {
+				handler("parameter error")
+			}
+		}
 
 		// get all the records in DB 
 		// it needs to be in order because the way it is ordered as in SC
@@ -160,10 +174,6 @@ function queryWithDate(date) {
 					result[i].dataValues.accounts_payable
 				]
 
-				// construct Int Date
-
-				dateArr.push(result[i].dataValues.total_sales) // need to process this to an easier obj
-
 				for(let j = 0; j < leaves.length; j++) {
 					if(typeof leaves[j] === "number") {
 						hashes.push(sha3({value: leaves[j].toString(), type: 'uint256'}))
@@ -174,11 +184,16 @@ function queryWithDate(date) {
 
 				const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 				rootHashArr.push(tree.getRoot())
+				dateArr.push(result[i].dataValues.recording_date)
 			}
+			// send rootHashArr, dateArr, query to SC
+			// something like something(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min)
 			console.log(rootHashArr)
-			// create the Request Obj to SC, if possible make the Date representation easier
-		})
-
+			console.log(dateArr)
+			console.log(query.min)
+			console.log(query.max)
+			resolve("resolve")
+		}).catch(handler)
 
 	})
 }
