@@ -10,55 +10,56 @@ describe('Benchmarking', function() {
       .post('/employeeOnchain/create')
       .expect('Content-Type', /json/)
       .expect(200)
-      .then( response => {
+      .then(response => {
         answerVar = answerVar + "employee-create;" + response.body.content.transaction.gasUsed + "\n"
-        sleep(2000).then(() => {
-          request(server)
-            .post('/employeeOnchain/add')
-            .send({
-            	"firstName" : "Adam",
-            	"lastName" : "Miller",
-            	"startDate" : 1515942162,
-            	"department" : "IT",
-            	"salary" : 2000
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .then( response => {
-              answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + "\n"
-              request(server)
-              .post('/payraiseOnchain/create')
-              .send({
-              	"percentage" : 15,
-              	"department" : "IT",
-              	"fromStartDate" : 1515942162
-              })
-              .expect('Content-Type', /json/)
-              .expect(200)
-              .then( response => {
-                answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + "\n"
-                const payraiseAddress = response.body.content.address
-                request(server)
-                .post('/employeeOnchain/increase-salary')
-                .send({
-                	"contractAddress": payraiseAddress
-                })
-                .expect('Content-Type', /json/)
-                .expect(200)
-                .end(function(err, res) {
-                  if (err) throw err;
-                  answerVar = answerVar + "increase-salary;" + res.body.content.transaction.gasUsed + "\n"
-
-                  fs.writeFileSync("/middleware/benchmarking/employeeOnchain.csv", answerVar, function(err) {
-                      if(err) {
-                          return console.log(err)
-                      }
-                  })
-                  done()
-                });
-              })
-            })
+        return sleep(2000)
+      })
+      .then(() => {
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Adam",
+        	"lastName" : "Miller",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 2000
         })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + "\n"
+        return request(server)
+        .post('/payraiseOnchain/create')
+        .send({
+        	"percentage" : 15,
+        	"department" : "IT",
+        	"fromStartDate" : 1515942162
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + "\n"
+        const payraiseAddress = response.body.content.address
+        request(server)
+        .post('/employeeOnchain/increase-salary')
+        .send({
+        	"contractAddress": payraiseAddress
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) throw err;
+          answerVar = answerVar + "increase-salary;" + res.body.content.transaction.gasUsed + "\n"
+
+          fs.writeFileSync("/middleware/benchmarking/employeeOnchain.csv", answerVar, function(err) {
+              if(err) {
+                  return console.log(err)
+              }
+          })
+          done()
+        });
       })
   });
 
@@ -68,59 +69,60 @@ describe('Benchmarking', function() {
       .post('/employee/create')
       .expect('Content-Type', /json/)
       .expect(200)
-      .then( response => {
+      .then(response => {
         answerVar = answerVar + "employee-create;" + response.body.content.transaction.gasUsed + "\n"
-        sleep(2000).then(() => {
-          request(server)
-            .post('/employee/add')
-            .send({
-            	"firstName" : "Adam",
-            	"lastName" : "Miller",
-            	"startDate" : 1515942162,
-            	"department" : "IT",
-            	"salary" : 2000
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .then( response => {
-              answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + "\n"
-              request(server)
-              .post('/payraise/create')
-              .send({
-              	"percentage" : 15,
-              	"department" : "IT",
-              	"fromStartDate" : 1515942162
-              })
-              .expect('Content-Type', /json/)
-              .expect(200)
-              .then( response => {
-                answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + "\n"
-                const payraiseAddress = response.body.content.address
-                request(server)
-                .post('/employee/increase-salary')
-                .send({
-                	"contractAddress": payraiseAddress
-                })
-                .expect('Content-Type', /json/)
-                .expect(200)
-                .end(function(err, res) {
-                  if (err) throw err;
-                  let gasCostCumulated = 0
-                  for (var i = 0; i < res.body.content.length; i++) {
-                      gasCostCumulated += res.body.content[i].transaction.gasUsed
-                  }
-                  answerVar = answerVar + "increase-salary;" + gasCostCumulated + "\n"
-
-                  fs.writeFileSync("/middleware/benchmarking/employee.csv", answerVar, function(err) {
-                      if(err) {
-                          return console.log(err)
-                      }
-                  })
-                  done()
-                });
-              })
-            })
+        return sleep(2000)
+      })
+      .then(() => {
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Adam",
+        	"lastName" : "Miller",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 2000
         })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + "\n"
+        return request(server)
+        .post('/payraise/create')
+        .send({
+        	"percentage" : 15,
+        	"department" : "IT",
+        	"fromStartDate" : 1515942162
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + "\n"
+        const payraiseAddress = response.body.content.address
+        request(server)
+        .post('/employee/increase-salary')
+        .send({
+        	"contractAddress": payraiseAddress
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) throw err;
+          let gasCostCumulated = 0
+          for (var i = 0; i < res.body.content.length; i++) {
+              gasCostCumulated += res.body.content[i].transaction.gasUsed
+          }
+          answerVar = answerVar + "increase-salary;" + gasCostCumulated + "\n"
+
+          fs.writeFileSync("/middleware/benchmarking/employee.csv", answerVar, function(err) {
+              if(err) {
+                  return console.log(err)
+              }
+          })
+          done()
+        });
       })
   });
 });
