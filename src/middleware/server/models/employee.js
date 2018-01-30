@@ -169,7 +169,10 @@ function increaseSalarySingleEmployee(employee) {
 					}
 				), previous])
 			})
-			.then(([result, previous]) => resolve(result))
+			.then(([result, previous]) => {
+				var receipt = web3.eth.getTransactionReceipt(transactionHash);
+				resolve({'id':result[1][0].id,result:result[1][0], transaction:receipt})
+			})
 			.catch(([error, previous]) => {
 				let finalHandler = () => reject({'id': employee.id, 'error': error})
 				if (error.code === 'database') {
@@ -189,9 +192,11 @@ function increaseSalarySingleEmployee(employee) {
 		// Integrity check of data record failed
 		events.watch(contract.instance.IntegrityCheckFailedEvent)
 			.then((result) => {
+				var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
 				reject({
 					'id' : employee.id,
-					'error' : 'Integrity check failed.'
+					'error' : 'Integrity check failed.',
+					'transaction': receipt
 				})
 			})
 
@@ -235,10 +240,13 @@ function increaseSalary(payRaiseContractAddress) {
 
 		const handler = (err) => reject(err)
 		let finalResult = []
+		let transactionHash
 
 		// Smart contract needs data
 		events.watch(contract.instance.RetrieveDataEvent)
 			.then(result => {
+				var receipt = web3.eth.getTransactionReceipt(transactionHash);
+				finalResult.push({'transaction':receipt})
 				let department = web3.toUtf8(result.args.department)
 				return db.readAll({department: department})
 			})
@@ -246,7 +254,7 @@ function increaseSalary(payRaiseContractAddress) {
 				return result.reduce((promise, item) => { // Create one promise chain for all items
 					return promise
 						.then((result) => increaseSalarySingleEmployee(item.dataValues))
-						.then(result => finalResult.push(result[1][0]))
+						.then(result => finalResult.push(result))
 						.catch(error => finalResult.push(error))
 				}, Promise.resolve())
 			})
@@ -255,6 +263,7 @@ function increaseSalary(payRaiseContractAddress) {
 
 		// Increase salary request for all employees, which are returned from the database
 		promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
+			.then(result => transactionHash = result)
 			.catch(handler)
 
 	})
