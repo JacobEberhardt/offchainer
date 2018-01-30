@@ -105,7 +105,11 @@ describe('Benchmarking', function() {
                 .expect(200)
                 .end(function(err, res) {
                   if (err) throw err;
-                  answerVar = answerVar + "increase-salary;" + res.body.content.transaction.gasUsed + "\n"
+                  let gasCostCumulated = 0
+                  for (var i = 0; i < res.body.content.length; i++) {
+                      gasCostCumulated += res.body.content[i].transaction.gasUsed
+                  }
+                  answerVar = answerVar + "increase-salary;" + gasCostCumulated + "\n"
 
                   fs.writeFileSync("/middleware/benchmarking/employee.csv", answerVar, function(err) {
                       if(err) {
