@@ -100,10 +100,9 @@ function add(employee) {
 				}), result])
 			})
 			.then(([result, previous]) => {
-				console.log("add- first result-return.")
-				console.log(result)
-				console.log("add- first result-return ende.")
-				resolve(previous)
+				var receipt = web3.eth.getTransactionReceipt(result);
+				resolve({result:result, transaction:receipt, employee:previous})
+				//resolve(previous)
 			})
 			.catch(err => reject(err))
 
