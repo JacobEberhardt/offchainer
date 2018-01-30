@@ -25,7 +25,7 @@ web3Util.setDefaultAccount(web3, 0)
 // Define functions
 /**
  * Create a new pay raise contract instance.
- * 
+ *
  * @param {Object} contractDetails The details of the contract
  * @return {Promise} A promise that depends on the contract creation
  */
@@ -44,6 +44,10 @@ function create(contractDetails) {
 		requiredProperty: 'address',
 		context: contract
 	})
+		.then(result => {
+			var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
+			return {contract: result, receipt: receipt} //resolve(receipt)
+		})
 }
 
 
