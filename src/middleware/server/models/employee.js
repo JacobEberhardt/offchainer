@@ -95,7 +95,12 @@ function add(employee) {
 					]
 				}), result])
 			})
-			.then(([result, previous]) => resolve(previous))
+			.then(([result, previous]) => {
+				console.log("add- first result-return.")
+				console.log(result)
+				console.log("add- first result-return ende.")
+				resolve(previous)
+			})
 			.catch(err => reject(err))
 
 	})
