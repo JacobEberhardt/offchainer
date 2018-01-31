@@ -16,7 +16,6 @@ contract Financials {
 	event IntegrityCheckCompletedEvent(bool success, string resultOfIntegrityCheck, uint scIndex);
 	event PostAppendEvent(uint indexInSmartContract, bytes32 rootHash);
 	event QueryResultsEvent(bool[] resultIndexes);
-	event QueryResultsEvent2(uint[] resultIndexes);
 
 	// Constructor
 	/**
@@ -152,24 +151,6 @@ contract Financials {
 	        }
 	    }
 	    QueryResultsEvent(resultIndexes);
-	}
-
-	function queryWithDate2(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min) public {
-	    assert(rootHashArr.length == dateArr.length);
-	    assert(min <= max);
-
-	    uint[] resultIndexes;
-
-	    for(uint i = 0; i < rootHashArr.length; i++){
-	        if(rootHashArr[i] == recordIndexToRootHashes[i]){
-	            if((dateArr[i] >= min) && (dateArr[i] <= max)){
-	                resultIndexes.push(i);
-	            }
-
-	        }
-
-	    }
-	    QueryResultsEvent2(resultIndexes);
 	}
 
 	// Private functions
