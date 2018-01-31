@@ -15,6 +15,8 @@ contract Financials {
 	// Events
 	event IntegrityCheckCompletedEvent(bool success, string resultOfIntegrityCheck, uint scIndex);
 	event PostAppendEvent(uint indexInSmartContract, bytes32 rootHash);
+	event QueryResultsEvent(bool[] resultIndexes);
+	event QueryResultsEvent2(uint[] resultIndexes);
 
 	// Constructor
 	/**
@@ -127,6 +129,47 @@ contract Financials {
 	        PostAppendEvent(recordIndex -1, roothashToAppend);
 	    }
 
+	}
+
+
+	function queryWithDate(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min) public {
+	    assert(rootHashArr.length == dateArr.length);
+	    assert(min <= max);
+
+	    bool[] memory resultIndexes = new bool[](rootHashArr.length);
+
+	    for(uint i = 0; i < rootHashArr.length; i++){
+	        if(rootHashArr[i] == recordIndexToRootHashes[i]){
+	            if((dateArr[i] >= min) && (dateArr[i] <= max)){
+	                resultIndexes[i] = true;
+	            }
+	            else{
+	                resultIndexes[i] = false;
+	            }
+	        }
+	        else{
+	            resultIndexes[i] = false;
+	        }
+	    }
+	    QueryResultsEvent(resultIndexes);
+	}
+
+	function queryWithDate2(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min) public {
+	    assert(rootHashArr.length == dateArr.length);
+	    assert(min <= max);
+
+	    uint[] resultIndexes;
+
+	    for(uint i = 0; i < rootHashArr.length; i++){
+	        if(rootHashArr[i] == recordIndexToRootHashes[i]){
+	            if((dateArr[i] >= min) && (dateArr[i] <= max)){
+	                resultIndexes.push(i);
+	            }
+
+	        }
+
+	    }
+	    QueryResultsEvent2(resultIndexes);
 	}
 
 	// Private functions
