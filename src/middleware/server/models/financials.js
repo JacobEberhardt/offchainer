@@ -138,22 +138,34 @@ function queryWithDate(query) {
 	return new Promise((resolve, reject) => {
 		const handler = (err) => reject(err)
 
-		if(query.min == null && query.max == null) {
-			handler("parameter cannot be missing")
-		} else {
-			if(query.max == null) {
-				query.max = 99999999
-			} else if(query.min == null) {
-				query.min = 0
-			} else if(query.max - query.min < 0 
-				|| typeof query.max !== "number" || typeof query.min !== "number") {
-				handler("parameter error")
-			}
+		const min = parseInt(query.min)
+		const max = parseInt(query.max)
+
+		let resultArr = []
+
+		if(min === NaN|| max === NaN || query.max - query.min < 0) {
+			return handler("parameter error")
 		}
+
+		// watch for the returned index/indeces that match the query
+		events.watch(contract.instance.QueryResultsEvent).then(result => {
+			// save the index to the db with the row
+			if(result.args != null) {
+				let returnArr = []
+				for(let i = 0; i < resultArr.length; i++) {
+					if(result.args.resultIndexes[i]) {
+						returnArr.push(resultArr[i])
+					}
+				}
+				resolve(returnArr)			
+			} 
+
+		}).then(resolve)
+		.catch(handler)
+
 
 		// get all the records in DB 
 		// it needs to be in order because the way it is ordered as in SC
-		// WE ONLY NEED THE ROOTHASH
 		// Send to SC
 		// listen to event that returns either check error, or the query results
 		db.readAllSort([["sc_id", "ASC"]]).then(result => {
@@ -174,6 +186,18 @@ function queryWithDate(query) {
 					result[i].dataValues.accounts_payable
 				]
 
+				resultArr.push({
+					"company name": result[i].dataValues.company_name,
+					"recording date": result[i].dataValues.recording_date,
+					"total sales": result[i].dataValues.total_sales,
+					"Cogs": result[i].dataValues.cogs,
+					"inventory stock": result[i].dataValues.inventory_stock,
+					"cash counter": result[i].dataValues.cash_counter,
+					"account receiveables": result[i].dataValues.accounts_receivables,
+					"account payable": result[i].dataValues.accounts_payable				
+				})
+
+
 				for(let j = 0; j < leaves.length; j++) {
 					if(typeof leaves[j] === "number") {
 						hashes.push(sha3({value: leaves[j].toString(), type: 'uint256'}))
@@ -188,11 +212,16 @@ function queryWithDate(query) {
 			}
 			// send rootHashArr, dateArr, query to SC
 			// something like something(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min)
-			console.log(rootHashArr)
-			console.log(dateArr)
-			console.log(query.min)
-			console.log(query.max)
-			resolve("resolve")
+			promisify(contract.instance.queryWithDate)({
+				args: [
+					rootHashArr,
+					dateArr,
+					query.max,
+					query.min
+				]
+			}).catch(handler)
+
+
 		}).catch(handler)
 
 	})
