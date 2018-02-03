@@ -130,7 +130,15 @@ contract Financials {
 
 	}
 
-
+	/**
+	 * Query functionality: checks which entries lie within a specified range of dates.
+	 * Fires the event QueryResultsEvent.
+	 *
+	 * @param rootHashArr array with all the rows' hashes to verify
+	 * @param dateArr array with all the rows' creation dates
+	 * @param max the maximal data as specified by the user's query
+	 * @param min the minimum data as specified by the user's query
+	 */
 	function queryWithDate(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min) public {
 	    assert(rootHashArr.length == dateArr.length);
 	    assert(min <= max);
