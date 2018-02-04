@@ -34,6 +34,11 @@ router.get('/', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+router.get('/checkRowData', (req, res, next) => {
+	financials.checkRowData()
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
 
 //add a record entry to DB and compute the record's root Hash
 router.post('/addEntry', (req, res, next) => {

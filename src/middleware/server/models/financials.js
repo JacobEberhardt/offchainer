@@ -227,6 +227,77 @@ function queryWithDate(query) {
 	})
 }
 
+
+
+function checkRowData(scIndex, rootHashToVerify, proof, proofPosition) {
+	return new Promise((resolve, reject) => {
+		// Define functions
+	//	const catchedEvent = false
+		const handler = (err) => reject(err)
+		const checkRowData = promisify(contract.instance.checkRowData)
+
+		// Event Listeners
+
+		events.watch(contract.instance.IntegrityCheckCompletedEvent) // Smart contract needs data
+			.then(eventResult => {
+				// Find data record with given index
+				db.read({ id: eventResult.args.rowId.c[0] }).then(dbResult => {
+					// Create leaves of counter values 
+					const leaves = [
+						dbResult[i].dataValues.company_name,
+						dbResult[i].dataValues.recording_date,
+						dbResult[i].dataValues.total_sales,
+						dbResult[i].dataValues.cogs,
+						dbResult[i].dataValues.inventory_stock,
+						dbResult[i].dataValues.cash_counter,
+						dbResult[i].dataValues.accounts_receivables,
+						dbResult[i].dataValues.accounts_payable
+					]
+
+					for(let j = 0; j < leaves.length; j++) {
+					if(typeof leaves[j] === "number") {
+						hashes.push(sha3({value: leaves[j].toString(), type: 'uint256'}))
+					} else {
+						hashes.push(sha3({value: leaves[j], type: 'string'}))
+					}
+				}
+
+					// Construct merkle tree
+					const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
+					// Get proof for give counter
+					const proof = tree.getProof(eventResult.args.colId.c[0])
+
+				//call CHeckRowData
+					checkRowData({
+						args: [
+							eventResult.args.rowId.c[0],
+							leaves[eventResult.args.colId.c[0]],
+							proof.proofData,
+							proof.proofPosition,
+							{ gas: 300000 }
+						]
+					})
+
+
+				})
+			})
+
+		.catch(handler)	
+
+		// IntegrityCheckFailedEvent
+		events.watch(contract.instance.IntegrityCheckCompletedEvent)
+			.then(result => {
+				reject('Integrity check failed.')
+			})
+			.catch(handler)
+	});
+	
+}
+
+
+
+
+
  
 /**
  * Return all financial records in the database.
@@ -273,5 +344,6 @@ module.exports = {
 	queryWithDate,
 	setInstance,
 	getRootHash,
-	hasInstance
+	hasInstance,
+	checkRowData
 }
