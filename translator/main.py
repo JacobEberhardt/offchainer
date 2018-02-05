@@ -3,12 +3,31 @@ import sys
 from os import path, getcwd, makedirs
 from utils.check import isContract
 from classes.Contract import Contract
+from jinja2 import Template
+from utils.copy import copy
 
 # Define values
+FILEDIR = path.dirname(path.realpath(__file__))
 WORKDIR = getcwd()
 MINIMUM_NUMBER_OF_ARGS = 2
 MAXIMUM_NUMBER_OF_ARGS = 3
 DEFAULT_OUTPUT_DIR = path.join(WORKDIR, 'output')
+FILES_TO_COPY = [
+    'docker/ganache',
+    'docker/prebuild',
+    'docker-compose.yml',
+    'Dockerfile',
+    'scripts',
+    'src/blockchain/contracts/Migrations.sol',
+    'src/blockchain/migrations/1_initial_migration.js',
+    'src/blockchain/truffle.js',
+    'src/middleware/package.json',
+    'src/middleware/server/config',
+    'src/middleware/server/utils',
+    'src/middleware/server/server.js'
+]
+FILES_DIR = path.join(FILEDIR, 'files')
+TEMPLATE_DIR = path.join(FILEDIR, 'templates')
 
 # Define error codes
 CODE_INVALID_NUMBER_OF_ARGS = 1 
@@ -54,14 +73,16 @@ with open(input_file_path) as file:
         print(ERROR, ERROR_INVALID_CONTRACT)
         exit(CODE_INVALID_CONTRACT)
 
+# Parse contract
 contract = Contract()
 contract.parse(content)
-contract.print()
-exit(0)
 
-# Write output
+# Copy files
 makedirs(output_dir)
-with open(path.join(output_dir, input_file), 'w') as file:
-    file.write(content)
+for file in FILES_TO_COPY:
+    source = path.join(FILEDIR, '../', file)
+    destination = path.join(output_dir, file)
+    copy(source, destination)
 
+# Print success message
 print(MSG_SUCCESS)
