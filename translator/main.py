@@ -1,10 +1,9 @@
 # Import dependencies
 import sys
-from os import path, getcwd, makedirs
+from os import path, getcwd, makedirs, listdir
 from utils.check import isContract
 from classes.Contract import Contract
-from jinja2 import Template
-from utils.copy import copy
+from utils.write import copy
 
 # Define values
 FILEDIR = path.dirname(path.realpath(__file__))
@@ -79,9 +78,14 @@ contract.parse(content)
 
 # Copy files
 makedirs(output_dir)
-for file in FILES_TO_COPY:
+for file in FILES_TO_COPY: # Copy files from main repository
     source = path.join(FILEDIR, '../', file)
     destination = path.join(output_dir, file)
+    copy(source, destination)
+
+for blob in listdir(FILES_DIR): # Copy custom files
+    source = path.join(FILES_DIR, blob)
+    destination = path.join(output_dir, blob)
     copy(source, destination)
 
 # Print success message
