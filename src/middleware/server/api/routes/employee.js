@@ -65,8 +65,6 @@ router.post('/increase-salary', (req, res, next) => {
 	var startTime = process.hrtime()
 	employee.increaseSalary(req.body.contractAddress)
 		.then(result => {
-			console.log("result")
-			console.log(result)
 			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
 			result.push({'milliSeconds': elapsedMilliseconds})
 			response(res, 200, result)

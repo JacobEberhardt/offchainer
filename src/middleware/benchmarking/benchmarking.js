@@ -5,7 +5,7 @@ const fs = require('fs');
 
 describe('Benchmarking', function() {
   it('Benchmarking Employee-Onchain', function(done) {
-    var answerVar = 'function; gas cost; time;\n'
+    var answerVar = ' ; gas cost; time;\n'
     request(server)
       .post('/employeeOnchain/create')
       .expect('Content-Type', /json/)
@@ -68,7 +68,7 @@ describe('Benchmarking', function() {
   });
 
   it('Benchmarking Employee', function(done) {
-    var answerVar = 'function; gas cost;\n'
+    var answerVar = ' ; gas cost; time;\n'
     request(server)
       .post('/employee/create')
       .expect('Content-Type', /json/)
@@ -120,10 +120,12 @@ describe('Benchmarking', function() {
           let gasCostCumulated = 0
           let milliSeconds = 0
           for (var i = 0; i < res.body.content.length; i++) {
+            if(res.body.content[i].transaction){
               gasCostCumulated += res.body.content[i].transaction.gasUsed
-              if(res.body.content[i].milliSeconds){
-                milliSeconds = res.body.content[i].milliSeconds
-              }
+            }
+            if(res.body.content[i].milliSeconds){
+              milliSeconds = res.body.content[i].milliSeconds
+            }
           }
           answerVar = answerVar + "increase-salary;" + gasCostCumulated + ";" + milliSeconds + "\n"
 
