@@ -34,6 +34,7 @@ router.post('/add', (req, res, next) => {
 			if(debug) console.timeEnd("employee-add")
 			if(debug) var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime));
     	if(debug) console.log('functionWantToMeasure takes ' + elapsedMilliseconds + 'seconds');
+			result.milliSeconds = elapsedMilliseconds
 			response(res, 200, result)
 		})
 		.catch(err => error(res, 500, err))
