@@ -28,12 +28,11 @@ router.get('/:id/root-hash', (req, res, next) => {
 // Add employee to contract
 router.post('/add', (req, res, next) => {
 	if(debug) console.time("employee-add")
-	if(debug) var startTime = process.hrtime();
+	var startTime = process.hrtime()
 	employee.add(req.body)
 		.then(result => {
 			if(debug) console.timeEnd("employee-add")
-			if(debug) var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime));
-    	if(debug) console.log('functionWantToMeasure takes ' + elapsedMilliseconds + 'seconds');
+			var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime))
 			result.milliSeconds = elapsedMilliseconds
 			response(res, 200, result)
 		})
@@ -42,10 +41,13 @@ router.post('/add', (req, res, next) => {
 
 // Create employee contract
 router.post('/create', (req, res, next) => {
+	var startTime = process.hrtime()
 	employee.create(res)
 		.then(result => {
 			employee.setInstance(result.contract.address) // Store the address
-			response(res, 200, {address: result.contract.address, transaction: result.receipt})
+			var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime))
+    	if(debug) console.log('functionWantToMeasure takes ' + elapsedMilliseconds + 'seconds')
+			response(res, 200, {address: result.contract.address, transaction: result.receipt, milliSeconds: elapsedMilliseconds})
 		})
 		.catch(err => error(res, 500, err))
 })
@@ -59,14 +61,21 @@ router.post('/import', (req, res, next) => {
 
 // Increase salary
 router.post('/increase-salary', (req, res, next) => {
+	var startTime = process.hrtime()
 	employee.increaseSalary(req.body.contractAddress)
-		.then(result => response(res, 200, result))
+		.then(result => {
+			console.log("result")
+			console.log(result)
+			var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime))
+			result.push({'milliSeconds': elapsedMilliseconds})
+			response(res, 200, result)
+		})
 		.catch(err => error(res, 500, err))
 })
 
 function parseHrtimeToMilliseconds(hrtime) {
-    var seconds = (hrtime[0] + (hrtime[1] / 1e6)).toFixed(3);
-    return seconds;
+    var seconds = (hrtime[0] + (hrtime[1] / 1e6)).toFixed(3)
+    return seconds
 }
 
 // Export module
