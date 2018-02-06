@@ -10,3 +10,6 @@ documentation/*
 !documentation/sample.bib
 !documentation/frog.jpg
 !documentation/images/
+
+src/middleware/benchmarking/
+!src/middleware/benchmarking/bencharking.js

@@ -12,7 +12,9 @@ const error = res.error
 // Create Pay Raise Contract
 router.post('/create', (req, res, next) => {
 	payraise.create(req.body, res)
-		.then(contract => response(res, 200, {address: contract.address}))
+		.then(result => {
+			response(res, 200, {address: result.contract.address, transaction: result.receipt})
+		})
 		.catch(err => error(res, 500, err))
 })
 
