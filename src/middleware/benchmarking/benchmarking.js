@@ -5,13 +5,14 @@ const fs = require('fs');
 
 describe('Benchmarking', function() {
   it('Benchmarking Employee-Onchain', function(done) {
-    var answerVar = 'function; gas cost;\n'
+    var answerVar = 'function; gas cost; time;\n'
     request(server)
       .post('/employeeOnchain/create')
       .expect('Content-Type', /json/)
       .expect(200)
       .then(response => {
-        answerVar = answerVar + "employee-create;" + response.body.content.transaction.gasUsed + "\n"
+        answerVar = answerVar + "employee-create;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
         return sleep(2000)
       })
       .then(() => {
@@ -28,7 +29,8 @@ describe('Benchmarking', function() {
         .expect(200)
       })
       .then(response => {
-        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + "\n"
+        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
         return request(server)
         .post('/payraiseOnchain/create')
         .send({
@@ -40,7 +42,8 @@ describe('Benchmarking', function() {
         .expect(200)
       })
       .then(response => {
-        answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + "\n"
+        answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
         const payraiseAddress = response.body.content.address
         request(server)
         .post('/employeeOnchain/increase-salary')
@@ -51,7 +54,8 @@ describe('Benchmarking', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) throw err;
-          answerVar = answerVar + "increase-salary;" + res.body.content.transaction.gasUsed + "\n"
+          answerVar = answerVar + "increase-salary;" + res.body.content.transaction.gasUsed + ";" +
+          response.body.content.milliSeconds + "\n"
 
           fs.writeFileSync("/middleware/benchmarking/employeeOnchain.csv", answerVar, function(err) {
               if(err) {
@@ -70,7 +74,8 @@ describe('Benchmarking', function() {
       .expect('Content-Type', /json/)
       .expect(200)
       .then(response => {
-        answerVar = answerVar + "employee-create;" + response.body.content.transaction.gasUsed + "\n"
+        answerVar = answerVar + "employee-create;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
         return sleep(2000)
       })
       .then(() => {
@@ -87,7 +92,8 @@ describe('Benchmarking', function() {
         .expect(200)
       })
       .then(response => {
-        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + "\n"
+        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
         return request(server)
         .post('/payraise/create')
         .send({
@@ -99,7 +105,8 @@ describe('Benchmarking', function() {
         .expect(200)
       })
       .then(response => {
-        answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + "\n"
+        answerVar = answerVar + "payraise-create;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
         const payraiseAddress = response.body.content.address
         request(server)
         .post('/employee/increase-salary')
@@ -111,10 +118,14 @@ describe('Benchmarking', function() {
         .end(function(err, res) {
           if (err) throw err;
           let gasCostCumulated = 0
+          let milliSeconds = 0
           for (var i = 0; i < res.body.content.length; i++) {
               gasCostCumulated += res.body.content[i].transaction.gasUsed
+              if(res.body.content[i].milliSeconds){
+                milliSeconds = res.body.content[i].milliSeconds
+              }
           }
-          answerVar = answerVar + "increase-salary;" + gasCostCumulated + "\n"
+          answerVar = answerVar + "increase-salary;" + gasCostCumulated + ";" + milliSeconds + "\n"
 
           fs.writeFileSync("/middleware/benchmarking/employee.csv", answerVar, function(err) {
               if(err) {
