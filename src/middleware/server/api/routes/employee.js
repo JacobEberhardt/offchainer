@@ -3,6 +3,7 @@ const router = require('express').Router()
 const employee = require('../../models/employee')
 const db = require('../../models/database')
 const res = require('../../utils/response')
+const toMilliSeconds = require('../../utils/hrtime_utils')
 
 // Set response functions
 const response = res.response
@@ -32,7 +33,7 @@ router.post('/add', (req, res, next) => {
 	employee.add(req.body)
 		.then(result => {
 			if(debug) console.timeEnd("employee-add")
-			var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime))
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
 			result.milliSeconds = elapsedMilliseconds
 			response(res, 200, result)
 		})
@@ -45,7 +46,7 @@ router.post('/create', (req, res, next) => {
 	employee.create(res)
 		.then(result => {
 			employee.setInstance(result.contract.address) // Store the address
-			var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime))
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
     	if(debug) console.log('functionWantToMeasure takes ' + elapsedMilliseconds + 'seconds')
 			response(res, 200, {address: result.contract.address, transaction: result.receipt, milliSeconds: elapsedMilliseconds})
 		})
@@ -66,17 +67,12 @@ router.post('/increase-salary', (req, res, next) => {
 		.then(result => {
 			console.log("result")
 			console.log(result)
-			var elapsedMilliseconds = parseHrtimeToMilliseconds(process.hrtime(startTime))
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
 			result.push({'milliSeconds': elapsedMilliseconds})
 			response(res, 200, result)
 		})
 		.catch(err => error(res, 500, err))
 })
-
-function parseHrtimeToMilliseconds(hrtime) {
-    var seconds = (hrtime[0] + (hrtime[1] / 1e6)).toFixed(3)
-    return seconds
-}
 
 // Export module
 module.exports = router

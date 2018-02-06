@@ -2,6 +2,7 @@
 const router = require('express').Router()
 const employee = require('../../models/employeeOnchain')
 const res = require('../../utils/response')
+const toMilliSeconds = require('../../utils/hrtime_utils')
 
 // Set response functions
 const response = res.response
@@ -11,18 +12,23 @@ const error = res.error
 
 // Create Employee contract
 router.post('/create', (req, res, next) => {
+	var startTime = process.hrtime()
 	employee.create()
 		.then(result => {
 			employee.setInstance(result.contract.address) // Store the address
-			response(res, 200, {address: result.contract.address, transaction: result.receipt})
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
+			response(res, 200, {address: result.contract.address, transaction: result.receipt, milliSeconds: elapsedMilliseconds})
 		})
 		.catch(err => error(res, 500, err))
 })
 
 // Add Employee to contract
 router.post('/add', (req, res, next) => {
+	var startTime = process.hrtime()
 	employee.add(req.body)
 		.then(result => {
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
+			result.milliSeconds = elapsedMilliseconds
 			response(res, 200, result)
 		})
 		.catch(err => error(res, 500, err))
@@ -30,15 +36,25 @@ router.post('/add', (req, res, next) => {
 
 // Add multiple Employees to contract
 router.post('/import', (req, res, next) => {
+	var startTime = process.hrtime()
 	employee.importEmployees(req.body.employees)
-		.then(result => response(res, 200, result))
+		.then(result => {
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
+			result.milliSeconds = elapsedMilliseconds
+			response(res, 200, result)
+		})
 		.catch(err => error(res, 500, err))
 })
 
 // Increase Salary
 router.post('/increase-salary', (req, res, next) => {
+	var startTime = process.hrtime()
 	employee.increaseSalary(req.body.contractAddress)
-		.then(result => response(res, 200, result))
+		.then(result => {
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
+			result.milliSeconds = elapsedMilliseconds
+			response(res, 200, result)
+		})
 		.catch(err => error(res, 500, err))
 })
 
