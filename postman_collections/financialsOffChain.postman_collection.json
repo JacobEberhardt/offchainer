@@ -211,7 +211,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : \"20180219\",\n    \"totalSales\" : 11213,\n    \"cogs\" : 1022,\n    \"inventoryStock\" : 2012,\n    \"cashCounter\" : 12123,\n    \"accountsReceivables\" :1021,\n    \"accountsPayable\" : 12123\n}"
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180219,\n    \"totalSales\" : 11213,\n    \"cogs\" : 1022,\n    \"inventoryStock\" : 2012,\n    \"cashCounter\" : 12123,\n    \"accountsReceivables\" :1021,\n    \"accountsPayable\" : 12123\n}"
 						},
 						"description": ""
 					},
