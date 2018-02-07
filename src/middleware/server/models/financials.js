@@ -23,14 +23,16 @@ const contract = web3.eth.contract(contractData.abi)
 const db = new Database(
 	'financials',
 	{
+		sc_id: { type: Sequelize.INTEGER },
+		root_hash: {type : Sequelize.STRING},
 		company_name: { type: Sequelize.STRING },
-		recording_date: { type: Sequelize.STRING },
+		recording_date: { type: Sequelize.INTEGER }, // YEAR MONTH DAY 20180129
 		total_sales: { type: Sequelize.INTEGER },
 		cogs: { type: Sequelize.INTEGER },
 		inventory_stock: { type: Sequelize.INTEGER },
 		cash_counter: { type: Sequelize.INTEGER },
 		accounts_receivables: { type: Sequelize.INTEGER },
-		accounts_payable: { type: Sequelize.INTEGER },
+		accounts_payable: { type: Sequelize.INTEGER }
 	}
 )
 
@@ -57,15 +59,22 @@ function create() {
 
 
 /**
- * Create and insert an financial records into the database and store the root hash of the data record into the smart contract
+ * Create the root, store the root into the SC, and then store the SC id, the root hash, and the raw data in DB.
  * 
  * @param {Object} financials The new financial record to add
  * @returns {Promise} A promise that depends on the successful  insert of financials object
  */
 function add(financials) {
 	return new Promise((resolve, reject) => {
-		// Insert new Employee
-		db.create({
+		const handler = (err) => reject(err)
+
+		if(financials == null || financials.companyName == null || financials.recordingDate == null || financials.totalSales == null 
+			|| financials.cogs == null || financials.inventoryStock == null || financials.cashCounter == null 
+			|| financials.accountsReceivables == null || financials.accountsPayable == null) {
+			handler("parameter is missing")
+		}
+
+		const dbRow = {
 			company_name: financials.companyName,
 			recording_date: financials.recordingDate,
 			total_sales: financials.totalSales,
@@ -74,39 +83,222 @@ function add(financials) {
 			cash_counter: financials.cashCounter,
 			accounts_receivables: financials.accountsReceivables,
 			accounts_payable: financials.accountsPayable
-		}).then(result => {
-			//Create Merkle Tree
-			const leaves = [
-				financials.companyName,
-				financials.recordingDate,
-				financials.totalSales,
-				financials.cogs,
-				financials.inventoryStock,
-				financials.cashCounter,
-				financials.accountsReceivables,
-				financials.accountsPayable
-			]
-			const hashes = [];
-			for(let i = 0; i < leaves.length; i++) {
-				if(typeof leaves[i] === "number") {
-					hashes.push(sha3({value: leaves[i].toString(), type: 'uint8'}))
-				} else {
-					hashes.push(sha3({value: leaves[i], type: 'string'}))
-				}
+		}
+
+		const leaves = [
+			financials.companyName,
+			financials.recordingDate,
+			financials.totalSales,
+			financials.cogs,
+			financials.inventoryStock,
+			financials.cashCounter,
+			financials.accountsReceivables,
+			financials.accountsPayable
+		]
+
+		// watch for the returned index
+		events.watch(contract.instance.PostAppendEvent).then(result => {
+			// save the index to the db with the row
+			if(result.args != null) {
+				dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
+				dbRow["root_hash"] = result.args.rootHash
+				// just needs to update the DB now.
+				return db.create(dbRow)
+			} 
+
+		}).then(resolve)
+		.catch(handler)
+
+
+		// create the merkle root hash
+		const hashes = [];
+		for(let i = 0; i < leaves.length; i++) {
+			if(typeof leaves[i] === "number") {
+				hashes.push(sha3({value: leaves[i].toString(), type: 'uint256'}))
+			} else {
+				hashes.push(sha3({value: leaves[i], type: 'string'}))
 			}
-			const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
-			const rootHash = tree.getRoot()
-			promisify(contract.instance.addRecordEntry)({
-				args: [
-					result.dataValues.id,
-					rootHash
-				]
-			}).then(result => resolve(result));
-		})
+		}
+		const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
+		const rootHash = tree.getRoot()
+		promisify(contract.instance.append)({
+			args: rootHash
+		}).catch(handler)
+
 	})
 
 }
 
+/**
+ * Return the rows that match with the date query. The SC makes sure 
+ *
+ * @return {Promise} A promise that depends on the contract creation
+ */
+function queryWithDate(query) {
+	return new Promise((resolve, reject) => {
+		const handler = (err) => reject(err)
+
+		const min = parseInt(query.min)
+		const max = parseInt(query.max)
+
+		let resultArr = []
+
+		if(min === NaN|| max === NaN || query.max - query.min < 0) {
+			return handler("parameter error")
+		}
+
+		// watch for the returned index/indeces that match the query
+		events.watch(contract.instance.QueryResultsEvent).then(result => {
+			// save the index to the db with the row
+			if(result.args != null) {
+				let returnArr = []
+				for(let i = 0; i < resultArr.length; i++) {
+					if(result.args.resultIndexes[i]) {
+						returnArr.push(resultArr[i])
+					}
+				}
+				resolve(returnArr)			
+			} 
+
+		}).then(resolve)
+		.catch(handler)
+
+
+		// get all the records in DB 
+		// it needs to be in order because the way it is ordered as in SC
+		// Send to SC
+		// listen to event that returns either check error, or the query results
+		db.readAllSort([["sc_id", "ASC"]]).then(result => {
+			let rootHashArr = []
+			let dateArr = []
+			// making the tree array
+			for(let i = 0; i < result.length; i++) {
+				let hashes = []
+
+				const leaves = [
+					result[i].dataValues.company_name,
+					result[i].dataValues.recording_date,
+					result[i].dataValues.total_sales,
+					result[i].dataValues.cogs,
+					result[i].dataValues.inventory_stock,
+					result[i].dataValues.cash_counter,
+					result[i].dataValues.accounts_receivables,
+					result[i].dataValues.accounts_payable
+				]
+
+				resultArr.push({
+					"company name": result[i].dataValues.company_name,
+					"recording date": result[i].dataValues.recording_date,
+					"total sales": result[i].dataValues.total_sales,
+					"Cogs": result[i].dataValues.cogs,
+					"inventory stock": result[i].dataValues.inventory_stock,
+					"cash counter": result[i].dataValues.cash_counter,
+					"account receiveables": result[i].dataValues.accounts_receivables,
+					"account payable": result[i].dataValues.accounts_payable				
+				})
+
+
+				for(let j = 0; j < leaves.length; j++) {
+					if(typeof leaves[j] === "number") {
+						hashes.push(sha3({value: leaves[j].toString(), type: 'uint256'}))
+					} else {
+						hashes.push(sha3({value: leaves[j], type: 'string'}))
+					}
+				}
+
+				const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
+				rootHashArr.push(tree.getRoot())
+				dateArr.push(result[i].dataValues.recording_date)
+			}
+			// send rootHashArr, dateArr, query to SC
+			// something like something(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min)
+			promisify(contract.instance.queryWithDate)({
+				args: [
+					rootHashArr,
+					dateArr,
+					query.max,
+					query.min
+				]
+			}).catch(handler)
+
+
+		}).catch(handler)
+
+	})
+}
+
+
+
+function checkRowData(scIndex, rootHashToVerify, proof, proofPosition) {
+	return new Promise((resolve, reject) => {
+		// Define functions
+	//	const catchedEvent = false
+		const handler = (err) => reject(err)
+		const checkRowData = promisify(contract.instance.checkRowData)
+
+		// Event Listeners
+
+		events.watch(contract.instance.IntegrityCheckCompletedEvent) // Smart contract needs data
+			.then(eventResult => {
+				// Find data record with given index
+				db.read({ id: eventResult.args.rowId.c[0] }).then(dbResult => {
+					// Create leaves of counter values 
+					const leaves = [
+						dbResult[i].dataValues.company_name,
+						dbResult[i].dataValues.recording_date,
+						dbResult[i].dataValues.total_sales,
+						dbResult[i].dataValues.cogs,
+						dbResult[i].dataValues.inventory_stock,
+						dbResult[i].dataValues.cash_counter,
+						dbResult[i].dataValues.accounts_receivables,
+						dbResult[i].dataValues.accounts_payable
+					]
+
+					for(let j = 0; j < leaves.length; j++) {
+					if(typeof leaves[j] === "number") {
+						hashes.push(sha3({value: leaves[j].toString(), type: 'uint256'}))
+					} else {
+						hashes.push(sha3({value: leaves[j], type: 'string'}))
+					}
+				}
+
+					// Construct merkle tree
+					const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
+					// Get proof for give counter
+					const proof = tree.getProof(eventResult.args.colId.c[0])
+
+				//call CHeckRowData
+					checkRowData({
+						args: [
+							eventResult.args.rowId.c[0],
+							leaves[eventResult.args.colId.c[0]],
+							proof.proofData,
+							proof.proofPosition,
+							{ gas: 300000 }
+						]
+					})
+
+
+				})
+			})
+
+		.catch(handler)	
+
+		// IntegrityCheckFailedEvent
+		events.watch(contract.instance.IntegrityCheckCompletedEvent)
+			.then(result => {
+				reject('Integrity check failed.')
+			})
+			.catch(handler)
+	});
+	
+}
+
+
+
+
+
+ 
 /**
  * Return all financial records in the database.
  *
@@ -149,7 +341,9 @@ module.exports = {
 	create,
 	add,
 	getAllFinancials,
+	queryWithDate,
 	setInstance,
 	getRootHash,
-	hasInstance
+	hasInstance,
+	checkRowData
 }
