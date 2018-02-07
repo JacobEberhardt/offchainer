@@ -56,7 +56,7 @@ function create() {
 	})
 		.then(result => {
 			var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
-			return {contract: result, receipt: receipt} //resolve(receipt)
+			return {contract: result, receipt: receipt}
 		})
 }
 
@@ -102,7 +102,6 @@ function add(employee) {
 			.then(([result, previous]) => {
 				var receipt = web3.eth.getTransactionReceipt(result);
 				resolve({result:result, transaction:receipt, employee:previous})
-				//resolve(previous)
 			})
 			.catch(err => reject(err))
 
@@ -135,7 +134,7 @@ function getRootHash(index) {
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function importEmployees(employees) {
-	return Promise.all(employees.map(addEmployeeToDatabase))
+	return Promise.all(employees.map(add))
 }
 
 /**
