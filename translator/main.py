@@ -3,7 +3,7 @@ import sys
 from os import path, getcwd, makedirs, listdir
 from utils.check import isContract
 from classes.Contract import Contract
-from utils.write import copy
+from utils.write import copy, render
 
 # Define values
 FILEDIR = path.dirname(path.realpath(__file__))
@@ -87,6 +87,9 @@ for blob in listdir(FILES_DIR): # Copy custom files
     source = path.join(FILES_DIR, blob)
     destination = path.join(output_dir, blob)
     copy(source, destination)
+
+# Render templates
+render(output_dir, TEMPLATE_DIR, contract)
 
 # Print success message
 print(MSG_SUCCESS)
