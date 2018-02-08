@@ -20,6 +20,13 @@ router.post('/create', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+//query complete Date
+router.get('/queryWithDate', (req, res, next) => {
+	financials.queryWithDate(req.query)
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
+
 // Get all financials records from DB
 router.get('/', (req, res, next) => {
 	financials.getAllFinancials()
@@ -27,6 +34,11 @@ router.get('/', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+router.get('/checkRowData', (req, res, next) => {
+	financials.checkRowData()
+		.then(result => response(res, 200, result))
+		.catch(err => error(res, 500, err))
+})
 
 //add a record entry to DB and compute the record's root Hash
 router.post('/addEntry', (req, res, next) => {

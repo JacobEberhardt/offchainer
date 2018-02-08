@@ -60,11 +60,22 @@ function Database(tableName, scheme) {
 	 * @param {Object} criteria The criteria for the row to read
 	 * @returns {Promise} The database response
 	 */
+	this.readAllSort = function (criteria) {
+		this.checkConnection()
+		return this.db.findAll({order: criteria})
+	}
+
+
+/**
+	 * Read all rows.
+	 *
+	 * @param {Object} criteria The criteria for the row to read
+	 * @returns {Promise} The database response
+	 */
 	this.readAll = function (criteria) {
 		this.checkConnection()
 		return this.db.findAll({where: criteria})
 	}
-
 	/**
 	 * Update a row.
 	 *

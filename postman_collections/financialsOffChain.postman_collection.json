@@ -1,0 +1,314 @@
+{
+	"variables": [],
+	"info": {
+		"name": "CP: Check a company's financial data",
+		"_postman_id": "c8930da2-8a4c-4cc6-6a64-c8a574534526",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Financials",
+			"description": "",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"url": "http://localhost:8000/financials/create",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry01",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"companyName\" : \"CompanyAB\",\n\t\"recordingDate\" : 20180101,\n\t\"totalSales\" : 4213,\n\t\"cogs\" : 322,\n\t\"inventoryStock\" : 412,\n\t\"cashCounter\" : 5123,\n\t\"accountsReceivables\" :321,\n\t\"accountsPayable\" : 5123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "getAllEntries01",
+					"request": {
+						"url": "http://localhost:8000/financials/",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get all record entries from DB"
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry02",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180108,\n    \"totalSales\" : 5213,\n    \"cogs\" : 422,\n    \"inventoryStock\" : 512,\n    \"cashCounter\" : 6123,\n    \"accountsReceivables\" :421,\n    \"accountsPayable\" : 6123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry03",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180115,\n    \"totalSales\" : 6213,\n    \"cogs\" : 522,\n    \"inventoryStock\" : 612,\n    \"cashCounter\" : 7123,\n    \"accountsReceivables\" :521,\n    \"accountsPayable\" : 7123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry04",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180122,\n    \"totalSales\" : 7213,\n    \"cogs\" : 622,\n    \"inventoryStock\" : 712,\n    \"cashCounter\" : 8123,\n    \"accountsReceivables\" :621,\n    \"accountsPayable\" : 8123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry05",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180129,\n    \"totalSales\" : 8213,\n    \"cogs\" : 722,\n    \"inventoryStock\" : 812,\n    \"cashCounter\" : 9123,\n    \"accountsReceivables\" :721,\n    \"accountsPayable\" : 9123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "getAllEntries02",
+					"request": {
+						"url": "http://localhost:8000/financials/",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get all record entries from DB"
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry06",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180205,\n    \"totalSales\" : 9213,\n    \"cogs\" : 822,\n    \"inventoryStock\" : 912,\n    \"cashCounter\" : 10123,\n    \"accountsReceivables\" :821,\n    \"accountsPayable\" : 10123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry07",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180212,\n    \"totalSales\" : 102,\n    \"cogs\" : 922,\n    \"inventoryStock\" : 1012,\n    \"cashCounter\" : 11123,\n    \"accountsReceivables\" :921,\n    \"accountsPayable\" : 11123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry08",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180219,\n    \"totalSales\" : 11213,\n    \"cogs\" : 1022,\n    \"inventoryStock\" : 2012,\n    \"cashCounter\" : 12123,\n    \"accountsReceivables\" :1021,\n    \"accountsPayable\" : 12123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry09",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180226,\n    \"totalSales\" : 12213,\n    \"cogs\" : 2022,\n    \"inventoryStock\" : 3012,\n    \"cashCounter\" : 13123,\n    \"accountsReceivables\" :2021,\n    \"accountsPayable\" : 13123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "addEntry10",
+					"request": {
+						"url": "http://localhost:8000/financials/addEntry",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : 20180305,\n    \"totalSales\" : 13213,\n    \"cogs\" : 3022,\n    \"inventoryStock\" : 4012,\n    \"cashCounter\" : 14123,\n    \"accountsReceivables\" :3021,\n    \"accountsPayable\" : 14123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "getAllEntries03",
+					"request": {
+						"url": "http://localhost:8000/financials/",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get all record entries from DB"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/financials/queryWithDate?min=20150129&max=20180229",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8000/financials/queryWithDate?min=20150129&max=20180229",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"financials",
+								"queryWithDate"
+							],
+							"query": [
+								{
+									"key": "min",
+									"value": "20150129",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "max",
+									"value": "20180229",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Query completeness"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -11,10 +11,10 @@ const error = res.error
 
 // Create Employee contract
 router.post('/create', (req, res, next) => {
-	employee.create(res)
-		.then(contract => {
-			employee.setInstance(contract.address) // Store the address
-			response(res, 200, {address: contract.address})
+	employee.create()
+		.then(result => {
+			employee.setInstance(result.contract.address) // Store the address
+			response(res, 200, {address: result.contract.address, transaction: result.receipt})
 		})
 		.catch(err => error(res, 500, err))
 })
@@ -22,7 +22,9 @@ router.post('/create', (req, res, next) => {
 // Add Employee to contract
 router.post('/add', (req, res, next) => {
 	employee.add(req.body)
-		.then(result => response(res, 200, result))
+		.then(result => {
+			response(res, 200, result)
+		})
 		.catch(err => error(res, 500, err))
 })
 

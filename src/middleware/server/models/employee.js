@@ -54,18 +54,22 @@ function create() {
 		requiredProperty: 'address',
 		context: contract
 	})
+		.then(result => {
+			var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
+			return {contract: result, receipt: receipt}
+		})
 }
 
 /**
  * Create and insert an employee into the database and store the root hash of the data record into the smart contract.
- * 
+ *
  * @param {Object} employee The new employee to add
  * @returns {Promise} A promise that depends on the successful employee insert
  */
-function addEmployeeToDatabase(employee) {
+function add(employee) {
 
 	return new Promise((resolve, reject) => {
-		
+
 		// Define values
 		let values = [
 			employee.firstName,
@@ -95,7 +99,10 @@ function addEmployeeToDatabase(employee) {
 					]
 				}), result])
 			})
-			.then(([result, previous]) => resolve(previous))
+			.then(([result, previous]) => {
+				var receipt = web3.eth.getTransactionReceipt(result);
+				resolve({result:result, transaction:receipt, employee:previous})
+			})
 			.catch(err => reject(err))
 
 	})
@@ -121,13 +128,13 @@ function getRootHash(index) {
 }
 
 /**
- * Add a set of employees to the database and store the root hash of the data record into 
- * 
+ * Add a set of employees to the database and store the root hash of the data record into
+ *
  * @param {Object[]} employees The set of employees to add
  * @returns {Promise} A promise that depends on the successful salary increase
  */
 function importEmployees(employees) {
-	return Promise.all(employees.map(addEmployeeToDatabase))
+	return Promise.all(employees.map(add))
 }
 
 /**
@@ -153,7 +160,7 @@ function increaseSalarySingleEmployee(employee) {
 				return Promise.all([transactions.waitForBlock(web3, transactionHash), result])
 			})
 			.then(([result, previous])  => {
-				// Write new salary from previous chain results to database 
+				// Write new salary from previous chain results to database
 				return Promise.all([db.update(
 					{id: previous.args.rowId.c[0]},
 					{
@@ -161,7 +168,10 @@ function increaseSalarySingleEmployee(employee) {
 					}
 				), previous])
 			})
-			.then(([result, previous]) => resolve(result))
+			.then(([result, previous]) => {
+				var receipt = web3.eth.getTransactionReceipt(transactionHash);
+				resolve({'id':result[1][0].id,result:result[1][0], transaction:receipt})
+			})
 			.catch(([error, previous]) => {
 				let finalHandler = () => reject({'id': employee.id, 'error': error})
 				if (error.code === 'database') {
@@ -181,12 +191,14 @@ function increaseSalarySingleEmployee(employee) {
 		// Integrity check of data record failed
 		events.watch(contract.instance.IntegrityCheckFailedEvent)
 			.then((result) => {
+				var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
 				reject({
 					'id' : employee.id,
-					'error' : 'Integrity check failed.'
+					'error' : 'Integrity check failed.',
+					'transaction': receipt
 				})
 			})
-		
+
 		// Position of salary in employee record (-1 because id is shifted)
 		const indexOfSalary = Object.keys(employee).indexOf('salary') - 1
 
@@ -217,7 +229,7 @@ function increaseSalarySingleEmployee(employee) {
 
 /**
  * Increase the salary of all affected employee. Affected employees are defined in a payraise contract.
- * 
+ *
  * @param {String} payRaiseContractAddress The address of the payraise contract
  * @returns {Promise} A promise that depends on the successful salary increase
  */
@@ -227,10 +239,13 @@ function increaseSalary(payRaiseContractAddress) {
 
 		const handler = (err) => reject(err)
 		let finalResult = []
+		let transactionHash
 
 		// Smart contract needs data
 		events.watch(contract.instance.RetrieveDataEvent)
 			.then(result => {
+				var receipt = web3.eth.getTransactionReceipt(transactionHash);
+				finalResult.push({'transaction':receipt})
 				let department = web3.toUtf8(result.args.department)
 				return db.readAll({department: department})
 			})
@@ -238,7 +253,7 @@ function increaseSalary(payRaiseContractAddress) {
 				return result.reduce((promise, item) => { // Create one promise chain for all items
 					return promise
 						.then((result) => increaseSalarySingleEmployee(item.dataValues))
-						.then(result => finalResult.push(result[1][0]))
+						.then(result => finalResult.push(result))
 						.catch(error => finalResult.push(error))
 				}, Promise.resolve())
 			})
@@ -247,6 +262,7 @@ function increaseSalary(payRaiseContractAddress) {
 
 		// Increase salary request for all employees, which are returned from the database
 		promisify(contract.instance.requestIncreaseSalary)({args: payRaiseContractAddress})
+			.then(result => transactionHash = result)
 			.catch(handler)
 
 	})
@@ -292,7 +308,7 @@ function _hashValues(values) {
 // Export functions
 module.exports = {
 	create,
-	addEmployeeToDatabase,
+	add,
 	getRootHash,
 	getAll,
 	importEmployees,
