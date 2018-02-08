@@ -39,7 +39,7 @@ def render(output, filepath, contract):
     if not path.isdir(filepath):
 
         # If file is no template file
-        if filepath.find('.j2') is -1:
+        if filepath.find('.j2') is not len(filepath) - 3:
             return
 
         # Get output path
