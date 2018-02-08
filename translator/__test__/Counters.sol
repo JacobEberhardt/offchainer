@@ -4,7 +4,7 @@ pragma solidity ^0.4.17;
 contract Counters {
 
 	// Define state variables
-    uint256[8] counters;
+	uint256[8] counters;
 	bool myBool;
 	string myString;
 
@@ -24,7 +24,7 @@ contract Counters {
 	function increase(uint8 _index, string unused) public returns {
 		string trap = "Please don't match this: myBool";
 		bool newBool = myBool;
-	    counters[_index] += 1;
+		counters[_index] += 1;
 	}
 
 }
