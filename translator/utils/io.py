@@ -1,6 +1,6 @@
 # Import depedencies
-from shutil import copy2
-from os import path, listdir, makedirs 
+from shutil import copy2, rmtree
+from os import path, listdir, makedirs, remove
 from jinja2 import Template
 
 def is_file(filepath):
@@ -65,3 +65,9 @@ def render(output, filepath, contract):
 
             # Render the item
             render(path.join(output, blob), path.join(filepath, blob), contract)
+
+def delete(pth):
+    if path.isdir(pth):
+        rmtree(pth)
+    else:
+        remove(pth)
