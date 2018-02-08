@@ -23,7 +23,11 @@ class Contract:
         self.parse(content)
 
     def parse(self, content):
-        content = clean.remove_comments(content) # Remove comments
+
+        # Remove comments
+        content = clean.remove_comments(content)
+
+        # Parse values
         self.name = reg.contract_name.search(content)[1]
         self.variables = [Variable(content[0]) for content in reg.variable.finditer(clean.remove_functions(content))]
         self.functions = [Function(content[0], self.variables) for content in reg.function.finditer(content)]

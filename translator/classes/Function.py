@@ -22,19 +22,27 @@ class Function:
         self.parse(content, variables)
 
     def parse(self, content, variables):
+
+        # Remove whitespace
         content = linesep.join([line.strip() for line in content.split(linesep)])
+
+        # Parse trivial values
         self.name = reg.function_name.search(content)[1]
         self.arguments = reg.function_arguments.search(content)[1]
         self.modifiers = reg.function_modifiers.search(content)[1]
+
+        # Parse variable usage/modification
         body = reg.function_body.search(content)[1]
         self.changed = []
-        for var in variables:
+        for idx, var in enumerate(variables):
             if re.search(reg.variable_changed_template.format(var.name), body) is not None:
-                self.changed.append(var.name)
+                self.changed.append(idx)
                 self.used = self.changed[:]
-        for var in variables:
+        for idx, var in enumerate(variables):
             if re.search(reg.variable_used_template.format(var.name), body) is not None:
-                self.used.append(var.name)
+                self.used.append(idx)
+
+        # Remove duplicates
         self.changed = list(set(self.changed))
         self.used = list(set(self.used))
 
@@ -42,5 +50,5 @@ class Function:
         print('Function name:', self.name)
         print('- Arguments:', self.arguments)
         print('- Modifiers:', self.modifiers)
-        print('- Variables changed:', ', '.join(self.changed))
-        print('- Variables used:', ', '.join(self.used))
+        print('- Variables changed:', ', '.join([str(var) for var in self.changed]))
+        print('- Variables used:', ', '.join([str(var) for var in self.used]))

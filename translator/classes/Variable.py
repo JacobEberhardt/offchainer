@@ -20,6 +20,8 @@ class Variable:
         self.parse(content) 
         
     def parse(self, content):
+
+        # Parse values
         result = reg.variable_combined.search(content)
         self.name = result[3]
         self.type = result[1]
