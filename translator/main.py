@@ -68,13 +68,15 @@ if path.exists(output_dir):
 content = None
 with open(input_file_path) as file:
     content = file.read()
-    if not isContract(file):
+    if not isContract(content):
         print(ERROR, ERROR_INVALID_CONTRACT)
         exit(CODE_INVALID_CONTRACT)
 
 # Parse contract
-contract = Contract()
-contract.parse(content)
+contract = Contract(content)
+contract.print()
+
+exit(0)
 
 # Copy files
 makedirs(output_dir)
