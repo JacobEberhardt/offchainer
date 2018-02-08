@@ -8,7 +8,7 @@ variable = re.compile('((?:uint[\d]{0,3}|string|bool)(?:\[([\d]+)\])*[\s]+(?:[A-
 comment = re.compile('(?:\/\/.*)|(?:\/\*[\S\s]*?\*\/)')
 
 # Variable expressions
-variable_combined = re.compile('(uint[\d]{0,3}|string|bool)(?:\[([\d]+)\])*[\s]+([A-Za-z]+)[\s]*;')
+variable_combined = re.compile('(uint[\d]{0,3}|string|bool)(?:\[([\d]+)\])*[\s]+([_A-Za-z]+)[\s]*;')
 variable_used_template = '(?:\(|=)[^"\'\nA-Za-z]*{}'
 variable_changed_template = '{}(?:\[[^\]]+\])?[^\S\n]*[\+-\/]*='
 
