@@ -54,7 +54,7 @@ def render(output, filepath, contract):
         # Render template
         template = Template(open(filepath).read())
         with open(output_path, 'w') as file:
-            content = template.render(contract=contract)
+            content = template.render(c = contract)
             file.write(content)
 
     # If filepath is a directory
