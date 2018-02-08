@@ -37,7 +37,7 @@ class Function:
         for idx, var in enumerate(variables):
             if re.search(reg.variable_changed_template.format(var.name), body) is not None:
                 self.changed.append(idx)
-                self.used = self.changed[:]
+        self.used = self.changed[:]
         for idx, var in enumerate(variables):
             if re.search(reg.variable_used_template.format(var.name), body) is not None:
                 self.used.append(idx)
