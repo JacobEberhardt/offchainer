@@ -78,11 +78,12 @@ if not path.isfile(input_file_path):
 
 # Check output directory
 output_dir = path.join(WORKDIR, args[2]) if len(args) > 2 else DEFAULT_OUTPUT_DIR
-if options.force_overwrite:
-    delete(output_dir)
 if path.exists(output_dir):
-    print(ERROR, output_dir, ERROR_OUTPUT_DIR_EXISTS)
-    exit(CODE_OUTPUT_EXIST)
+    if options.force_overwrite:
+        delete(output_dir)
+    else:
+        print(ERROR, output_dir, ERROR_OUTPUT_DIR_EXISTS)
+        exit(CODE_OUTPUT_EXIST)
 
 # Read input file
 content = None
