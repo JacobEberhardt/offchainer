@@ -4,9 +4,10 @@ sys.path.append('..')
 from utils import regexp as reg
 from utils import clean
 from .Function import Function
+from .Variable import Variable
 
 # Define values
-ATTRIBUTES = ['name', 'state_variables', 'functions']
+ATTRIBUTES = ['name', 'variables', 'functions']
 
 # Define class
 class Contract:
@@ -23,19 +24,25 @@ class Contract:
 
     def parse(self, content):
         content = clean.remove_comments(content) # Remove comments
-        self.name = reg.contract_name.search(content)
-        self.functions = [Function(content) for content in reg.function.finditer(content)]
-        self.state_variables = [{'name': var[3], 'type': var[1], 'size': int(var[2] or 1)} for var in reg.state_variable.finditer(clean.remove_functions(content))]
+        self.name = reg.contract_name.search(content)[1]
+        self.variables = [Variable(content[0]) for content in reg.variable.finditer(clean.remove_functions(content))]
+        self.functions = [Function(content[0], self.variables) for content in reg.function.finditer(content)]
 
     def print(self):
+
+        # Print contract name
         print('Contract name:', self.name)
+
+        # Print variables
+        print('=' * 10)
+        print('Variables:')
+        print('=' * 10)
+        for var in self.variables or []:
+            var.print()
+
+        # Print functions
+        print('=' * 10)
         print('Functions:')
         print('=' * 10)
         for fn in self.functions or []:
             fn.print()
-        print('Variables:')
-        print('=' * 10)
-        for var in self.state_variables or []:
-            print('Variable name:', var['name'])
-            print('- Type:', var['type'])
-            print('- Size:', var['size'])
