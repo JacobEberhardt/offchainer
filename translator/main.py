@@ -3,13 +3,22 @@ import sys
 from os import path, getcwd, makedirs, listdir
 from utils.check import isContract
 from classes.Contract import Contract
-from utils.write import copy, render
+from utils.io import copy, render, delete
 
 # Define values
+DEFAULT_OPTIONS = {
+    'force_overwrite': False,
+    'show_analysis': False
+}
+FLAGS = {
+    '--force-overwrite': 'force_overwrite',
+    '-f': 'force_overwrite',
+    '--show-analysis': 'show_analysis',
+    '-s': 'show_analysis'
+}
 FILEDIR = path.dirname(path.realpath(__file__))
 WORKDIR = getcwd()
 MINIMUM_NUMBER_OF_ARGS = 2
-MAXIMUM_NUMBER_OF_ARGS = 3
 DEFAULT_OUTPUT_DIR = path.join(WORKDIR, 'output')
 FILES_TO_COPY = [
     'docker/ganache',
@@ -43,23 +52,34 @@ ERROR_OUTPUT_DIR_EXISTS = 'already exists'
 ERROR_INVALID_CONTRACT = 'Input file is not a valid Solidity contract'
 
 # Define messages
-MSG_SUCCESS = 'Done'
+MSG_SUCCESS = 'Output was written to'
+
+# Filter flags
+args = list(filter(lambda x: x.find('-') != 0, sys.argv))
 
 # Check number of arguments
-if len(sys.argv) < MINIMUM_NUMBER_OF_ARGS or len(sys.argv) > MAXIMUM_NUMBER_OF_ARGS:
+if len(args) < MINIMUM_NUMBER_OF_ARGS:
     print(ERROR, ERROR_INVALID_NUMBER_OF_ARGS)
     print(ERROR_USAGE)
     exit(CODE_INVALID_NUMBER_OF_ARGS)
 
+# Parse flags
+options = type('Options', (object,), DEFAULT_OPTIONS)() # Hack to avoid class definition
+for arg in sys.argv:
+    if arg in FLAGS:
+        setattr(options, FLAGS[arg], True)
+
 # Check input file
-input_file_path = path.join(WORKDIR, sys.argv[1])
+input_file_path = path.join(WORKDIR, args[1])
 input_file = path.basename(input_file_path)
 if not path.isfile(input_file_path):
     print(ERROR, ERROR_INPUT_EXIST)
     exit(CODE_INPUT_EXIST)
 
 # Check output directory
-output_dir = path.join(WORKDIR, sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_OUTPUT_DIR
+output_dir = path.join(WORKDIR, args[2]) if len(args) > 2 else DEFAULT_OUTPUT_DIR
+if options.force_overwrite:
+    delete(output_dir)
 if path.exists(output_dir):
     print(ERROR, output_dir, ERROR_OUTPUT_DIR_EXISTS)
     exit(CODE_OUTPUT_EXIST)
@@ -74,9 +94,8 @@ with open(input_file_path) as file:
 
 # Parse contract
 contract = Contract(content)
-contract.print()
-
-exit(0)
+if options.show_analysis:
+    contract.print()
 
 # Copy files
 makedirs(output_dir)
@@ -94,4 +113,4 @@ for blob in listdir(FILES_DIR): # Copy custom files
 render(output_dir, TEMPLATE_DIR, contract)
 
 # Print success message
-print(MSG_SUCCESS)
+print(MSG_SUCCESS, output_dir)
