@@ -6,7 +6,7 @@ from os import linesep
 import re
 
 # Define values
-ATTRIBUTES = ['name', 'arguments', 'modifiers', 'used_variables', 'changed_variables']
+ATTRIBUTES = ['name', 'arguments', 'modifiers', 'changed', 'used']
 
 # Define class
 class Function:
