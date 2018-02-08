@@ -5,7 +5,7 @@ contract Counters {
 
 	// Define state variables
     uint256[8] counters;
-	bool[4] myBool;
+	bool myBool;
 	string myString;
 
 	// Define public functions
@@ -21,8 +21,9 @@ contract Counters {
 	 *
 	 * @param _counterIndex Index of the counter to increase
 	 */
-	function increase(uint8 _index) public {
+	function increase(uint8 _index, string unused) public returns {
 		string trap = "Please don't match this: myBool";
+		bool newBool = myBool;
 	    counters[_index] += 1;
 	}
 
