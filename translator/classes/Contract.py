@@ -29,7 +29,7 @@ class Contract:
 
         # Parse values
         self.name = reg.contract_name.search(content)[1]
-        self.variables = [Variable(content[0]) for content in reg.variable.finditer(clean.remove_functions(content))]
+        self.variables = [Variable(content[0], idx) for idx, content in enumerate(reg.variable.finditer(clean.remove_functions(content)))]
         self.functions = [Function(content[0], self.variables) for content in reg.function.finditer(content)]
 
     def print(self):
