@@ -29,13 +29,148 @@ describe('Benchmarking', function() {
         .expect(200)
       })
       .then(response => {
-        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + ";" +
+        answerVar = answerVar + "add1;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Kevin Marcel",
+        	"lastName" : "Styp-Rekowski",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 20000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add2;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Simon",
+        	"lastName" : "Fallnich",
+        	"startDate" : 1515942162,
+        	"department" : "Marketing and Management",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add3;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Tarek",
+        	"lastName" : "Higazi",
+        	"startDate" : 1515942162,
+        	"department" : "Marketing and Management",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add4;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Patrick",
+        	"lastName" : "Friedrich",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add5;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Vincent",
+        	"lastName" : "Jonany",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add6;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Thanh Tuan Tenh",
+        	"lastName" : "Cong",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add7;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Dukagjin",
+        	"lastName" : "Ramosaj",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add8;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Elon",
+        	"lastName" : "Musk",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 10000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add9;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employeeOnchain/add')
+        .send({
+        	"firstName" : "Satoshi",
+        	"lastName" : "Nakamoto",
+        	"startDate" : 1515942162,
+        	"department" : "IT",
+        	"salary" : 50000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add10;" + response.body.content.transaction.gasUsed + ";" +
         response.body.content.milliSeconds + "\n"
         return request(server)
         .post('/payraiseOnchain/create')
         .send({
         	"percentage" : 15,
-        	"department" : "IT",
+        	"department" : "Marketing and Management",
         	"fromStartDate" : 1515942162
         })
         .expect('Content-Type', /json/)
@@ -84,7 +219,7 @@ describe('Benchmarking', function() {
         .send({
         	"firstName" : "Adam",
         	"lastName" : "Miller",
-        	"startDate" : 1515942162,
+        	"startDate" : "1515942162",
         	"department" : "IT",
         	"salary" : 2000
         })
@@ -92,13 +227,148 @@ describe('Benchmarking', function() {
         .expect(200)
       })
       .then(response => {
-        answerVar = answerVar + "add;" + response.body.content.transaction.gasUsed + ";" +
+        answerVar = answerVar + "add1;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Kevin Marcel",
+        	"lastName" : "Styp-Rekowski",
+        	"startDate" : "1515942162",
+        	"department" : "IT",
+        	"salary" : 20000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add2;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Simon",
+        	"lastName" : "Fallnich",
+        	"startDate" : "1515942162",
+        	"department" : "Marketing and Management",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add3;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Tarek",
+        	"lastName" : "Higazi",
+        	"startDate" : "1515942162",
+        	"department" : "Marketing and Management",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add4;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Patrick",
+        	"lastName" : "Friedrich",
+        	"startDate" : "1515942162",
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add5;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Vincent",
+        	"lastName" : "Jonany",
+        	"startDate" : "1515942162",
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add6;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Thanh Tuan Tenh",
+        	"lastName" : "Cong",
+        	"startDate" : "1515942162",
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add7;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Dukagjin",
+        	"lastName" : "Ramosaj",
+        	"startDate" : "1515942162",
+        	"department" : "IT",
+        	"salary" : 2000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add8;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Elon",
+        	"lastName" : "Musk",
+        	"startDate" : "1515942162",
+        	"department" : "IT",
+        	"salary" : 10000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add9;" + response.body.content.transaction.gasUsed + ";" +
+        response.body.content.milliSeconds + "\n"
+        return request(server)
+        .post('/employee/add')
+        .send({
+        	"firstName" : "Satoshi",
+        	"lastName" : "Nakamoto",
+        	"startDate" : "1515942162",
+        	"department" : "IT",
+        	"salary" : 50000
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+      })
+      .then(response => {
+        answerVar = answerVar + "add10;" + response.body.content.transaction.gasUsed + ";" +
         response.body.content.milliSeconds + "\n"
         return request(server)
         .post('/payraise/create')
         .send({
         	"percentage" : 15,
-        	"department" : "IT",
+        	"department" : "Marketing and Management",
         	"fromStartDate" : 1515942162
         })
         .expect('Content-Type', /json/)
