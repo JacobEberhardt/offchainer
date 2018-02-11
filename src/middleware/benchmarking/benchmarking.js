@@ -170,7 +170,7 @@ describe('Benchmarking', function() {
         .post('/payraiseOnchain/create')
         .send({
         	"percentage" : 15,
-        	"department" : "Marketing and Management",
+        	"department" : "IT",
         	"fromStartDate" : 1515942162
         })
         .expect('Content-Type', /json/)
@@ -190,7 +190,7 @@ describe('Benchmarking', function() {
         .end(function(err, res) {
           if (err) throw err;
           answerVar = answerVar + "increase-salary;" + res.body.content.transaction.gasUsed + ";" +
-          response.body.content.milliSeconds + "\n"
+          res.body.content.milliSeconds + "\n"
 
           fs.writeFileSync("/middleware/benchmarking/employeeOnchain.csv", answerVar, function(err) {
               if(err) {
@@ -368,7 +368,7 @@ describe('Benchmarking', function() {
         .post('/payraise/create')
         .send({
         	"percentage" : 15,
-        	"department" : "Marketing and Management",
+        	"department" : "IT",
         	"fromStartDate" : 1515942162
         })
         .expect('Content-Type', /json/)
