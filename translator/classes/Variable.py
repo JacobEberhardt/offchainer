@@ -24,9 +24,9 @@ class Variable:
 
         # Parse values
         result = reg.variable_combined.search(content)
-        self.name = result[3]
-        self.type = result[1]
-        self.size = int(result[2] or 1)
+        self.name = result.group(3)
+        self.type = result.group(1)
+        self.size = int(result.group(2) or 1)
         self.descriptor = '{}{} {}'.format(self.type, '[{}]'.format(self.size) if self.size > 1 else '', self.name)
 
     def print(self):

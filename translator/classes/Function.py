@@ -27,14 +27,14 @@ class Function:
     def parse(self, content):
 
         # Parse trivial values
-        self.name = reg.function_name.search(content)[1]
-        self.modifiers = reg.function_modifiers.search(content)[1]
+        self.name = reg.function_name.search(content).group(1)
+        self.modifiers = reg.function_modifiers.search(content).group(1)
 
         # Parse arguments
-        self.arguments = [Variable('{};'.format(item)) for item in reg.function_arguments.search(content)[1].split(', ')]
+        self.arguments = [Variable('{};'.format(item)) for item in reg.function_arguments.search(content).group(1).split(', ')]
 
         # Parse variable usage/modification
-        self.body = reg.function_body.search(content)[1]
+        self.body = reg.function_body.search(content).group(1)
         self.changed = []
         for idx, var in enumerate(self.variables):
             if re.search(reg.variable_changed_template.format(var.name), self.body) is not None:
