@@ -50,7 +50,8 @@ class Function:
 
         # Get variables
         self.changed = [self.variables[idx] for idx in self.changed]
-        self.used = self.arguments + [self.variables[idx] for idx in self.used]
+        self.used_state_variables = [self.variables[idx] for idx in self.used]
+        self.used = self.arguments + self.used_state_variables
 
     def offchain(self):
 
@@ -64,7 +65,8 @@ class Function:
             'changed_args_name': ', '.join([var.name for var in self.changed]), # A string containing the names of all changed variables, separated by commata
             'used_args_descriptor': ', '.join([var.descriptor for var in self.used]), # A string containing all used variables including types, separated by commata
             'call_args_descriptor': ', '.join([var.descriptor for var in self.arguments]), # A string containing all arguments of the orginal function including types, separated by commata
-            'call_args_name': ', '.join([var.name for var in self.arguments]) # A string containing the names of all arguments of the original function, separated by commata
+            'call_args_name': ', '.join([var.name for var in self.arguments]), # A string containing the names of all arguments of the original function, separated by commata
+            'struct_variables': '{' + ', '.join(['{}: {}'.format(var.name, var.name) for var in self.used_state_variables]) + '}' # A string containing the names of all variables for the Values struct, separated by commata
         })()
 
     def print(self):
