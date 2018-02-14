@@ -7,7 +7,7 @@ contract Contract {
 
 	// Define struct
 	struct Values {
-
+		{{ c.oc.struct }}
 	}
 
 	// Define events
@@ -33,7 +33,7 @@ contract Contract {
 
 	function {{ fn.oc.execute_name }}(bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, {{ fn.oc.used_args_descriptor }}) {{ fn.modifiers }} {
 		// Verify integrity
-		Values memory values = Values();
+		Values memory values = Values({{ fn.oc.struct_variables }});
 		if (_createTree(_checks, _indexOfFirstLeaf, _hashes, values) != rootHash) {
 			IntegrityCheckFailedEvent();
 			return;
@@ -42,7 +42,7 @@ contract Contract {
 		// Execute original function body{#
 #}		{{ fn.body }}
 		// Compute new root hash
-		values = Values();
+		values = Values({{ fn.oc.struct_variables }});
 		rootHash = _createTree(_checks, _indexOfFirstLeaf, _hashes, values)
 
 		// Throw event to report changed values
