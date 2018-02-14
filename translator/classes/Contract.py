@@ -21,6 +21,7 @@ class Contract:
 
         # Parse content
         self.parse(content)
+        self.offchain()
 
     def parse(self, content):
 
@@ -31,6 +32,13 @@ class Contract:
         self.name = reg.contract_name.search(content).group(1)
         self.variables = [Variable(content.group(0), idx) for idx, content in enumerate(reg.variable.finditer(clean.remove_functions(content)))]
         self.functions = [Function(content.group(0), self.variables) for content in reg.function.finditer(content)]
+
+    def offchain(self):
+
+        # Define offchained values
+        self.oc = type('Offchain', (object,), {
+            'struct': ', '.join([var.descriptor for var in self.variables]) + ';'
+        })()
 
     def print(self):
 
