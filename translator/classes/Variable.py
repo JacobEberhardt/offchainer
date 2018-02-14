@@ -27,7 +27,7 @@ class Variable:
         self.name = result.group(3)
         self.type = result.group(1)
         self.size = int(result.group(2) or 1)
-        self.descriptor = '{}{} {}'.format(self.type, '[{}]'.format(self.size) if self.size > 1 else '', self.name)
+        self.descriptor = self.type + ('[{}] '.format(self.size) if self.size > 1 else ' ') + self.name
 
     def print(self):
         print('Variable name:', self.name)
