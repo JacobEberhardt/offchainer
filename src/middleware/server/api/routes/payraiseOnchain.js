@@ -2,6 +2,7 @@
 const router = require('express').Router()
 const payraise = require('../../models/payraiseOnchain')
 const res = require('../../utils/response')
+const toMilliSeconds = require('../../utils/hrtime_utils')
 
 // Set response functions
 const response = res.response
@@ -11,9 +12,11 @@ const error = res.error
 
 // Create Pay Raise Contract
 router.post('/create', (req, res, next) => {
+	var startTime = process.hrtime()
 	payraise.create(req.body, res)
 		.then(result => {
-			response(res, 200, {address: result.contract.address, transaction: result.receipt})
+			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
+			response(res, 200, {address: result.contract.address, transaction: result.receipt, milliSeconds: elapsedMilliseconds})
 		})
 		.catch(err => error(res, 500, err))
 })
