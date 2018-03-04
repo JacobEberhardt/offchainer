@@ -1,0 +1,88 @@
+pragma solidity ^0.4.17;
+
+contract Contract {
+
+	// Define variables
+	bytes32 rootHash;
+
+	// Define struct
+	struct Values {
+		{{ c.oc.struct }}
+	}
+
+	// Define events
+{% for fn in c.functions %}{% if fn.name != c.name %}{#
+#}	{{ fn.oc.request_event_name }}({{ fn.oc.call_args_descriptor }});
+	{{ fn.oc.execute_event_name }}({{ fn.oc.changed_args_descriptor }});
+	IntegrityCheckFailedEvent();{#
+#}{% endif %}{% endfor %}	
+
+	// Define functions
+{% for fn in c.functions %}{#
+#}{% if fn.name == c.name %}{#
+#}	// Constructor
+	function Contract(bytes32 _rootHash) public {
+		rootHash = _rootHash
+	}
+{% else %}
+	// Offchained version of function `{{ fn.name }}`
+	function {{ fn.oc.request_name }}({{ fn.oc.call_args_descriptor }}) public {
+		// Throw event to request data
+		{{ fn.oc.request_event_name }}({{ fn.oc.call_args_name }});
+	}
+
+	function {{ fn.oc.execute_name }}(bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, {{ fn.oc.used_args_descriptor }}) {{ fn.modifiers }} {
+		// Verify integrity
+		Values memory values = Values({{ fn.oc.struct_variables }});
+		if (_createTree(_checks, _indexOfFirstLeaf, _hashes, values) != rootHash) {
+			IntegrityCheckFailedEvent();
+			return;
+		}
+		
+		// Execute original function body{#
+#}		{{ fn.body }}
+		// Compute new root hash
+		values = Values({{ fn.oc.struct_variables }});
+		rootHash = _createTree(_checks, _indexOfFirstLeaf, _hashes, values)
+
+		// Throw event to report changed values
+		{{ fn.oc.execute_event_name }}({{ fn.oc.changed_args_name }});
+	}
+{% endif %}{#
+#}{% endfor %}{#
+#}
+	// Define helper functions
+	function _createTree(bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, Values _values) private view returns (bytes32) {
+		return _computeHash(0, _checks, _indexOfFirstLeaf, _hashes, _values);
+	}
+
+	function _computeHash(uint8 _index, bool[] _checks, uint8 _indexOfFirstLeaf, bytes32[] _hashes, Values _values) private constant returns (bytes32) {
+		// Check if hash is given
+		if (!_checks[_index]) {
+			return _hashes[_index];
+		}
+
+		// Check if value is given
+		if (_index >= _indexOfFirstLeaf) {
+			uint8 index = _index - _indexOfFirstLeaf;
+{% for var in c.variables %}{#
+#}			{% if var.index > 0 %}else {% endif %}if (index == {{ var.index }}) return keccak256(_values.{{ var.name }});
+{% endfor %}{#
+#}		}
+
+		// Compute hash from the children hashes
+		return keccak256(
+			_computeHash(_leftChild(_index), _checks, _indexOfFirstLeaf, _hashes, _values),
+			_computeHash(_rightChild(_index), _checks, _indexOfFirstLeaf, _hashes, _values)
+		);
+	}
+
+	function _leftChild(uint8 _index) private pure returns (uint8) {
+		return _index * 2 + 1;
+	}
+
+	function _rightChild(uint8 _index) private pure returns (uint8) {
+		return _index * 2 + 2;
+	}
+	
+}

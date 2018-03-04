@@ -7,6 +7,7 @@ const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
 const MerkleTree = require('../utils/merkleTree')
+const transactions = require('../utils/transactions')
 const sha3 = require('web3-utils').soliditySha3
 
 // Define values
@@ -148,20 +149,24 @@ function queryWithDate(query) {
 		}
 
 		// watch for the returned index/indeces that match the query
-		events.watch(contract.instance.QueryResultsEvent).then(result => {
-			// save the index to the db with the row
-			if(result.args != null) {
-				let returnArr = []
-				for(let i = 0; i < resultArr.length; i++) {
-					if(result.args.resultIndexes[i]) {
-						returnArr.push(resultArr[i])
+		events.watch(contract.instance.QueryResultsEvent)
+			.then(result => {
+				// Wait for transaction to be mined, pass return values to next chain
+				return Promise.all([transactions.waitForBlock(web3, transactionHash), result])
+			}).then(([result, previous]) => {
+				// save the index to the db with the row
+				if(previous.args != null) {
+					let returnArr = []
+					for(let i = 0; i < resultArr.length; i++) {
+						if(previous.args.resultIndexes[i]) {
+							returnArr.push(resultArr[i])
+						}
 					}
-				}
-				resolve(returnArr)			
-			} 
+					resolve(returnArr)			
+				} 
 
-		}).then(resolve)
-		.catch(handler)
+			}).then(resolve)
+			.catch(handler)
 
 
 		// get all the records in DB 
@@ -219,7 +224,9 @@ function queryWithDate(query) {
 					query.max,
 					query.min
 				]
-			}).catch(handler)
+			})
+			.then(result => transactionHash = result)
+			.catch(handler)
 
 
 		}).catch(handler)
