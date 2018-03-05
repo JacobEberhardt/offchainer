@@ -1,6 +1,112 @@
 \subsubsection{Financials Use Case}
+\paragraph{Scenario 1: Check only}
+Generic Steps - Event Based:
+\begin{itemize}
+\item Client sends request to Client-Side Middleware to verify specific data (data or indexes are not known by Client)
+\item Client-Side Middleware triggers relevant Smart Contract function
+\item Smart Contract triggers Event to retrieve specific data
+\item Client-Side Middleware listens to Event and queries required data from the database
+\item Client-Side Middleware sends required data to smart contract via function call
+\item Smart Contract checks integrity
+\item Smart Contract triggers Event to send result of integrity check (result = corrupted records or true/false)
+\item Client-Side Middleware listens to Event and sends the result back to client
+\end{itemize}
 
-Here goes my text.
+Generic Steps - Data to check is known:
+\begin{itemize}
+\item Client sends request to Client-Side Middleware to verify specific data (data or indexes are not known by Client)
+\item Client-Side Middleware queries required data from the database
+\item Client-Side Middleware sends required data to smart contract via function call
+\item Smart Contract checks integrity
+\item Smart Contract triggers Event to send result of integrity check (result = corrupted records or true/false)
+\item Client-Side Middleware listens to Event and sends the result back to client
+\end{itemize}
 
-\paragraph{Concept}
+\paragraph{Concept - Financials}
+Description
+An external auditor wants to check the financial situation of a company. One task could be to check the stated weekly or monthly sales amount against the sum of all sales records in the specific year. One of the first steps would be to verify (check the integrity) of all sales records in the specific year.
+
+#####################Table missing: gDoc "Use Cases for Off-Chaining Data"############################################
+
+The different table rows represent moments in time (e.g. every Friday night after 00:00 or every first of the month) and thus new records are appended to the table. In this way, the records can be tracked back in time and an auditor could double-check the records for e.g. the last 6 months or the last 104 weeks. The Smart Contract entry then consists of the root hash over every table row (with each column being a leaf in the Merkle tree).
+As the middleware is under the control of the company storing their financial figures in the current implementation the financial auditor cannot be sure that those numbers were inserted correctly (same as without blockchain). By having the hashes of the records though, the auditor can be sure that the company was not able to change the figures later on and thus has the certainty that there are no accounting tricks and malpractices in place e.g. at the end of the year or quarter. The figures that were once recorded by the company can be double-checked afterwards (or it can be noticed that the company recorded wrong numbers or tried to change them in hindsight). It is worth mentioning that the Smart Contract never stores the financial figures and they are thus not available on the blockchain either.
+
+To conclude, this use case asserts that large quantities of data (like financial figures of a company) cannot be modified after reporting them while only storing a relatively cheap representation of that data (hash) on the blockchain. Third parties and internal controllers are thus able to rely on the integrity of the recorded data.
+
+Furthermore, this use case could be valuable for rewarding benefits to employees. For example, the CEO of a company could receive a benefit by the shareholders (indirectly through the company itself but signed by the shareholders) if certain financial data are met. Or a sales person in the company could receive a benefit for sales data records for a certain month that went especially well.
+
+\paragraph{Additional Functionalities - Financials}
+First Concept: verify whole table
+
+This could be used to verify a row “Total” which sums up all of the recorded entries in the table (e.g. for sales data).
+
+The Smart Contract stores the current root hash of the whole table. It could also store the root hashes of the prior states of the table (this info could otherwise be found in the blockchain history) and like so maybe allow for extra functionality.
+
+The Smart Contract creates a Merkle Tree over the hashes of all rows. The hashes of the rows are provided by the middleware. Afterwards, the Smart Contract verifies that the root hash of the created Merkle Tree matches the stored current root hash. If that is the case, it adds the hash of the new row (new entry) to the Tree and creates a new root hash for it. This new root hash is then stored as the current one.
+
+For the Merkle Tree implementation, there is no need to implement a new one or change the existing one, as we can use the Multiple Item Proof here (note: an item here will correspond to a row, not a column).
+
+Implementation detail
+#####################Table missing: gDoc "Financials Additional Functionalities"############################################
+
+Add New Item - Steps:
+\begin{itemize}
+\item First, the client side application gets all the data from the Database.
+\item It then creates the proof and sends it to the Smart Contract.
+\item The Smart Contract does the integrity check.
+\item Now, first the new total values are calculated, the Smart Contract creates a roothash for that total row, then recreates the tree with that new roothash from the total row, and that newly added item row.
+\item Send back the total row, and that newly added item row.
+\end{itemize}
+
+Implementation Roadmap
+
+Multiple Row:
+The Merkle Proof is turned 90°; the root hashes of the rows become the leaves of the Merkle tree (use the existing implementation of Multiple item Proof).
+
+This allows for:
+\begin{itemize}
+\item verifying the whole table (note that once a row was entered it cannot be modified, as the company should not tamper with historical financial data)
+\item a verified table allows for verified totals (e.g. the aggregated costs for the time frame covered in the table)
+\item proving that a certain row of financial data is part of the table or is not a part of the table
+\item proving that a certain data item (e.g. sales data for Jan 2018) is part of the table or is not part of the table
+\item the counter (for the Smart Contract map) keeps track of how many entries should be in the table
+\item a Proof of Existence: with the identifying data stored on the blockchain (internal counter, ID from database, timestamp) the database can be queried to return the hash of a certain row or part of the table, this can be verified with the Merkle Proof and thus indicates that the database actually has the entry (and did not delete it or similar)
+\end{itemize}
+In conclusion: having a third party (like financial auditors) verify that the records of the company’s data are complete, that nothing was deleted or changed in hindsight, and that a specific piece of data or a row is part of the financial data.
+
+Verified Queries:
+A user queries the database but does not want to put trust into the returned results. The blockchain can be used as an objective verifier of the query results.
+In the financials use case, this could be a query for all sales data in the period from Nov 2017 to Jan 2018.
+The set of possible (verified) queries would be limited.
+
+Implementation Idea:
+\begin{itemize}
+\item Verify that all entries were considered and that none were left out in the returned results.
+→  have database respond to original query and to the negated query (e.g. original: all sales data in the period from Nov 2017 to Jan 2018, negated: all sales data NOT in the period from Nov 2017 to Jan 2018)
+→ check that combined size of both returned lists equals total number of entries (mapping counter in SC)
+\item Verify that only actual entries from the database were returned
+→ combine the two result lists to one Merkle Proof to show that all rows are part of the table, i.e. no entries were changed and no outside entries were returned as a result
+\item Verify that the returned results match the query requirements (are “correct”)
+→ no feasible way with blockchain currently as we would either need to do a lot of computation or to store a large amount of data (maybe even all data) on-chain, which would contradict this project’s focus
+→ leave this verification up to the user (she can see whether the results match her query)
+\item Verify that all results that match the query were actually returned
+→ no feasible way with blockchain currently as we would either need to do a lot of computation or to store a large amount of data (possibly even all data) on-chain, which would contradict this project’s focus
+→ unfortunately, the user does not have an easy way to verify that either
+\end{itemize}
+The above statements show that there is a clear trade-off between achieving true Query Completeness and this project’s goal of saving gas costs by off-chaining data. Either practically all data has to be stored on-chain to enable our smart contract to guarantee Query Completeness or a plethora of computations (Merkle Proofs for each row in the data table) have to be on-chained which would hit the gas limit relatively fast.
+
+\subparagraph{Query completeness - Proof of Concept}
+As we are facing the challenge described in the last paragraph, we decided to implement our Proof of Concept for Query Completeness by using the best of two worlds; building on our initial assumption that we trust our client side application, we calculate the Merkle Proofs here and thus save a considerable amount of computation on-chain. Still, the smart contract will check the integrity of the data and perform a simplified query to guarantee Query Completeness.
+Implementation Steps:
+Goal: The Middleware offers a function for the user to call that gets all entries between a certain date (verified by the blockchain).
+\begin{itemize}
+\item The Middleware gets all data from the database.
+\item The Middleware calculates the roothashes of the Merkle Proofs for all the date columns and calls the smart contract.
+\item This smart contract function for the Middleware to call takes all roothashes, all date columns and the date range specified by the user and returns (better: provides via event) all the row indexes that fulfill the query.
+The smart contract checks if it got the right data, the right amount of rows and the correct table overall by iterating over the provided roothashes and comparing them to the previously stored ones.
+If the smart contract can confirm this, it checks the query condition for every row and returns (better: puts into an event) an array of booleans indicating all the indexes of rows that fulfill the query.
+\item The Middleware listens to this event and returns the specified rows to the user subsequently.
+\end{itemize}
+We want to find a limit for the rows that we can check in this way. Every number bigger than that one needs to cope with compromises concerning query completeness (e.g. only checking that all rows were considered and are part of the table but no actual value checking) because of the high costs and the off-chaining of data constraint.
+
 \paragraph{Implementation}
