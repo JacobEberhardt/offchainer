@@ -1,6 +1,15 @@
-\section{Research and Design Decisions}
+\section{Research}
 
 Here goes my text.
 
-\subsection{Merkle DAG}
-\subsection{Random Sampling}
+\subsection{The Concept of Query Completeness}
+The possibility to query RDBMS is a pivotal functionality of those systems and thus represents a great entry point for efforts to link the technologies of blockchain and RDBMS as targeted in this project. The trust that today’s users of RDBMS put into the correctness of the returned results for their queries could be nullified by the trustlessness offered by the blockchain - trustless query results in a sense. Right now, no user can be sure if her results were not tampered with or only part of the truth was returned to her.
+Through an initial slide set from our supervisor Jacob Eberhardt we were introduced to the concept of query completeness which aims at achieving completely trustless queries. The general idea is to use the blockchain and its properties to counteract the four ways a database system could falsify the query results. In detail, the following measurements have to be prevented:
+The database system could try to not consider all database records while performing the query. This means, a mechanism has to be implemented that verifies that all records were looked at.
+The database system could try to add records to the query results that were not part of the database before. To counteract, a trustless systems needs to show that all considered records were part of the database already and that the returned results are actual database entries.
+The database system could try to leave out actual database records that fulfill the query in the returned set of records. Accordingly, we need to proof that that all records that fulfill a user’s query find their way into the results that the user obtains.
+The database system could try to include actual database records that do not fulfill the query in the returned set of records. A trustless system thus has to check that only records that fulfill the query are returned to the user.
+Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined here.
+
+\subsection{Oraclize}
+\subsection{RDIC}
