@@ -1,6 +1,6 @@
 \subsubsection{Employee Use Case}
 \paragraph{Scenario 2: Check and Modify}
-Generic Steps:
+\subparagraph{Generic Steps:}
 \begin{itemize}
 \item Client sends request to Client-Side Middleware to perform an action/ a transaction
 \item Client-Side Middleware triggers relevant Smart Contract function
@@ -14,17 +14,17 @@ Generic Steps:
 \end{itemize}
 
 \paragraph{Concept - Employee Payraise}
-Description
-A company and a union agreed on a specific salary raise (%) for employees in a specific department and specific entry date. The salary raise (%) is stated in a smart contract. The current salaries of the affected employees have to be verified before the raise can be applied.
+\subparagraph{Description}
+A company and a union agreed on a specific salary raise in percent for employees in a specific department and specific entry date. The salary raise is stated in a smart contract. The current salaries of the affected employees have to be verified before the raise can be applied.
 
-Table missing: gDoc "Use Cases for Off-Chaining Data"
+\subparagraph{Table missing: gDoc "Use Cases for Off-Chaining Data"}
 
 In a first implementation, the Smart Contract stores the root hash of the table entry for each employee with the current salary plus the root hash of the table row with the previous salary. Like this, we can calculate the salary raise on-chain as well if needed.
 The hash of the ID and the hash of the salary should be calculated on-chain while the other columns per record can be hashed in the middleware and provided to the Smart Contract. Only the hash over all the column hashes has to be stored on the blockchain. Therefore, it is certain that the ID of an employee and the corresponding salary cannot be pushed into the blockchain in a wrong way and later on updating the salary for a different employee.
 
 With this approach it can be verified that an employee with a distinct ID is earning a certain salary now and earned a certain salary before that. In addition, the current salary can be updated to represent current negotiations or promotions. A third party like a union could verify that the salary is updated correctly and point to the record on the blockchain in case of conflicts. The contract could e.g. be queried to return the verified salary for a given employee ID or return the IDs of employees for a given salary.
 
-At the same time privacy is given here (as an additional benefit) because the Smart Contract never stores the employee’s ID or the salary (only the two root hashes).
+At the same time privacy is given here (as an additional benefit) because the Smart Contract never stores the employee ID or the salary (only the two root hashes).
 
 
 \paragraph{Implementation}
