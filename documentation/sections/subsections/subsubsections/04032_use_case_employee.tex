@@ -17,7 +17,7 @@ Generic Steps:
 Description
 A company and a union agreed on a specific salary raise (%) for employees in a specific department and specific entry date. The salary raise (%) is stated in a smart contract. The current salaries of the affected employees have to be verified before the raise can be applied.
 
-#####################Table missing: gDoc "Use Cases for Off-Chaining Data"############################################
+Table missing: gDoc "Use Cases for Off-Chaining Data"
 
 In a first implementation, the Smart Contract stores the root hash of the table entry for each employee with the current salary plus the root hash of the table row with the previous salary. Like this, we can calculate the salary raise on-chain as well if needed.
 The hash of the ID and the hash of the salary should be calculated on-chain while the other columns per record can be hashed in the middleware and provided to the Smart Contract. Only the hash over all the column hashes has to be stored on the blockchain. Therefore, it is certain that the ID of an employee and the corresponding salary cannot be pushed into the blockchain in a wrong way and later on updating the salary for a different employee.

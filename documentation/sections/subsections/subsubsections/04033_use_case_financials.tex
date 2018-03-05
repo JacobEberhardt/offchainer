@@ -26,7 +26,7 @@ Generic Steps - Data to check is known:
 Description
 An external auditor wants to check the financial situation of a company. One task could be to check the stated weekly or monthly sales amount against the sum of all sales records in the specific year. One of the first steps would be to verify (check the integrity) of all sales records in the specific year.
 
-#####################Table missing: gDoc "Use Cases for Off-Chaining Data"############################################
+Table missing: gDoc "Use Cases for Off-Chaining Data"
 
 The different table rows represent moments in time (e.g. every Friday night after 00:00 or every first of the month) and thus new records are appended to the table. In this way, the records can be tracked back in time and an auditor could double-check the records for e.g. the last 6 months or the last 104 weeks. The Smart Contract entry then consists of the root hash over every table row (with each column being a leaf in the Merkle tree).
 As the middleware is under the control of the company storing their financial figures in the current implementation the financial auditor cannot be sure that those numbers were inserted correctly (same as without blockchain). By having the hashes of the records though, the auditor can be sure that the company was not able to change the figures later on and thus has the certainty that there are no accounting tricks and malpractices in place e.g. at the end of the year or quarter. The figures that were once recorded by the company can be double-checked afterwards (or it can be noticed that the company recorded wrong numbers or tried to change them in hindsight). It is worth mentioning that the Smart Contract never stores the financial figures and they are thus not available on the blockchain either.
@@ -47,7 +47,7 @@ The Smart Contract creates a Merkle Tree over the hashes of all rows. The hashes
 For the Merkle Tree implementation, there is no need to implement a new one or change the existing one, as we can use the Multiple Item Proof here (note: an item here will correspond to a row, not a column).
 
 Implementation detail
-#####################Table missing: gDoc "Financials Additional Functionalities"############################################
+Table missing: gDoc "Financials Additional Functionalities"
 
 Add New Item - Steps:
 \begin{itemize}
