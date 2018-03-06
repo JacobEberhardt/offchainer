@@ -1,4 +1,4 @@
-\subsection{Benchmarking for Use Cases}
+\subsection{Benchmarking for Employee Use Case}
 (Maybe start text fancy with the questions which araise during the project: see the benchmarking google sheet for that)
 
 As already mentioned this project was carried out as a prototyping project. Therefore we need to benchmark our results against the current best practice. Current state of the art for deploying contracts to the ethereum blockchain includes saving all the state variables of the contract on the blockchain and thus on all machines participating in the blockchain. As proposed we want to save those state variables off from the blockchain and thus save on gas which explains why gas cost are our most important measurement.
@@ -29,3 +29,41 @@ When does Off-Chaining make sense?
 Do we really save gas?
 
 -> Conclude on that
+
+\subsubsection{Time measurement}
+First we will measure the introduced computation time of our middleware for executing different functions of the smart contract. The result can be seen in Figure \ref{fig:05_time}.
+
+As we measured the computation time multiple times we decided to unite the results into a box plot chart. Thus we can see how the system behaves most of the times and single outliers can easily be identified.
+
+Thats a box plot chart
+
+Everything under 1 second -> not relevant, no further measurements
+
+multiple transactions in increase-salary with increasing size but not really relevant, as every transaction needs to be mined fist anyways
+
+We can see the times in Figure \ref{fig:05_time}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1.0\textwidth]{images/05_time.png}
+\caption{\label{fig:05_time}This are the times.}
+\end{figure}
+
+
+\subsubsection{Gas cost measurement}
+
+And smth more in Figure \ref{fig:05_gas_cost_single}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1.0\textwidth]{images/05_gas_cost_single.png}
+\caption{\label{fig:05_gas_cost_single}This is one employee.}
+\end{figure}
+
+And yet smth more in Figure \ref{fig:05_gas_cost_ten}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=1.0\textwidth]{images/05_gas_cost_ten.png}
+\caption{\label{fig:05_gas_cost_ten}This is ten employees.}
+\end{figure}
