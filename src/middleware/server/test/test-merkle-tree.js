@@ -1,20 +1,20 @@
-// Test Class. 
-
-const MerkleTree = require('../utils/merkleTree')
+// Import dependencies
+const MerkleTree = require('../utils/merkle-tree')
 const sha3 = require('web3-utils').soliditySha3
 
+// Define variables
 var numOfSuccess = 0
 var totalTest = 0
 var numOfFailures = 0
 
-const leaves1 = [0, 0, 0 ,0] // normal
-const leaves2 = [0, 1, 2, 3] // different data
-const leaves3 = [0, 1, 2, 3, 4] //odd number of leaves
-const leaves4 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] // mid size odd number 
-const leaves5 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31] // a bigger tree
-const leaves6 = [0, "a", 2, "b", 4, "asd", 6, 7, 8, 9, 10, "Asd", 12, 13, 14, "ASD"] // another tree with more than one data type
+const leaves1 = [0, 0, 0 ,0] // Normal
+const leaves2 = [0, 1, 2, 3] // Different data
+const leaves3 = [0, 1, 2, 3, 4] // Odd number of leaves
+const leaves4 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] // Mid size odd number 
+const leaves5 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31] // A bigger tree
+const leaves6 = [0, "a", 2, "b", 4, "asd", 6, 7, 8, 9, 10, "Asd", 12, 13, 14, "ASD"] // Another tree with more than one data type
 
-function verify(leaves, index, testName, intentToFail) { // index is array
+function verify(leaves, index, testName, intentToFail) { // Index is array
 	var hashes = []
 	for(var i = 0; i < leaves.length; i++) {
 		if(typeof leaves[i] === "number") {
@@ -151,10 +151,7 @@ for(var i = 0; i < leaves6.length; i++) {
 // verify when the merkle tree detects a failed integrity check
 verify(leaves2, [1], "intentionally fails integrity check", true)
 
-
 // report
 console.log()
 console.log(numOfSuccess + "/" + totalTest + " success")
 console.log(numOfFailures + "/" + totalTest + " failed")
-
-
