@@ -25,7 +25,6 @@ web3Util.setDefaultAccount(web3,0)
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	console.log(web3.eth.accounts)
 	return promisify(contract.new)({
 		args: [
 			{
@@ -44,25 +43,25 @@ function create() {
  * Create and insert an financial records into the database and store the root hash of the data record into the smart contract
  * 
  * @param {Object} financials The new financial record to add
- * @returns {Promise} A promise that depends on the successful  insert of financials object
+ * @returns {Promise} A promise that depends on the successful	insert of financials object
  */
 function add(financials) {
+
 	return new Promise((resolve, reject) => {
-		// Insert new company entry
-		
 			promisify(contract.instance.addRecordEntry)({
 				args: [
 					financials.companyName,
-                    financials.recordingDate,
-                    financials.totalSales,
-                    financials.cogs,
-                    financials.inventoryStock,
-                    financials.cashCounter,
-                    financials.accountsReceivables,
-                    financials.accountsPayable,
-                    {gas:6000000}
+					financials.recordingDate,
+					financials.totalSales,
+					financials.cogs,
+					financials.inventoryStock,
+					financials.cashCounter,
+					financials.accountsReceivables,
+					financials.accountsPayable,
+					{gas:6000000}
 				]
-			}).then(result => resolve(result));
+			})
+			.then(result => resolve(result));
 	})
 
 }

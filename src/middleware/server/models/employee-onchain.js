@@ -6,7 +6,7 @@ const promisify = require('../utils/promisify')
 const web3Util = require('../utils/web3')
 
 // Define values
-CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/EmployeeOnChain.json'
+CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/EmployeeOnchain.json'
 INITIAL_GAS = 4700000
 COLUMN_NAMES = ['first_name', 'last_name', 'start_date', 'department', 'salary']
 
@@ -53,16 +53,16 @@ function add(employee) {
 
 	return new Promise((resolve, reject) => {
 
-    return promisify(contract.instance.add)({
+	return promisify(contract.instance.add)({
 			args: [
-        employee.firstName,
-  			employee.lastName,
-  			employee.startDate,
-  			employee.department,
-  			employee.salary,
-        {gas: 6000000}
+				employee.firstName,
+				employee.lastName,
+				employee.startDate,
+				employee.department,
+				employee.salary,
+				{gas: 6000000}
 			]
-		}) //, result]))
+		})
 		.then((result) => {
 			var receipt = web3.eth.getTransactionReceipt(result);
 			resolve({result:result, transaction:receipt})
@@ -100,21 +100,21 @@ function importEmployees(employees) {
  */
 function increaseSalary(payRaiseContractAddress) {
 
-  return new Promise ((resolve, reject) => {
-    const handler = (err) => reject(err)
+	return new Promise ((resolve, reject) => {
 
-    // Increase salary request for all employees in the specified department of the payraise contract
-    promisify(contract.instance.requestIncreaseSalary)({
-			args: [payRaiseContractAddress,
-				{gas: 6000000}
-			]
-		})
-      .then((result) => {
-				var receipt = web3.eth.getTransactionReceipt(result);
-        resolve({result:result, transaction:receipt})
-      })
-      .catch(handler)
+		const handler = (err) => reject(err)
+
+		// Increase salary request for all employees in the specified department of the payraise contract
+		promisify(contract.instance.requestIncreaseSalary)({
+				args: [payRaiseContractAddress,
+					{gas: 6000000}
+				]
+			})
+		  .then((result) => resolve({result: result, transaction: web3.eth.getTransactionReceipt(result)}))
+		  .catch(handler)
+
 	})
+
 }
 
 /**

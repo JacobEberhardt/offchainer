@@ -6,7 +6,7 @@ const promisify = require('../utils/promisify')
 const web3Util = require('../utils/web3')
 
 // Define values
-CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/PayRaiseOnChain.json'
+CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/PayraiseOnchain.json'
 INITIAL_GAS = 4700000
 
 // Import contract data

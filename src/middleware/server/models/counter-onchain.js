@@ -28,11 +28,10 @@ web3Util.setDefaultAccount(web3, 0)
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	var counterData = [];
-	for (var i = 0; i < 64; i++) {
-	   counterData.push(0);
-	}
-	return promisify (contract.new)({
+
+	var counterData = new Array(64).fill(0)
+
+	return promisify(contract.new)({
 		args: [
 			counterData,
 			{
@@ -86,11 +85,9 @@ function increaseCounter(index) {
 
 		// Request counter increase
 		promisify(contract.instance.doCounterIncrease)({args: [2, index]})
-			.then(result => {
-				var receipt = web3.eth.getTransactionReceipt(result);
-				resolve(receipt)
-			})
+			.then(result => resolve(web3.eth.getTransactionReceipt(result)))
 			.catch(handler)
+
 	})
 }
 
