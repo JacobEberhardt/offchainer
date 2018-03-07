@@ -1,5 +1,5 @@
 \subsection{Benchmarking for Employee Use Case}
-(Maybe start text fancy with the questions which araise during the project: see the benchmarking google sheet for that)
+(Maybe start text fancy with the questions which arise during the project: see the benchmarking google sheet for that)
 
 As already mentioned this project was carried out as a prototyping project. Therefore we need to benchmark our results against the current best practice. Current state of the art for deploying contracts to the ethereum blockchain includes saving all the state variables of the contract on the blockchain and thus on all machines participating in the blockchain. As proposed we want to save those state variables off from the blockchain and thus save on gas which explains why gas cost are our most important measurement.
 
@@ -12,43 +12,27 @@ We especially benchmarked the employee use case as the employee use case is the 
 %Explain the thing with benchmarking only the overhead due to automining of ganache
 We mainly benchmarked the two measurements gas cost and time. Gas cost was the initial motivation for off-chaining as we assumed to save on gas cost when we off-chain the state variables. Gas cost translates to real currency as a participant of the blockchain either needs to buy Ether or help to mine blocks in order to receive Ether which is needed to pay the resulting gas cost of a transaction. The time was measured as we wanted to gain insights into how much overhead our application adds to a normal blockchain application. This was possible as our technology stack includes ganache which is capable of automatically mining new transactions into new blocks instantly so that we are able to measure only the overhead that our application introduces.
 
-- Nice transition into showing our first graphics.
-
-- Insert graphics / statistics
-
-Explain what is visible
-
-Explain what that does mean
-
-- Ellaborate on conclusions and findings from this evaluation
-
-What do all the statistics say? what do they mean to us?
-
-When does Off-Chaining make sense?
-
-Do we really save gas?
-
--> Conclude on that
-
 \subsubsection{Time measurement}
-First we will measure the introduced computation time of our middleware for executing different functions of the smart contract. The result can be seen in Figure \ref{fig:05_time}.
+First we will measure the introduced computation time of our application for executing different functions of the smart contract. The result can be seen in Figure \ref{fig:05_time}.
 
-As we measured the computation time multiple times we decided to unite the results into a box plot chart. Thus we can see how the system behaves most of the times and single outliers can easily be identified.
-
-Thats a box plot chart
-
-Everything under 1 second -> not relevant, no further measurements
-
-multiple transactions in increase-salary with increasing size but not really relevant, as every transaction needs to be mined fist anyways
-
-We can see the times in Figure \ref{fig:05_time}.
-
-\begin{figure}[!htb]
+\begin{figure}[t]%evtl:[t] [!htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{images/05_time.png}
-\caption{\label{fig:05_time}This are the times.}
+\caption{\label{fig:05_time}Time measurement for Employee Use Case.}
 \end{figure}
 
+%Thats a box plot chart
+As we measured the computation time multiple times we decided to unite the results into a box plot chart. Thus we can see how the system behaves most of the times and single outliers can easily be identified. Throughout our measurement we always compare the on-chained approach against the off-chained approach. Every single function got called multiple times and the results have been summed up into the corresponding box plot.
+
+For the \textit{employee contract} creation we can see the that the time differs by circa 50ms when comparing the on-chained approach to the off-chained approach. The on-chained approach needs about 400ms of computation time in the application while the off-chained approach needs 350ms. Both timings are negligible for us as the average block time of the ethereum blockchain is currently about 14 seconds [TODO: Need citation: https://etherscan.io/chart/blocktime]. Thus our application has more than enough time to compute a new transaction comparing nearly half a second against 14 seconds.
+
+The \textit{payraise contract} creation needs about the same time for the on-chained as for the off-chained approach. Both need about 350ms of computation time and are negligible for the same reason as for the \textit{employee contract} creation. The same holds true for the \textit{add} functionality which takes even less time and thus the timing is negligible here as well.
+
+More interesting are the timing needs of the \textit{increase salary} functionality. We can easily see that the off-chained variant has a much higher variance than the on-chained variant and we have peeks in the computation time of up to one second. Hereby it is very important to mention that the time needed for the off-chained variant increases with the size of the employee dataset. This happens because for every added employee the \textit{increase salary} function needs to generate another transaction. As every transaction needs to be mined first the increased timing needs of our application are also negligible as what we see in our chart is the cumulated computation time for all transactions that happened during this function call. All of these transactions need to be mined within blocks of the ethereum blockchain which takes a lot longer, namely about 14 seconds currently, than the computation of our application. Plus, it could possibly happen that the single transactions will be divided on multiple blocks. Therefore the introduced timing needs of our application are also negligible for this function and additionally all measurements of the \textit{increase salary} function were less than a second which is quite fast.% maybe explain that the introduced overhead is somehow "virtual?"
+
+%Everything under 1 second -> not relevant, no further measurements
+%Erwähnen dass es super ist, dass die middlewar keine extra zeiten introduced und genauso fix ist wie das normale.
+As every function call in the off-chained approach does not introduce a real overhead compared to the on-chained approach and our application always performed under one second we concluded that we do not need to deeper analyze what introduces the most computation time or how to optimize for time in our application as this would not include a great benefit for our use case. Therefore no further measurements concerning the computation time have been made. We can conclude that the off-chained approach did not introduce any additional computation time and is as good as the on-chained approach timewise.
 
 \subsubsection{Gas cost measurement}
 
@@ -67,3 +51,22 @@ And yet smth more in Figure \ref{fig:05_gas_cost_ten}.
 \includegraphics[width=1.0\textwidth]{images/05_gas_cost_ten.png}
 \caption{\label{fig:05_gas_cost_ten}This is ten employees.}
 \end{figure}
+
+
+- Nice transition into showing our first graphics.
+
+- Insert graphics / statistics
+
+Explain what is visible
+
+Explain what that does mean
+
+- Ellaborate on conclusions and findings from this evaluation
+
+What do all the statistics say? what do they mean to us?
+
+When does Off-Chaining make sense?
+
+Do we really save gas?
+
+-> Conclude on that
