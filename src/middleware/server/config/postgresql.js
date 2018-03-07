@@ -2,9 +2,8 @@
 const Sequelize = require('sequelize')
 
 // Check environment variables
-if (process.env.PG_HOST === undefined) throw Error('Environment variable PG_HOST is not set')
-if (process.env.PG_PORT === undefined) throw Error('Environment variable PG_PORT is not set')
-if (process.env.PG_USER === undefined) throw Error('Environment variable PG_USER is not set')
+const envVars = ['PG_HOST', 'PG_USER', 'PG_PORT']
+for (let envVar of envVars) if (process.env[envVar] === undefined) throw Error(`Environment variable ${envVar} is not set`)
 
 // Define values
 const PG_HOST = process.env.PG_HOST
@@ -17,5 +16,6 @@ module.exports = new Sequelize(PG_DATABASE, PG_USER, '', {
 	host: PG_HOST,
 	port: PG_PORT,
 	dialect: 'postgres',
+	operatorsAliases: false,
 	define: {underscored: true}
 })
