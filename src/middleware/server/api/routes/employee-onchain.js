@@ -9,7 +9,7 @@ const response = res.response
 const error = res.error
 
 // Routes
-// Create Employee contract
+// Create employee contract
 router.post('/create', (req, res, next) => {
 	var startTime = process.hrtime()
 	employee.create()
@@ -21,7 +21,7 @@ router.post('/create', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Add Employee to contract
+// Add employee to contract
 router.post('/add', (req, res, next) => {
 	var startTime = process.hrtime()
 	employee.add(req.body)
@@ -33,7 +33,7 @@ router.post('/add', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Add multiple Employees to contract
+// Add multiple employees to contract
 router.post('/import', (req, res, next) => {
 	var startTime = process.hrtime()
 	employee.importEmployees(req.body.employees)
@@ -45,7 +45,7 @@ router.post('/import', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Increase Salary
+// Increase salary
 router.post('/increase-salary', (req, res, next) => {
 	var startTime = process.hrtime()
 	employee.increaseSalary(req.body.contractAddress)
@@ -57,7 +57,7 @@ router.post('/increase-salary', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Get single Employee
+// Get salary for employee
 router.get('/salary/:id', (req, res, next) => {
 	employee.getEmployeeSalary(req.params.id)
 		.then(result => response(res, 200, result))

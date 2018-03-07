@@ -46,7 +46,7 @@ router.post('/entry', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-// Get the Record entry by an index
+// Get the record entry by an index
 router.get('/record/:id', (req, res, next) => {
 	financials.getRecordEntry(req.params.id)
 		.then(result => response(res, 200, result))
