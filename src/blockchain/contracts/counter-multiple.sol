@@ -16,7 +16,7 @@ contract CounterMultiple {
 	/**
 	 * Create a new contract instance.
 	 */
-	function Counter() public {
+	function CounterMultiple() public {
 
 	}
 
@@ -73,8 +73,8 @@ contract CounterMultiple {
 	 * @param _proofPosition proof positions
 	 * @return the newly computed hash
 	 */
-	function _createTree(uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) private returns (bytes32) {
-	    bytes32 computedHash = keccak256(_counterValue);
+	function _createTree(uint8 _counterValue, bytes32[] _proof, uint[] _proofPosition) private pure returns (bytes32) {
+		bytes32 computedHash = keccak256(_counterValue);
 	    for(uint8 i = 0; i < _proof.length; i++) {
 	        if(_proofPosition[i] == 0) {
 	            // if left

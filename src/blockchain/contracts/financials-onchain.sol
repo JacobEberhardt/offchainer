@@ -46,7 +46,7 @@ contract FinancialsOnchain {
 	 * Return all records of entries stored in the SC. The record includes date and 
 	 * roothash of a row.
 	 */
-	function getAllRecordEntries() constant returns(RecordEntry[]) {
+	function getAllRecordEntries() public constant returns(RecordEntry[]) {
 	    RecordEntry[] memory currentRecordEntries = new RecordEntry[](recordIndex);
 	    for(uint i = 0; i < recordIndex; i++){
 	        currentRecordEntries[i] = recordEntries[i];
@@ -59,7 +59,7 @@ contract FinancialsOnchain {
 	 * Return one record stored in the SC
 	 * @param indexOfRecord the index of the record
 	 */
-	function getRecordEntry(uint indexOfRecord) constant returns(RecordEntry) {
+	function getRecordEntry(uint indexOfRecord) public constant returns(RecordEntry) {
 	    return recordEntries[indexOfRecord];
 	}
 
@@ -67,7 +67,7 @@ contract FinancialsOnchain {
 	 * Returns one recordingDate of the chosen record
 	 * @param indexOfRecord the index of the record 
 	 */
-	function getRecordingDate(uint indexOfRecord) constant returns(string) {
+	function getRecordingDate(uint indexOfRecord) public constant returns(string) {
 	    return recordEntries[indexOfRecord].recording_date;
 	}
 

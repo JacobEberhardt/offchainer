@@ -1,7 +1,7 @@
 // Required version
 pragma solidity ^0.4.17;
 
-contract PayRaiseOnChain {
+contract PayraiseOnchain {
 
 	// Variables
 	address private creator;

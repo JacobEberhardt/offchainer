@@ -1,7 +1,7 @@
 // Required version
 pragma solidity ^0.4.17;
 
-import "./PayRaise.sol";
+import "./payraise.sol";
 
 contract Employee {
 
@@ -11,7 +11,7 @@ contract Employee {
 	// Define variables
 	address creator;
 	mapping(uint => bytes32) employeesRootHashes;
-	PayRaise payRaiseContract;
+	Payraise payRaiseContract;
 
 	// Define structs
 	struct Values {
@@ -50,6 +50,7 @@ contract Employee {
 	function get(uint _index) public constant returns(bytes32) {
 		return employeesRootHashes[_index];
 	}
+
 	/**
 	 * Updates the root hash of an employee record
 	 *
@@ -75,7 +76,7 @@ contract Employee {
 	 * @param _payRaiseContractAddress The address of the payraise contract
 	 */
 	function requestIncreaseSalary(address _payRaiseContractAddress) public {
-		payRaiseContract = PayRaise(_payRaiseContractAddress);
+		payRaiseContract = Payraise(_payRaiseContractAddress);
 		bytes32 department = payRaiseContract.getDepartment();
 		bytes32 beforeStartdate = payRaiseContract.getBeforeStartDate();
 		RetrieveDataEvent(department, beforeStartdate);
