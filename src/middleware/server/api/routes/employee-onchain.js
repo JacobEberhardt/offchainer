@@ -1,15 +1,14 @@
 // Import dependencies
 const router = require('express').Router()
-const employee = require('../../models/employeeOnchain')
+const employee = require('../../models/employee-onchain')
 const res = require('../../utils/response')
-const toMilliSeconds = require('../../utils/hrtime_utils')
+const toMilliSeconds = require('../../utils/hrtime')
 
 // Set response functions
 const response = res.response
 const error = res.error
 
 // Routes
-
 // Create Employee contract
 router.post('/create', (req, res, next) => {
 	var startTime = process.hrtime()
@@ -58,13 +57,12 @@ router.post('/increase-salary', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-//Get single Employee
-router.post('/getSalary/:id', (req, res, next) => {
+// Get single Employee
+router.get('/salary/:id', (req, res, next) => {
 	employee.getEmployeeSalary(req.params.id)
 		.then(result => response(res, 200, result))
 		.catch(err => error(res, 500, err))
 })
-
 
 // Export module
 module.exports = router

@@ -1,6 +1,6 @@
 // Import dependencies
 const router = require('express').Router()
-const counterMultiple = require('../../models/counterMultiple')
+const counterMultiple = require('../../models/counter-multiple')
 const db = require('../../models/database')
 const res = require('../../utils/response')
 
@@ -9,7 +9,6 @@ const response = res.response
 const error = res.error
 
 // Routes
-
 // Create a new counter contract
 router.post('/create', (req, res, next) => {
 	counterMultiple.create(res)
@@ -57,7 +56,5 @@ router.post('/:rowId/column/:colId/increase', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
-
 // Export module
 module.exports = router
-

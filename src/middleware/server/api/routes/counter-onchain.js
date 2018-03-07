@@ -1,6 +1,6 @@
 // Import dependencies
 const router = require('express').Router()
-const counter = require('../../models/counterOnchain')
+const counter = require('../../models/counter-onchain')
 const db = require('../../models/database')
 const res = require('../../utils/response')
 const type = require('../../utils/type')
@@ -22,6 +22,7 @@ router.post('/create', (req, res, next) => {
 		.catch(err => error(res, 500, err))
 })
 
+// Increase counter with the given index
 router.post('/increase/:index', (req, res, next) => {
 	var index
 	const badRequest = () => response(res, 400, 'Invalid index.')

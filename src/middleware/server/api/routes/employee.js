@@ -3,13 +3,13 @@ const router = require('express').Router()
 const employee = require('../../models/employee')
 const db = require('../../models/database')
 const res = require('../../utils/response')
-const toMilliSeconds = require('../../utils/hrtime_utils')
+const toMilliSeconds = require('../../utils/hrtime')
 
 // Set response functions
 const response = res.response
 const error = res.error
 
-var debug = true
+const debug = true
 
 // Define routes
 // Get all employees from database
@@ -47,7 +47,7 @@ router.post('/create', (req, res, next) => {
 		.then(result => {
 			employee.setInstance(result.contract.address) // Store the address
 			var elapsedMilliseconds = toMilliSeconds(process.hrtime(startTime))
-    	if(debug) console.log('functionWantToMeasure takes ' + elapsedMilliseconds + 'seconds')
+		if(debug) console.log('functionWantToMeasure takes ' + elapsedMilliseconds + 'seconds')
 			response(res, 200, {address: result.contract.address, transaction: result.receipt, milliSeconds: elapsedMilliseconds})
 		})
 		.catch(err => error(res, 500, err))

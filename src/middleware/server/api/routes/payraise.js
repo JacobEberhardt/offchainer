@@ -3,7 +3,7 @@ const router = require('express').Router()
 const payraise = require('../../models/payraise')
 const db = require('../../models/database')
 const res = require('../../utils/response')
-const toMilliSeconds = require('../../utils/hrtime_utils')
+const toMilliSeconds = require('../../utils/hrtime')
 
 // Set response functions
 const response = res.response
