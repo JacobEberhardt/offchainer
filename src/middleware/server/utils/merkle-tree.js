@@ -79,7 +79,7 @@ class MerkleTree {
 	 */
 	_getNumberOfNodes(numberOfLeaves) {
 		let height = Math.ceil(Math.log(numberOfLeaves) / Math.log(2))
-		let numberOfNodesWithoutLastLevel = parseInt(new Array(height).join('1'), 2) // This creates a string of (height - 1) times '1' and parses that as a binary number, effectively giving the overall number of nodes without those on the last level
+		let numberOfNodesWithoutLastLevel = Math.pow(2, height - 1) - 1
 		let numberOfNodesOnBeforeLastLevel = Math.pow(2, height - 2)
 		return numberOfNodesWithoutLastLevel + 2 * (numberOfLeaves - numberOfNodesOnBeforeLastLevel) 
 	}
