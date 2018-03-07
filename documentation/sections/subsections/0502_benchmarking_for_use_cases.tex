@@ -12,6 +12,7 @@ We especially benchmarked the employee use case as the employee use case is the 
 %Explain the thing with benchmarking only the overhead due to automining of ganache
 We mainly benchmarked the two measurements gas cost and time. Gas cost was the initial motivation for off-chaining as we assumed to save on gas cost when we off-chain the state variables. Gas cost translates to real currency as a participant of the blockchain either needs to buy Ether or help to mine blocks in order to receive Ether which is needed to pay the resulting gas cost of a transaction. The time was measured as we wanted to gain insights into how much overhead our application adds to a normal blockchain application. This was possible as our technology stack includes ganache which is capable of automatically mining new transactions into new blocks instantly so that we are able to measure only the overhead that our application introduces.
 
+%- Nice transition into showing our first graphics.
 \subsubsection{Time measurement}
 First we will measure the introduced computation time of our application for executing different functions of the smart contract. The result can be seen in Figure \ref{fig:05_time}.
 
@@ -35,6 +36,9 @@ More interesting are the timing needs of the \textit{increase salary} functional
 As every function call in the off-chained approach does not introduce a real overhead compared to the on-chained approach and our application always performed under one second we concluded that we do not need to deeper analyze what introduces the most computation time or how to optimize for time in our application as this would not include a great benefit for our use case. Therefore no further measurements concerning the computation time have been made. We can conclude that the off-chained approach did not introduce any additional computation time and is as good as the on-chained approach timewise.
 
 \subsubsection{Gas cost measurement}
+Measuring the gas needed for executing the functionalities of our smart contract is of utmost importance to us. The initial motivation for our prototype was to gain experience on whether it is possible to save on gas cost when off-chaining state variables from smart contracts. As we receive the used gas for each transaction within the JSON-response when we call the smart contract functions through our API endpoint we were able to extract different insights into the use of gas when on- or off-chaining.
+
+In Figure \ref{fig:05_gas_cost_single} we visualized the used gas for calling simple functions of our smart contract for the employee use case. Similarly to our time measurement we again measured the main functionalities of our smart contract and compared the on-chained variant with the off-chained variant.
 
 And smth more in Figure \ref{fig:05_gas_cost_single}.
 
@@ -53,7 +57,6 @@ And yet smth more in Figure \ref{fig:05_gas_cost_ten}.
 \end{figure}
 
 
-- Nice transition into showing our first graphics.
 
 - Insert graphics / statistics
 
@@ -68,5 +71,7 @@ What do all the statistics say? what do they mean to us?
 When does Off-Chaining make sense?
 
 Do we really save gas?
+
+- Later on say how our measurements can be compared to the financials use case (cut out the increase-salary basically)
 
 -> Conclude on that
