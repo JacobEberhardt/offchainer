@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "CP: Check a company's financial data",
+		"name": "CP: Financials Use Case",
 		"_postman_id": "c8930da2-8a4c-4cc6-6a64-c8a574534526",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
@@ -12,7 +12,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "Create",
+					"name": "Create Financials Contract",
 					"request": {
 						"url": "http://localhost:8000/financials/create",
 						"method": "POST",
@@ -33,9 +33,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry01",
+					"name": "Add Entry",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -53,7 +53,7 @@
 					"response": []
 				},
 				{
-					"name": "getAllEntries01",
+					"name": "Get All Entries",
 					"request": {
 						"url": "http://localhost:8000/financials/",
 						"method": "GET",
@@ -64,9 +64,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry02",
+					"name": "Add Entry (2)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -84,9 +84,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry03",
+					"name": "Add Entry (3)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -104,9 +104,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry04",
+					"name": "Add Entry (4)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -124,9 +124,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry05",
+					"name": "Add Entry (5)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -144,7 +144,7 @@
 					"response": []
 				},
 				{
-					"name": "getAllEntries02",
+					"name": "Get All Entries (2)",
 					"request": {
 						"url": "http://localhost:8000/financials/",
 						"method": "GET",
@@ -158,9 +158,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry06",
+					"name": "Add Entry (6)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -178,9 +178,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry07",
+					"name": "Add Entry (7)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -198,9 +198,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry08",
+					"name": "Add Entry (8)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -218,9 +218,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry09",
+					"name": "Add Entry (9)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -238,9 +238,9 @@
 					"response": []
 				},
 				{
-					"name": "addEntry10",
+					"name": "Add Entry (10)",
 					"request": {
-						"url": "http://localhost:8000/financials/addEntry",
+						"url": "http://localhost:8000/financials/entry",
 						"method": "POST",
 						"header": [
 							{
@@ -258,7 +258,7 @@
 					"response": []
 				},
 				{
-					"name": "getAllEntries03",
+					"name": "Get All Entries (3)",
 					"request": {
 						"url": "http://localhost:8000/financials/",
 						"method": "GET",
@@ -272,10 +272,10 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8000/financials/queryWithDate?min=20150129&max=20180229",
+					"name": "http://localhost:8000/financials/query-with-date?min=20150129&max=20180229",
 					"request": {
 						"url": {
-							"raw": "http://localhost:8000/financials/queryWithDate?min=20150129&max=20180229",
+							"raw": "http://localhost:8000/financials/query-with-date?min=20150129&max=20180229",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -283,7 +283,7 @@
 							"port": "8000",
 							"path": [
 								"financials",
-								"queryWithDate"
+								"query-with-date"
 							],
 							"query": [
 								{

@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "192.168.99.100:8000/counterOnchain/create",
+			"name": "192.168.99.100:8000/counter-onchain/create",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -21,7 +21,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "192.168.99.100:8000/counterOnchain/create",
+					"raw": "192.168.99.100:8000/counter-onchain/create",
 					"host": [
 						"192",
 						"168",
@@ -30,7 +30,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"counterOnchain",
+						"counter-onchain",
 						"create"
 					]
 				},
@@ -39,7 +39,7 @@
 			"response": []
 		},
 		{
-			"name": "192.168.99.100:8000/counterOnchain/increase/10",
+			"name": "192.168.99.100:8000/counter-onchain/increase/10",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -50,7 +50,7 @@
 				],
 				"body": {},
 				"url": {
-					"raw": "192.168.99.100:8000/counterOnchain/increase/10",
+					"raw": "192.168.99.100:8000/counter-onchain/increase/10",
 					"host": [
 						"192",
 						"168",
@@ -59,7 +59,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"counterOnchain",
+						"counter-onchain",
 						"increase",
 						"10"
 					]

@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "Employee",
+			"name": "Create Employee Contract",
 			"description": "",
 			"item": [
 				{
@@ -33,7 +33,7 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8000/employee/",
+					"name": "Get Employees",
 					"request": {
 						"url": "http://localhost:8000/employee/",
 						"method": "GET",
@@ -44,7 +44,7 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8000/employee/:id/root-hash",
+					"name": "Get Root Hash for Employee",
 					"request": {
 						"url": "http://localhost:8000/employee/38/root-hash",
 						"method": "GET",
@@ -55,7 +55,7 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8000/employee/add",
+					"name": "Add Employee",
 					"request": {
 						"url": "http://localhost:8000/employee/add",
 						"method": "POST",
@@ -75,7 +75,7 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8000/employee/import",
+					"name": "Import Employees",
 					"request": {
 						"url": "http://localhost:8000/employee/import",
 						"method": "POST",
@@ -95,7 +95,7 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8000/employee/increase-salary",
+					"name": "Increase Salary",
 					"request": {
 						"url": "http://localhost:8000/employee/increase-salary",
 						"method": "POST",
@@ -121,7 +121,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "http://localhost:8000/payraise/create",
+					"name": "Create Payraise Contract",
 					"request": {
 						"url": "http://localhost:8000/payraise/create",
 						"method": "POST",

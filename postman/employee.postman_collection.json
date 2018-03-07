@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "create",
+			"name": "Create Employee Contract",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -39,7 +39,7 @@
 			"response": []
 		},
 		{
-			"name": "add1",
+			"name": "Add Employee",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -71,7 +71,7 @@
 			"response": []
 		},
 		{
-			"name": "add2",
+			"name": "Add Employee (2)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -103,7 +103,7 @@
 			"response": []
 		},
 		{
-			"name": "payraise create",
+			"name": "Create Payraise Contract",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -135,7 +135,7 @@
 			"response": []
 		},
 		{
-			"name": "increase-salary",
+			"name": "Increase Salary",
 			"request": {
 				"method": "POST",
 				"header": [
