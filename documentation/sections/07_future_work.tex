@@ -1,12 +1,27 @@
 \section{Future Work}
 
-\begin{itemize}
-\item Essentially, copy our future work parts from the presentations :)
-\end{itemize}
+% \begin{itemize}
+% \item Essentially, copy our future work parts from the presentations :)
+% \end{itemize}
+In this section, we aim to provide the possible future steps that can show and increase the value or the advantages of the off-chaining approach. In the course of our project, we have identified other ways that we could have done to accomplish this. We have also identified other potential integrity check mechanisms that can perform more efficiently, such as paying less gas cost. 
 
 \subsection{Make Middleware Trustless}
 
 \subsection{Oraclize Approach to Save Gas}
 During our research about alternative approaches to check the integrity of the off-chained data, we analyzed the Oracle provider Oraclize (see part 3.2) and found an approach that Oraclize uses to save gas costs which could present a further opportunity to extend this project’s system as well. By giving its users the choice whether to provide the proof that the data pushed by their Oracle is correct to the Smart Contract that requested the data in the first place and that may want to run the integrity check before actually using it or to store the proof for later use on a trustless database (IPFS) Oraclize can save its users a lot of gas in contrast to running the proof of correct data on-chain every time data is pushed to a Smart Contract. Accordingly, the presented system in this paper could provide its users with the same choice and further improve on its goal to save gas. At the same time, the integrity of the data can still be secured.
 
+\subsection{Merkle DAG}
+\subparagraph{Concept}
+Merkle DAG (Directed Acyclic Graph) is one of the features that we included into our potential roadmap after the mid-term presentation. However, due to the limited time and resources we have, we decided to prioritize other things in the roadmap.
+
+The data structure compatible in the application side will affect the complexity of the use cases that we can handle. However, at the same time, we also try to not tremendously increase the gas cost. The Merkle DAG increases our complexity of the data structure from a binary tree to a directed acyclic graph. It allows us to have a more complex relationship. For example, we could create a complex Role Based Access management application that leverages the Smart Contract to maintain the integrity of the hierarchy status of each role. 
+
+We could of course implement other data structure that allows more complex behavior, however as mentioned previously, we want to keep the gas cost considerable. Hence, the second requirement requirement is that the data structure has to have an efficient integrity check mechanism. As the name suggests, Merkle DAG also implies the similar Merkle proofing mechanism that a Merkle tree has. Hence, an integrity check on the root hash, to make sure that the children have not been changed is efficient as well. 
+
+Such complexity and a level of efficiency in the data integrity check this mechanism provides can provide higher values to the users. Hence, incentivizing them to use the off-chaining approach in comparison to the traditional approach. 
+
+\subparagraph{Related Works}
+Over the past few years, some papers have been published in regards to extending the Merkle hash technique from just trees but to other data structures, such as directed acyclic graphs. <http://truthsayer.cs.ucdavis.edu/model.12.6.pdf> In addition to that, another paper has been published in regards to a revised hashing technique for directed acyclic graphs <https://eprint.iacr.org/2012/352.pdf>. The paper suggests that the traditional Merkle hashing technique is not suitable for a more complex data structure, such as the directed acyclic graph. And lastly, the closest work to a proof of concept for Merkle DAG <https://github.com/jbenet/random-ideas/issues/20>.  //TODO Cite stuff
+
 \subsection{Possible another integrity check mechanisms}
+
