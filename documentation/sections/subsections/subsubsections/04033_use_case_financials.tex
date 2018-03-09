@@ -28,7 +28,15 @@ An external auditor wants to check the financial situation of a company. One tas
 
 This use case consists of two parties, a financial auditor and the company that holds the financial data. An assumption that we make is that the middleware is open-sourced, produced by an auditing company, and it is being consumed by the company to store their financial data in the Blockchain environment. The middleware allows the company to off-chain their financial records from the Smart Contract into a database, while maintaining the integrity of the data using the Blockchain environment. The middleware also allows the auditor to easily audit companies’ financial records without having to worry about the integrity of data once they are appended. It also allows the auditor to query the financial records with a filter, such as the date of the records, performing query completeness. The middleware however does not allow users to edit the records through the middleware, though it is possible to do it on the database directly, which will then result in an integrity check error when the records are used or verified by the auditor. 
 
-// MISSING EXAMPLE TABLE SEE GDOC
+\textit{Example: A Sales Table}
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+    \hline
+    ID & Product & Date & Amount & Price \\ \hline
+    1 & Wallet & 20171230 & 1 & 20 \\ \hline
+    .. & ... & .... & .. & ... \\ \hline
+    \end{tabular}
+\end{center}
 
 The different table rows represent moments in time (e.g. every Friday night after 00:00 or every first of the month) and thus new records are appended to the table. In this way, the records can be tracked back in time and an auditor could double-check the records for e.g. the last 6 months or the last 104 weeks. The Smart Contract entry then consists of the root hash over every table row (with each column being a leaf in the Merkle tree).
 
@@ -45,13 +53,11 @@ In this initial approach and concept, we created an assumption that the financia
 
 The Smart Contract stores the current root hash of the whole table. It could also store the root hashes of the prior states of the table (this info could otherwise be found in the blockchain history) to allow for additional functionalities.
 
-The Smart Contract creates a Merkle Tree over the hashes of all rows. The hashes of the rows are provided by the middleware. Afterwards, the Smart Contract verifies that the root hash of the created Merkle Tree matches the stored current root hash. If that is the case, it calculates the new total value(s), and adds the hash of the new row (new entry) to the Tree to create the new root hash after these processes. This new root hash is then stored as the current one. 
+The Smart Contract creates a Merkle tree over the hashes of all rows. The hashes of the rows are provided by the middleware. Afterwards, the Smart Contract verifies that the root hash of the created Merkle tree matches the stored current root hash. If that is the case, it calculates the new total value(s), and adds the hash of the new row (new entry) to the Tree to create the new root hash after these processes. This new root hash is then stored as the current one. 
 
-Merkle Tree is used here when a column, or multiple column values are changed in a row, and we need to recalculate the new values for the Total row. Instead of verifying the whole data in a row, we only need to verify the nodes that are affected by the change. 
+Merkle tree is used here when a column, or multiple column values are changed in a row, and we need to recalculate the new values for the Total row. Instead of verifying the whole data in a row, we only need to verify the nodes that are affected by the change. 
 
-For the Merkle Tree implementation, there is no need to implement a new one or change the existing one, as we can use the Multiple Item Proof here (note: an item here will correspond to a row, not a column).
-
-//TODO: MISSING EXAMPLE TABLE part 2! SEE GDOC
+For the Merkle tree implementation, there is no need to implement a new one or change the existing one, as we can use the Multiple Item Proof here (note: an item here will correspond to a row, not a column).
 
 Append row - Steps:
 \begin{enumerate}
@@ -79,7 +85,7 @@ Initial implementation idea:
 →  have database respond to original query and to the negated query (e.g. original: all sales data in the period from Nov 2017 to Jan 2018, negated: all sales data NOT in the period from Nov 2017 to Jan 2018)
 → check that combined size of both returned lists equals total number of entries (mapping counter in SC)
 \item Verify that only actual entries from the database were returned
-→ combine the two result lists to one Merkle Proof to show that all rows are part of the table, i.e. no entries were changed and no outside entries were returned as a result
+→ combine the two result lists to one Merkle proof to show that all rows are part of the table, i.e. no entries were changed and no outside entries were returned as a result
 \item Verify that the returned results match the query requirements (are “correct”)
 → no feasible way with blockchain currently as we would either need to do a lot of computation or to store a large amount of data (maybe even all data) on-chain, which would contradict this project’s focus
 → leave this verification up to the user (she can see whether the results match her query)
@@ -88,17 +94,32 @@ Initial implementation idea:
 → unfortunately, the user does not have an easy way to verify that either
 \end{itemize}
 
-The above statements show that there is a clear trade-off between achieving Query Completeness and this project’s goal of saving gas costs by off-chaining data. Either practically all data has to be stored on-chain to enable our smart contract to guarantee Query Completeness, or a plethora of computations (Merkle Proofs for each row in the data table) have to be on-chained which would hit the gas limit relatively fast. 
+The above statements show that there is a clear trade-off between achieving Query Completeness and this project’s goal of saving gas costs by off-chaining data. Either practically all data has to be stored on-chain to enable our smart contract to guarantee Query Completeness, or a plethora of computations (Merkle proofs for each row in the data table) have to be on-chained which would hit the gas limit relatively fast. 
 
-As we are facing the challenge described previously, we decided to implement our Proof of Concept for Query Completeness by adding assumptions to make it feasible and easier for testing for large amount of data: building on our initial assumption that we trust our client-side application, we calculate the Merkle Proofs on the client-side and thus save a considerable amount of computation on-chain. Nevertheless, the smart contract will check the integrity of the data and perform a simplified query to guarantee Query Completeness. We also only allow the Date column to be used in the query in this proof of concept
+As we are facing the challenge described previously, we decided to implement our proof of concept for Query Completeness by adding assumptions to make it feasible and easier for testing for large amount of data: building on our initial assumption that we trust our client-side application, we calculate the Merkle proofs on the client-side and thus save a considerable amount of computation on-chain. Nevertheless, the smart contract will check the integrity of the data and perform a simplified query to guarantee Query Completeness. We also only allow the Date column to be used in the query in this proof of concept
 
 \subparagraph{Proof of Concept}
 
 This section describes the step-by-step actions between our client-side application, Smart Contract and the Database. The proof of concept includes the implementation of appending a new financial row, and query completeness. We want to remind the readers to keep in mind the previous assumptions that we have stated. 
 
+
+\textit{Example: This table shows how the records are stored in the database, assuming all data here are appended through the Smart Contract.}
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l | l | l | l |}
+    \hline
+    ID & company\_name & roothash & total\_sales & date & cogs & sc\_id & ... \\ \hline
+    1 & CompanyAB & 0x123 & 1000 & 20160523 & 123 & 0 & .. \\ \hline
+    2 & CompanyAB & 0x134 & 2000 & 20161215 & 421 & 1 & .. \\ \hline
+    3 & CompanyAB & 0x321 & 3000 & 20170601 & 222 & 2 & .. \\ \hline
+    4 & CompanyAB & 0x789 & 9000 & 20180130 & 980 & 3 & .. \\ \hline
+    \end{tabular}
+\end{center}
+
+
+
 \textbf{\textit{Appending A Finanical Row}}
 
-\begin{figure}[!htp]%evtl:[t] [!htbp]
+\begin{figure}[!htbp]%evtl:[t] [!htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{images/appendRowFinancials.png}
 \caption{\label{fig:appendRowFinancials}Activity diagram of appending a row to the financials record}
@@ -116,7 +137,7 @@ This section describes the step-by-step actions between our client-side applicat
 
 \textbf{\textit{Query Completeness}}
 
-\begin{figure}[!htp]%evtl:[t] [!htbp]
+\begin{figure}[!htbp]%evtl:[t] [!htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{images/queryCompleteness.png}
 \caption{\label{fig:queryCompleteness}Activity diagram for query completeness}
@@ -125,7 +146,7 @@ This section describes the step-by-step actions between our client-side applicat
 
 \begin{enumerate}
 \item User requests to get all of financial data that are within the data range the user has requested.
-\item The client-side application gets all data from the database in the ascending order of the Smart Contract ID: this ID is created upon appending a row. It is generated by the Smart Contract to keep the ordering of the hashes that are stored in the Smart Contract.
+\item The client-side application gets all data from the database in the ascending order of the Smart Contract ID. This ID is generated by the Smart Contract to keep the ordering of the hashes that are stored in the Smart Contract. It is generated upon appending a financial record through the Smart Contract. 
 \item The client-side application hashes all the returned rows
 \item It will then maps the hashes of the row and the raw date value to the Smart Contract ID.  
 \item The client-side application sends the mapping with the query to the Smart Contract.
