@@ -1,3 +1,17 @@
 \subsection{Translator}
 
-Here goes my text.
+Manually integrating off-chaining into an existing smart contract which uses state variables (on-chained contract) requires advanced knowledge of the implementation of both the given contract and our integrity check mechanism. This inevitably introduces a barrier to potential users as they have to familiarize themselves with implementational details of our solution. Moreover, it prevents use cases where knowledge about the implementation of a contract cannot be obtained with considerable effort, e.g., in the case of automatically generated contracts. Since translating an on-chained contract into an off-chained one is a static procedure, we decided to develop a proof-of-concept of a program which automates this process, referred to as \emph{translator}, to make off-chaining accessible and easy to use.
+
+	The functionality of the translator can be divided into the following steps:
+	\begin{enumerate}
+	\setlength{\itemsep}{0pt}
+	\setlength{\parskip}{0pt}
+		\item Check given contract
+		\item Parse contract, variables and functions
+		\item Determine off-chained values
+		\item Render off-chained values to templates
+		\item Copy static files.
+	\end{enumerate}
+	After the validity of a given contract was checked, the contract is parsed to determine the individual state variables and functions. Each state variable is split up into its name, type, size (in the case of an array), and the original descriptor string, which describes the variable in the smart contract. Subsequently, each function is parsed to determine which state variables are used and which are modified. A function's original arguments and modifiers are parsed as well since they also need to be included in the off-chained version of the respective function. After the contract was decomposed into the individual data structures (contract, variables, and functions), the required values for the off-chained version of the given contract are computed. These values comprise the names and arguments of the respective functions and events of the off-chained contract in several required formats. The resulting values are then rendered into templates to produce the off-chained contract and the corresponding client-side application. In the last step, all resources which do not depend on the content of the given contract are simply copied to the previously specified output location.
+
+	The translator's current state of implementation suffices to proof the suitability of the described translation approach. Nevertheless, it has to be further developed to a stable state until it could be applied to real use cases. This particularly includes the automated assessment and validation of a given smart contract, as some variable types and functional structures are not suitable for off-chaining,\footnote{Mappings are an example of an unsuitable variable type, as the Solidity language specification prevents their use as function arguments. Private functions which alter state variables are among the functional structures which are hard to off-chain in an automated manner since the off-chained function must be called from outside the smart contract to pass the off-chained variables.} which at this point still depends on domain knowledge.
