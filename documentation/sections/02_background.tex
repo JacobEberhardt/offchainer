@@ -14,4 +14,71 @@ A new concept for building effective and enormously scalable applications is dev
 
 \subsection{Smart Contracts}
 
+
+
+\subsection{Blockchain-level Protocol: UTXO and Account Model}
+
+The need of secure of value transfer lead to invention of building tamper-resistant systems. The way how transactions are handled, is one of the main characteristics of the blockchain technology. They are the smallest building pieces of a blockchain system. Transaction level consensus are exceptionally expensive, therefore, are bundled together forming a block or a unite of consensus. With every block creation chained to the previous block (through previous block hash) in the network forming chains of blocks, therefore, creating the blockchain.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{images/transactions_blocks.png}
+\caption{\label{fig:Transactions}Transactions order bundeled into blocks.}
+\end{figure}
+
+
+With blockchain being a mutual, decentralized, distributed state machine, this implies that all nodes (users of the blockchain framework) freely hold their own particular duplicate of the blockchain, and the current known "state" is calculated by handling every transaction in order as they show up in the blockchain. The way how each transactions and blocks are mined (processed) in the network differ from implementation. With the introduction of Bitcoin’s Unspent Transaction Output (UTXO) and later Ethereum project with its concept of Account Model state model. Further in this report we provide an explanation of each state models, purpose and use cases.
+
+\subparagraph{Unspent Transaction Output (UTXO)}
+
+With Bitcoin being a transaction-centric state model UTXO model; which specifies who is allowed to use the output of the transaction moves the estimation of some bitcoin from one address to other address. A transaction changes the state of the agreed-correct blockchain. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{images/UTXO.png}
+\caption{\label{fig:UTXO}UTXO Transactions example}
+\end{figure}
+
+Understanding the above example of how Bitcoin transactions work which are UTXO model, transactions contain one or more input and output vice versa. An input is a reference to an output from the previous transaction. Whereas an output specifies the amount and an address. With the input pointing always referencing from a previous transaction, provides and uninterrupted stream of value amongst addresses
+
+\subparagraph{UTXO Transaction Validation}
+\begin{itemize}
+\item Guarantees inputs have not yet been spent 
+\item Checking if the signatures match with addresses of transactions inputs 
+\item Total of output values is equivalent to total of input values 
+\end{itemize}
+
+
+\subparagraph{Benefits of UTXO Model:}
+\begin{itemize}
+\item \textbf{Higher level of privacy:} if a user uses another address for every transaction that they receive then it will quite hard to find the correlation of accounts to each other. This model suits greatly for currency use, however significantly less to subjective decentralized applications (DApp), since DApps frequently include monitoring complex packaged state of users which becomes difficult to be achieved.  
+\item \textbf{Potential scalability paradigms:} UTXOs are more hypothetically compatible with certain types of scalability paradigms.
+\end{itemize}
+
+\subparagraph{Account Model}
+
+Ethereum transactions, rather, utilize an architecture depending on global state storage of accounts, balances, code, and storage. The balances of accounts are kept as global state. Moreover, the having the value distribution of a state-centric meaning of transaction specifies sender and the receiver account and its not referenced to the previous transactions. Transaction include binary data (its payload) and Ether
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{images/account_model.png}
+\caption{\label{fig:account model}Ethereum Blockchain Account Model Transactions}
+\end{figure}
+
+
+\subparagraph{Account Model Transaction Validation}
+\begin{itemize}
+\item Check whether signatures match with address of the sender 
+\item Ensuring that the current nonce matches the nonce from the sender’s account. If that’s the case, it automatically increments the nonce of the sender  
+\item Guarantee the sender's balance is bigger or equal with than the transaction value
+\end{itemize}
+
+\subparagraph{Benefits of Account Model:}
+\begin{itemize}
+\item \textbf{Huge space savings:}Due to the fact that each transaction only needs to create one reference, one signature and one output
+\item \textbf{Simplicity:} Light clients are able to access the whole records related to an account through scanning down the state tree in a specific direction.
+\end{itemize}
+
+
 \input{sections/subsections/0203_integrity_checks}
