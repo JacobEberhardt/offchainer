@@ -1,7 +1,9 @@
 // Import dependencies
 const request = require('supertest')
-const server = require('../server/server.js')
+const server = require('../server/server')
 const fs = require('fs')
+const web3 = require('../server/config/web3')
+const web3Util = require('../server/utils/web3')
 
 // Define functions
 function sleep(ms) {
@@ -11,13 +13,16 @@ function sleep(ms) {
 // Describe tasks
 describe('Benchmarking', function() {
 	it('Benchmarking Employee-Onchain', function(done) {
-		var answerVar = '  gas cost time\n'
-		request(server)
-			.post('/employee-onchain/create')
-			.expect('Content-Type', /json/)
-			.expect(200)
+		var answerVar = 'Function, Gas, Time\n'
+		web3Util.awaitConnection(web3)
+			.then(() => {
+				return request(server)
+					.post('/employee-onchain/create')
+					.expect('Content-Type', /json/)
+					.expect(200)
+			})
 			.then(response => {
-				answerVar = answerVar + 'employee-create' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'employee-create, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return sleep(2000)
 			})
@@ -35,7 +40,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add1' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add1, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -50,7 +55,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add2' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add2, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -65,7 +70,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add3' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add3, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -80,7 +85,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add4' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add4, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -95,7 +100,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add5' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add5, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -110,7 +115,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add6' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add6, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -125,7 +130,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add7' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add7, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -140,7 +145,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add8' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add8, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -155,7 +160,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add9' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add9, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee-onchain/add')
@@ -170,7 +175,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add10' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add10, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/payraise-onchain/create')
@@ -183,7 +188,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'payraise-create' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'payraise-create, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				const payraiseAddress = response.body.content.address
 				request(server)
@@ -216,7 +221,7 @@ describe('Benchmarking', function() {
 			.expect('Content-Type', /json/)
 			.expect(200)
 			.then(response => {
-				answerVar = answerVar + 'employee-create' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'employee-create, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return sleep(2000)
 			})
@@ -234,7 +239,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add1' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add1, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -249,7 +254,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add2' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add2, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -264,7 +269,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add3' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add3, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -279,7 +284,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add4' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add4, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -294,7 +299,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add5' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add5, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -309,7 +314,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add6' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add6, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -324,7 +329,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add7' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add7, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -339,7 +344,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add8' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add8, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -354,7 +359,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add9' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add9, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/employee/add')
@@ -369,7 +374,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'add10' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'add10, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
 					.post('/payraise/create')
@@ -382,7 +387,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 			})
 			.then(response => {
-				answerVar = answerVar + 'payraise-create' + response.body.content.transaction.gasUsed + '' +
+				answerVar = answerVar + 'payraise-create, ' + response.body.content.transaction.gasUsed + ', ' +
 				response.body.content.milliSeconds + '\n'
 				const payraiseAddress = response.body.content.address
 				request(server)
