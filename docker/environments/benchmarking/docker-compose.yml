@@ -6,13 +6,14 @@ services:
     build:
       context: ../../..
       dockerfile: docker/environments/staging/Dockerfile
+    command: npm run run-benchmarking # Explicitly redefine command to avoid caching issue
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:
       - database
       - ganache
     volumes:
-      - ../../../benchmarking:/wd/benchmarking
+      - ../../../benchmarking-results:/wd/benchmarking
     environment:
       - PG_HOST=database
       - PG_PORT=5432

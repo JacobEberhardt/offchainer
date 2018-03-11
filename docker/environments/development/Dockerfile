@@ -8,7 +8,7 @@ RUN mkdir -p /wd/src/middleware/server /wd/src/blockchain
 WORKDIR /wd
 
 # Install dependencies
-RUN apt-get update -y && apt-get install -y build-essential python
+RUN apt-get update -y && apt-get install -y make g++ python
 
 # Add files
 ADD package.json /wd
