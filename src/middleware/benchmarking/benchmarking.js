@@ -198,7 +198,7 @@ describe('Benchmarking', function() {
 						answerVar = answerVar + 'increase-salary' + res.body.content.transaction.gasUsed + '' +
 						res.body.content.milliSeconds + '\n'
 
-						fs.writeFileSync('/middleware/benchmarking/employee-onchain.csv', answerVar, function(err) {
+						fs.writeFileSync('/wd/benchmarking/employee-onchain.csv', answerVar, function(err) {
 								if(err) {
 										return console.log(err)
 								}
@@ -406,7 +406,7 @@ describe('Benchmarking', function() {
 						}
 						answerVar = answerVar + 'increase-salary' + gasCostCumulated + '' + milliSeconds + '\n'
 
-						fs.writeFileSync('/middleware/benchmarking/employee.csv', answerVar, function(err) {
+						fs.writeFileSync('/wd/benchmarking/employee.csv', answerVar, function(err) {
 								if(err) {
 									return console.log(err)
 								}
