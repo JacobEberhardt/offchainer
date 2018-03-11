@@ -1,5 +1,56 @@
 \section{Conclusion}
+\subsection{Results and Progress}
+\subsubsection{State after the Midterm Presentation}
+\paragraph{General}
+The user with her local middleware can create a Smart Contract and only store a hash or hashes of the needed data there. The actual data is stored in a (relational) database. When the Smart Contract needs the data to e.g. execute one of its function (after the user called it), the database will provide it. Before actually using the provided data the Smart Contract performs an integrity check that the data was not modified in between (by the database or a middleman).
 
+\paragraph{Implemented Integrity Check Mechanisms}
+\subparagraph{Whole Row Hashing (Jacob Eberhardt, Slide Deck Strategies, p. 5)}
+The hash of a whole data row (record) of the database table is stored in the Smart Contract. This hash is used to check the integrity of the received data from the database on arrival and before usage.
+
+\subparagraph{Merkle Tree - Check One Column of One Row (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
+The root hash of the Merkle Tree over the data is stored in the Smart Contract. Additionally, the functionality to perform a Merkle Proof on one column for one table row is implemented (in the Smart Contract as well as in the middleware). The root hash and the provided Merkle Proof for one data field are used to check the integrity of this data field.
+
+\subparagraph{Merkle Tree - Check Multiple Rows (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
+The Merkle Proof functionality was enhanced to cope with Merkle Proofs for multiple table rows.
+
+\subparagraph{Merkle Tree - Check Multiple Columns (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
+In the above implementation as well as with existing libraries there was no possibility to check several columns at once (you had to provide one Merkle Proof per column which represented a lot of overhead). With this innovation the user can proof all columns in question at once.
+
+\paragraph{Use Cases}
+\subparagraph{Initial - Simple Message}
+To start off and build the first prototype for the hashing integrity check we implemented a simple case where a message is the hashed and later verified data.
+
+\subparagraph{For Merkle Tree - Multiple Counters}
+For the sake of building and testing the Merkle Proof we worked with a Smart Contract that contained four counters that could be incremented. Each counter represented one column in our table.
+
+\subparagraph{Verification - Company Financials}
+Our first use case performs verification of a company’s financial data. They could for example store their sales data every Friday and thus proof to third parties (like tax officials or auditors) later on that they have not modified their financial data afterwards (think accounting tricks). The once stored data is not modified anymore (would undermine the trust auditors could put in the data).
+
+\subparagraph{Verification and Modification - Payroll and Salary Raises}
+The second use cases additionally comprises modification of the stored data. Here, we envision a union and a company that negotiated a pay raise for the employees. To proof that all relevant salaries were increased the pay raise (along with storing the old and new salaries) is performed on-chain. Thus, the salaries are updated accordingly which implies the necessity for modification.
+
+\subsubsection{Final State of the Project}
+\paragraph{General}
+As agreed upon after the midterm presentation, we focused our efforts on a subset of our potential next steps; additional functionalities for the use cases, thorough benchmarking and a proof-of-concept for the Smart Contract Translator.
+
+\paragraph{Additional Functionalities for Use Cases}
+\subparagraph{Company Financials}
+The integrity check mechanisms were fully integrated. This use case is now equipped to verify the integrity of a single piece of financial data (e.g. sales data from one record), of one row in the table (i.e. one financial entry record), several rows in the table (specific function for this) and the whole data table (by checking each row in a dedicated function).
+There are two append functions implemented; one simply appends the roothash of a new financials data entry and the second function checks the whole table prior to appending the root hash. It is worth noting again that this use case is append only and there is no way to modify or change a once appended roothash as this would undermine the overall idea.
+In addition, Query Completeness was implemented for queries that ask for all entries falling between a user specified date range (e.g. all records from Jan 01 to Jan 31) which deserves its own paragraph.
+
+\subparagraph{Query Completeness for Date Ranges}
+We implemented a proof of concept for Query Completeness. It is possible to verify queries for a user specified data range. For a query for all records from Jan 01 to Jan 31 the Smart Contract checks whether the right number of records (i.e. all) were considered and that no records were modified. It then goes on to check which of the records fall in between the user specified range and returns this information. The user thus receives verified results for her query.
+
+\subparagraph{Employee Use Case}
+
+\paragraph{Benchmarking Results}
+
+\paragraph{Translator - Proof-of-Concept}
+
+
+\subsection{Summary and Outlook}
 Taking into consideration our problem statement, by off-chaining data to a RDBMS while compromising blockchain properties as little as possible, we introduced an approach on how we can solve the problem at hand which makes sense for specific use cases. In this report we encouraged the necessity for off-chaining approaches to deal with limitations in the today’s blockchain developments, to broaden their usefulness and to reducing further usage costs. After deriving many challenges based on our experience during this project, we introduced two uses cases for moving computation and data off the blockchain, without compromising (or at least as possible) important blockchain properties, in particular, the trustlessness property.
 
 We anticipate that in the future blockchain systems will continue development and enhance further concerning scalability and privacy issues by joining and implementing new concepts. Nevertheless, we keep considering off-chaining approaches to be crucial features in blockchain based application as they show additional functionality and possibly huge cost benefits.
