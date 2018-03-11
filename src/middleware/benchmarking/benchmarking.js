@@ -206,6 +206,7 @@ describe('Benchmarking', function() {
 						done()
 					})
 			})
+			.catch(e => console.log(e.hasOwnProperty('stack') ? e.stack : e))
 	})
 
 	it('Benchmarking Employee', function(done) {
