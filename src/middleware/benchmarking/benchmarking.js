@@ -173,7 +173,7 @@ describe('Benchmarking', function() {
 				answerVar = answerVar + 'add10' + response.body.content.transaction.gasUsed + '' +
 				response.body.content.milliSeconds + '\n'
 				return request(server)
-					.post('/payraiseOnchain/create')
+					.post('/payraise-onchain/create')
 					.send({
 						percentage: 15,
 						department: 'IT',
