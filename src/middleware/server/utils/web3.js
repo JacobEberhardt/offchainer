@@ -16,19 +16,35 @@ function setDefaultAccount(instance, index) {
 
 		setTimeout(() => reject('Timeout'), TIMEOUT_IN_SECONDS * 1000)
 
-		let interval = setInterval(function() {
-			if (instance.isConnected()) {
+		awaitConnection(instance)
+			.then(() => {
 				instance.eth.defaultAccount = instance.eth.accounts[index] // Set default account
-				clearInterval(interval)
 				resolve()
-			}
-		}, POLLING_INTERVAL_IN_MILLISECONDS)
+			})
 
 	})
 
 }
 
+/**
+ * Wait until the connection for the given web3 instance is established.
+ *
+ * @param {Web3} instance The given web3 instance
+ * @returns {Promise} A promise which is resolved once the connection is established
+ */
+function awaitConnection(instance) {
+	return new Promise(resolve => {
+		let interval = setInterval(function() {
+			if (instance.isConnected()) {
+				clearInterval(interval)
+				resolve()
+			}
+		}, POLLING_INTERVAL_IN_MILLISECONDS)
+	})
+}
+
 // Export module
 module.exports = {
-	setDefaultAccount
+	setDefaultAccount,
+	awaitConnection
 }
