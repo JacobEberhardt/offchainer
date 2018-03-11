@@ -38,19 +38,29 @@ As every function call in the off-chained approach does not introduce a real ove
 \subsubsection{Gas cost measurement}
 Measuring the gas needed for executing the functionalities of our smart contract is of utmost importance to us. The initial motivation for our prototype was to gain experience on whether it is possible to save on gas cost when off-chaining state variables from smart contracts. As we receive the used gas for each transaction within the JSON-response when we call the smart contract functions through our API endpoint we were able to extract different insights into the use of gas when on- or off-chaining.
 
-In Figure \ref{fig:05_gas_cost_single} we visualized the used gas for calling simple functions of our smart contract for the employee use case. Similarly to our time measurement we again measured the main functionalities of our smart contract and compared the on-chained variant with the off-chained variant.
+%And smth more in Figure \ref{fig:05_gas_cost_single}.
+In Figure \ref{fig:05_gas_cost_single} we visualized the used gas for calling single functions of our smart contract for the employee use case. Similarly to our time measurement we again measured the main functionalities of our smart contract and compared the on-chained variant with the off-chained variant.
 
-And smth more in Figure \ref{fig:05_gas_cost_single}.
-
-\begin{figure}[hp]
+\begin{figure}[t]
 \centering
 \includegraphics[width=1.0\textwidth]{images/05_evaluation/05_gas_cost_single.png}
 \caption{\label{fig:05_gas_cost_single}This is one employee.}
 \end{figure}
 
+- employee creation more costy because overhead of functions for merkle tree (ellaborate what exactly here)
+
+% 844906 - 714518 = 130388 gas,    130388 / 714518 = 18,25%
+For the employee contract creation we can see that the off-chained variant needs about 130 thousand less gas than the on-chained variant. Say why we save and then in the end say that its constant and how much percentage-wise this translates to
+
+- payraise not changed (on-chained for both, thats why it is the same)
+
+- on add we save xy gas because thats where off-chaining is stronk
+
+- increase salary we loose because [.....] only one field, multiple transactions, ellaborate on possible alternatives like functions that would change multiple strings etc etc
+
 And yet smth more in Figure \ref{fig:05_gas_cost_ten}.
 
-\begin{figure}[hp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{images/05_evaluation/05_gas_cost_ten.png}
 \caption{\label{fig:05_gas_cost_ten}This is ten employees.}
@@ -73,5 +83,9 @@ When does Off-Chaining make sense?
 Do we really save gas?
 
 - Later on say how our measurements can be compared to the financials use case (cut out the increase-salary basically)
+
+- Know your use case!
+
+- Give pay-raise as example for when off-chaining makes no sense (we kept it on-chain)
 
 -> Conclude on that
