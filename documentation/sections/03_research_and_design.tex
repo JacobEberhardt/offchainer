@@ -11,5 +11,65 @@ The database system could try to leave out actual database records that fulfill 
 The database system could try to include actual database records that do not fulfill the query in the returned set of records. A trustless system thus has to check that only records that fulfill the query are returned to the user.
 Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined here.
 
-\subsection{Oraclize}
-\subsection{RDIC}
+\subsection{Oracles}
+To gain further inspiration how the data integrity in our Smart Contract could be verified we conducted research on other systems that potentially make use of similar mechanisms. As our system provides external data to a Smart Contract, that is on-chain, we considered Oracles to be a concept worth looking at. “An oracle, in the context of blockchains and smart contracts, is an agent that finds and verifies real-world occurrences and submits this information to a blockchain to be used by smart contracts.” \autocite{relatedWork01} In addition, we researched on potential integrity mechanisms that distributed cloud systems (like AWS or Azure) implement to provide as features for their clients. This class of mechanisms is called Remote Data Integrity Checking and our findings on it are presented in the second part.
+
+\paragraph{Initial Research Questions}
+Could Oracles provide further ideas for integrity checks? How does a Smart Contract that requested data through an oracle check the data’s integrity? Or does this check happen somewhere else?
+
+\paragraph{Considered Oracle: Oraclize}
+Oraclize is a leading Oracle provider (for Ethereum and other blockchains) \autocite{relatedWork02}. Their simple code samples \autocite{relatedWork03} show an event-based approach. In fact, the smart contract functionality seems similar to our Smart Contracts, minus the integrity check (at least none is applied in these examples).
+
+The Oraclize documentation offers some entry points into advanced integrity checks \autocite{relatedWork04}. These Authenticity Proofs (provided by Oraclize with requested data, the proofs can also be put on IPFS) \autocite{relatedWork05} include TLSNotaryProofs, Android Proofs and Ledger Proofs. They can be stored on IPFS as the proof may be huge and thus expensive to provide it to the Smart Contract and run it there. \autocite{relatedWork06}
+
+In this way, Oraclize saves costs. The proof (that the pushed data is correct) is provided to the Smart Contract only on request so that the Smart Contract can run the verification of the proof. As this is costly (and thus rarely done in practice seemingly) the proof is stored on IPFS and can be run later to verify the correctness of the pushed data.
+
+There are examples online that show how to integrate the verification process of proofs \autocite{relatedWork07}. They use several steps for verification: signatures, hashing, prefix match and APPKEY1 provenance. Moreover, Oraclize provides tools to verify Authenticity Proofs \autocites{relatedWork08}{relatedWork09}.
+
+\paragraph{Proofs used by Oraclize}
+The following question thus arose: Could the proofs used by Oraclize be applicable in our project?
+
+The TLSNotaryProof \autocites{relatedWork10}{relatedWork11}{relatedWork12} does not seem appropriate for our project; from our understanding, there is no check that the integrity of the data is intact but it is a proof that one party went to a certain webpage and got a valid response from the server. The returned data from the server is not the part in question here (and could be anything).
+
+The Android Proof \autocite{relatedWork13} is an own development by Oraclize based on a Google technique. It is meant to ensure an application is running on a safe environment, i.e. the Android device is secure. There do not seem to be any securities concerning data integrity.
+
+The Ledger Proof \autocites{relatedWork14}{relatedWork15} provides a proof that the application is running in the environment of a true Ledger device (secure hardware wallet).
+
+Thus, all three proofs do not account for data integrity but are focused on providing a proof that the intermediary (here Oraclize) has not tampered with the retrieved data. These techniques can not be used for data integrity checks as envisioned in this project.
+
+\subsection{Remote Data Integrity Checking}
+\paragraph{RDIC Techniques}
+RDIC is applied in cloud computing settings where users want to check the integrity of their data stored on the servers of the provider.
+There are several different RDIC techniques \autocite{relatedWork16} and much research is focused on this domain producing new approaches on a regular basis.There are several different RDIC techniques and much research is focused on this domain producing new approaches on a regular basis.
+
+This paper introduces several protocols \autocite{relatedWork17}; an identity-based integrity verification protocol \autocite{relatedWork18}, a protocol where only parts of the data are encrypted \autocite{relatedWork19} and one which uses a Third Party Auditor (this approach also achieves privacy) \autocite{relatedWork20}.
+
+Common techniques for RDIC include Mirroring, RAID Parity and Checksum. A probabilistic method for data integrity assessment comprises the following steps: insert the testing tuples, encrypt all data, keep the testing tuples and perform the data integrity proof in the Cloud storage system with random bits that are appended as metadata (encrypted as well).
+This might also be possible on the blockchain with the user doing the encryption of the tuples as this step must not be publicly visible, because otherwise the tuples do not have a security effect. There could also be augmented provenance for the data integrity by collecting and using the history of data items. This could be implemented in the middleware (keep provenance data there). \autocite{relatedWork21}
+
+The proposed RDIC techniques seem to be more fitting if we performed integrity checks in the middleware. They are often based on randomness, which could pose a challenge on the blockchain.
+
+Is randomness easily achievable on the blockchain? Is the extra effort worth it in terms of gas saved?
+
+\paragraph{Randomness in Solidity}
+In general, there are three options for gaining randomness on the blockchain. Each with different criteria for choosing one approach over another \autocite{relatedWork22}. The three options are Block hash PRNG (Pseudo-random number generator), Oracle RNG and Collab PRNG.
+
+Several approaches and exemplary implementations can be found online.
+The coin flipper \autocite{relatedWork23} is based on the block number (thus falls into the category of Block hash PRNG). The Randao \autocite{relatedWork24} is a decentralized autonomous organization for generating random numbers (thus, a Collab PRNG approach). Here, several participants act together to perform the protocol with three phases to provide a random number. It can be used as a service.
+
+A step-by-step explanation for choosing the way how to generate a random number in a Smart Contract is offered and insights on general challenges are given \autocite{relatedWork25}. This comprises approaches that use the blockhash (Block hash PRNG).
+In one example \autocite{relatedWork26}, the author generates a random number from 0 to 100 and a random number from 0 to 2 to the power of n. This code could be included in our own Smart Contract.
+In terms of Oracle RNG approaches, Oraclize \autocite{relatedWork07} is a popular provider (also see above). It acts as an external randomness source.
+In contrast, an internal solution like eth-random \autocite{relatedWork27} uses the block timestamp and seed to generate pseudo-randomness. It should also be easy to use in an own Smart Contract.
+
+\subsection{Summary}
+The most promising findings of alternative integrity checks are coming from Oraclize (a blockchain oracle provider) and the field of Remote Data Integrity Checking where several techniques have been developed and a lot of research is happening.
+Oraclize provides the proofs to the Smart Contracts that called their service (and they may run it) or stores the proof for later retrieval on the decentralized database IPFS, depending on the choice made by the Smart Contract. Oraclize uses three different Authenticity Proofs (TLSNotaryProof, Android Proof, Ledger Proof) to provide the Smart Contract or the owner or user with a certainty that the pushed data from Oraclize to the Smart Contract is the correct data. Further research would be required to fully understand these techniques. As for now, the proofs seem to only concern the intermediary (Oraclize) and its trustworthiness and not the integrity of the data per se (i.e. only that Oraclize has not changed the data but no checks on the data e.g. in contrast to a prior state, when stored or similar).
+
+Remote Data Integrity Checking is applied in the domain of cloud computing. Users check the integrity of outsourced data stored on the providers’ servers. Most of the analyzed techniques rely on either a Third-Party Auditor, encryption, randomness (bit samples) or a combination. Whereas encryption was proposed by Jacob in his paper as a potential integrity check, a third-party solution seems to be out of scope for this project. In general, there could be a verifier that takes the role of a mediator between the database and the Smart Contract and its user and performs the checking of the data integrity. An immediate solution could include a random sample of the data to check and in this way reduce the amount of data to be verified (also see section in chapter Future Work).
+
+A form of randomness in Solidity and on the Ethereum blockchain can be achieved in three different ways; Block hash Pseudo Random Number Generators, Oracle RNG and Collab PRNG.
+As the name indicates, Block hash PRNG rely on the hash of the current block number and can be included rather easily into the Smart Contract. Even though the randomness of this method seems to be quite high, it relies on the miners and thus could be manipulated by those. It represents the least level of randomness of these methods but it might still be enough for our system. Further research could elaborate on this.
+Initiatives for Collaborational Pseudo Random Number Generators have been launched. They promise a higher level of randomness (compared to block hash based) plus no dependency on a (more or less) trusted third party (as with an oracle). Pivotal for their success is the participation of a plethora of users, making the outcome increasingly random with a higher number of participants. These services could be used in our Smart Contract but appear rather unnecessary for our purpose.
+Oracle-based approaches (as with Oraclize) provide real randomness to the system while practically trusting the oracle provider (in theory the proof could be run on-chain, but this is unreasonably expensive). Again, from our point of view this would represent an overkill in our project.
+In case the randomness achievable with Block hash PRNG does not suffice, the other two options might become relevant.
