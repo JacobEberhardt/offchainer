@@ -395,7 +395,7 @@ describe('Benchmarking', function() {
 						if (err) throw err
 						let gasCostCumulated = 0
 						let milliSeconds = 0
-						for (var i = 0 i < res.body.content.length i++) {
+						for (var i = 0; i < res.body.content.length; i++) {
 							if(res.body.content[i].transaction){
 								gasCostCumulated += res.body.content[i].transaction.gasUsed
 							}
