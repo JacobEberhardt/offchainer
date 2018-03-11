@@ -16,7 +16,7 @@ contract PayraiseOnchain {
 	 * @param _department The affected department
 	 * @param _beforeStartDate The start date as a condition whether an employee gets a pay raise (Employee start date < beforeStartDate)
 	 */
-	function PayRaiseOnChain(uint _percentage, bytes32 _department, uint256 _beforeStartDate) public {
+	function PayraiseOnChain(uint _percentage, bytes32 _department, uint256 _beforeStartDate) public {
 	    creator = msg.sender;
 		percentage = _percentage;
 		department = _department;
