@@ -200,7 +200,7 @@ describe('Benchmarking', function() {
 					.expect(200)
 					.end(function(err, res) {
 						if (err) throw err
-						answerVar = answerVar + 'increase-salary' + res.body.content.transaction.gasUsed + '' +
+						answerVar = answerVar + 'increase-salary, ' + res.body.content.transaction.gasUsed + ', ' +
 						res.body.content.milliSeconds + '\n'
 
 						fs.writeFileSync('/wd/benchmarking/employee-onchain.csv', answerVar, function(err) {
@@ -409,7 +409,7 @@ describe('Benchmarking', function() {
 								milliSeconds = res.body.content[i].milliSeconds
 							}
 						}
-						answerVar = answerVar + 'increase-salary' + gasCostCumulated + '' + milliSeconds + '\n'
+						answerVar = answerVar + 'increase-salary, ' + gasCostCumulated + ', ' + milliSeconds + '\n'
 
 						fs.writeFileSync('/wd/benchmarking/employee.csv', answerVar, function(err) {
 								if(err) {
