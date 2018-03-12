@@ -25,7 +25,7 @@ function Database(tableName, scheme) {
 	this.checkConnection = function () {
 		if (this.db == undefined) {
 			var error = new Error('No database connection. Please retry again later.')
-			error.code = "database"
+			error.code = 'database'
 			throw error
 		}
 	}

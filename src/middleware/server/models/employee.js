@@ -6,7 +6,7 @@ const promisify = require('../utils/promisify')
 const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
-const MerkleTree = require('../utils/merkleTree')
+const MerkleTree = require('../utils/merkle-tree')
 const sha3 = require('web3-utils').soliditySha3
 const transactions = require('../utils/transactions')
 const web3Util = require('../utils/web3')
@@ -29,11 +29,11 @@ web3Util.setDefaultAccount(web3, 0)
 const db = new Database(
 	'employee',
 	{
-		first_name: { type: Sequelize.STRING },
-		last_name: { type: Sequelize.STRING },
-		start_date: { type: Sequelize.STRING },
-		department: { type: Sequelize.STRING },
-		salary: { type: Sequelize.INTEGER }
+		first_name: {type: Sequelize.STRING},
+		last_name: {type: Sequelize.STRING},
+		start_date: {type: Sequelize.STRING},
+		department: {type: Sequelize.STRING},
+		salary: {type: Sequelize.INTEGER}
 	}
 )
 
@@ -101,7 +101,7 @@ function add(employee) {
 			})
 			.then(([result, previous]) => {
 				var receipt = web3.eth.getTransactionReceipt(result);
-				resolve({result:result, transaction:receipt, employee:previous})
+				resolve({result: result, transaction: receipt, employee: previous})
 			})
 			.catch(err => reject(err))
 
@@ -159,13 +159,11 @@ function increaseSalarySingleEmployee(employee) {
 				// Wait for transaction to be mined, pass return values to next chain
 				return Promise.all([transactions.waitForBlock(web3, transactionHash), result])
 			})
-			.then(([result, previous])  => {
+			.then(([result, previous])	=> {
 				// Write new salary from previous chain results to database
 				return Promise.all([db.update(
 					{id: previous.args.rowId.c[0]},
-					{
-						['salary']: previous.args.newSalary.c[0]
-					}
+					{['salary']: previous.args.newSalary.c[0]}
 				), previous])
 			})
 			.then(([result, previous]) => {
@@ -193,9 +191,9 @@ function increaseSalarySingleEmployee(employee) {
 			.then((result) => {
 				var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
 				reject({
-					'id' : employee.id,
-					'error' : 'Integrity check failed.',
-					'transaction': receipt
+					id: employee.id,
+					error: 'Integrity check failed.',
+					transaction: receipt
 				})
 			})
 

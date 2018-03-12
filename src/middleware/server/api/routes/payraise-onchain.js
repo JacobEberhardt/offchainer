@@ -1,7 +1,6 @@
 // Import dependencies
 const router = require('express').Router()
-const payraise = require('../../models/payraise')
-const db = require('../../models/database')
+const payraise = require('../../models/payraise-onchain')
 const res = require('../../utils/response')
 const toMilliSeconds = require('../../utils/hrtime')
 
@@ -9,8 +8,8 @@ const toMilliSeconds = require('../../utils/hrtime')
 const response = res.response
 const error = res.error
 
-// Define routes
-// Create pay raise contract
+// Routes
+// Create Pay Raise Contract
 router.post('/create', (req, res, next) => {
 	var startTime = process.hrtime()
 	payraise.create(req.body, res)
