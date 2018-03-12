@@ -1,14 +1,11 @@
 \section{Future Work} \label{sec:future_work}
 
-% \begin{itemize}
-% \item Essentially, copy our future work parts from the presentations :)
-% \end{itemize}
-In this section, we aim to provide the possible future steps that can show and increase the value or the advantages of the off-chaining approach. In the course of our project, we have identified other ways that we could have done to accomplish this. We have also identified other potential integrity check mechanisms that can perform more efficiently, such as paying less gas cost.
+In this section, we provide possible future steps that show how to further increase the value and advantages of the off-chaining approach. In the course of our project, we have identified several relevant additional ideas to extend our implemented off-chaining system that we present one after the other subsequently.
 
 \subsection{Translator into Smart Translator}
-The current implementation of the “Translator” is at its proof-of-concept stage. However we believe that the reasoning of extending the development of the translator, could become significantly useful and an interesting feature to have, since it can make a decision on whether off-chaining makes sense or not for a given smart contract. In addition to translating the original Smart Contract to its off-chained variant, a future implementation of the Translator could also generate the middleware and database components that would be necessary for the overall system.
+The current implementation of the “Translator” is at its proof-of-concept stage. However we believe that the reasoning of extending the development of the translator, could become significantly useful and an interesting feature to have, since it can make a decision on whether off-chaining makes sense or not for a given smart contract. In addition to translating the original Smart Contract to its off-chained variant, a future implementation of the Translator could also generate the client-side application and database components that would be necessary for the overall system.
 
-\subsection{Client side application offering as library for other DApps}
+\subsection{Implemented Smart Contracts offered as library for other developers}
 \subparagraph{Library}
 The functionalities of our developed off-chaining solution could be included in Ethereum as a library living on the blockchain. Every developer could make use of these in her Smart Contract then. The library functions could for example include our implemented integrity check mechanisms (e.g. multi-row and multi-column Merkle Tree, compatible with Web3.js) and off-chaining concept (with e.g. events, also general setup for avoiding gas costs through storage).
 
@@ -16,15 +13,15 @@ The functionalities of our developed off-chaining solution could be included in 
 In addition to (or possibly instead of) the library we could provide the Smart Contract as an entity living on the Ethereum blockchain that developers could have their Smart Contracts inherit from and thus include the functions and structure of our implemented off-chaining solution.
 
 \subsection{Make application listen on events publicly and offer contract functions publicly (Multi-User)}
-In the current implementation, only the creator of the Smart Contract can trigger its functions and make use of the off-chained data. As the Smart Contract is living on a public blockchain, it would be beneficial to offer the functionalities of one off-chained Smart Contract to the network though and leverage its power in terms of potential applications. There could be contracts that react if called by any network participant or only by an entitled one. Depending on the access rights and the new ways to interact with our system the application scope of the implemented system is broadened widely and could e.g. be used by several team members, all departments in a company or across a collection of organizations within an industry with their respective Ethereum accounts.
+In the current implementation, only the creator of the Smart Contract can trigger its functions and make use of the off-chained data. As the Smart Contract is living on a public blockchain, it could be beneficial to offer the functionalities of one off-chained Smart Contract to the network though and leverage its power in terms of potential applications. There could be contracts that react if called by any network participant or only by an entitled one. Depending on the access rights and the new ways to interact with our system the application scope of the implemented system is broadened widely and could e.g. be used by several team members, all departments in a company or across a collection of organizations within an industry with their respective Ethereum accounts.
 
 \subsection{Derived Ideas from Research on Oraclize}
 Could our system be seen as a personal data Oracle? On request, it retrieves the wanted data from outside the blockchain and pushes it on-chain. Not from websites though but from a (Relational) Database (that is either trusted or can be double-checked by the trusted middleware) and through the locally running middleware (not a Third party service).
 
-Could our system function as an Outbound Oracle (or represent a part of it) (https://blockchainhub.net/blockchain-oracles/)?
+Could our system function as an Outbound Oracle (or represent a part of it) \cite{relatedWork01}?
 An example could be a Smart Contract by a company with one of its suppliers that lives on Ethereum. The supplier claims he has delivered the goods to the company by calling the function “requestPaymentForDeliveredGoods” in the Smart Contract. The Smart Contract fires an event to get the invoice data from the company’s database. The company’s middleware gets the data and pushes it into the Smart Contract. The Smart Contract verifies this data (e.g. a contract about the delivered goods) and fires another event. This event could be used by the company’s accounting software to trigger the money transfer to the supplier.
 
-Oracle queries can be encrypted (http://docs.oraclize.it/\#ethereum-advanced-topics-encrypted-queries). Could on-chain encryption of the data thus behave like an integrity check? The Smart Contract stores a magic header, encrypts the data with this magic header (concatenated at the beginning) and the database stores it.
+Oracle queries can be encrypted \cite{futureWork01}. Could on-chain encryption of the data thus behave like an integrity check? The Smart Contract stores a magic header, encrypts the data with this magic header (concatenated at the beginning) and the database stores it.
 When the Smart Contract needs the data, it requests it and the database provides the needed data. The Smart Contract then decrypts it and controls the magic header (correct decryption, i.e. useful decryption output).
 The question arises whether Smart Contracts can decrypt and encrypt, that is without anyone being able to decrypt the encrypted output. This is not yet possible, as the pubkey encryption does not really apply to Smart Contracts (only to user accounts). Much research is going on in this direction.
 
@@ -47,8 +44,8 @@ With more research in the field and more experience further ideas beyond the pre
 The user experience could be enhanced with an actual user interface for the user to interact with when she wants to create off-chained contracts, call other Smart Contract functions or have verified queries. Currently, this is done via Postman calls.
 
 \subsection{Make use of a more optimized database for Merkle Trees}
-One of the steps which were originally thought of was to integrate a specifically optimized database for the storing of our Merkle Tree structures, this in order to save on memory and processing within the flows which make use of the Merkle Tree. 
-In our current implementation it would not have had much of an effect since we used relatively small Merkle Trees for our use cases and demos, however it is not the most efficient since we re-create the Merkle Tree whenever necessary, rather than storing it somewhere and updating it. 
+One of the steps which were originally thought of was to integrate a specifically optimized database for the storing of our Merkle Tree structures, this in order to save on memory and processing within the flows which make use of the Merkle Tree.
+In our current implementation it would not have had much of an effect since we used relatively small Merkle Trees for our use cases and demos, however it is not the most efficient since we re-create the Merkle Tree whenever necessary, rather than storing it somewhere and updating it.
 Possible optimizations to the way our information is stored in the Merkle Tree are also theoretically possible, for example, regarding how items are stored in the Merkle Tree, dividing our datasets into different size groups and mapping them so that we can access them faster.Another potential improvement could be to make use of a graph database such as the neo4j platform due to its speed and efficiency.
 
 
@@ -58,7 +55,7 @@ By deploying the now trusted locally hosted middleware as a dapp we could make i
 \subsection{Oraclize Approach to Save Gas}
 During our research about alternative approaches to check the integrity of the off-chained data, we analyzed the Oracle provider Oraclize (see part 3.2) and found an approach that Oraclize uses to save gas costs which could present a further opportunity to extend this project’s system as well. By giving its users the choice whether to provide the proof that the data pushed by their Oracle is correct to the Smart Contract that requested the data in the first place and that may want to run the integrity check before actually using it or to store the proof for later use on a trustless database (IPFS) Oraclize can save its users a lot of gas in contrast to running the proof of correct data on-chain every time data is pushed to a Smart Contract. Accordingly, the presented system in this paper could provide its users with the same choice and further improve on its goal to save gas. At the same time, the integrity of the data can still be secured.
 
-\subsection{Mature Query Completeness (Jacob Eberhardt, Slide Deck Strategies, p. 9)}
+\subsection{Mature Query Completeness}
 The full benefit of the Merkle Tree Integrity check mechanism will reveal itself once our implementation supports an even more profound query functionality. Currently, the functions of the Smart Contract can be executed and the integrity of the needed data for them is checked but the correct execution of queries to the database can only be verified for the implemented proof of concept (queries for date range). The query completeness could be broadened to assured any query by the blockchain as well. This includes the Smart Contract capabilities to check that the returned query results (by the database) were not modified, that the returned results match the query predicate, that the records that were not returned do not match the query predicate and that the sum of the two sets (returned and not returned) equals to the right amount of stored records.
 When it comes to benchmarking, it would be interesting to find a limit for the rows that can be checked in this way. Every number bigger than that one needs to cope with compromises concerning query completeness (e.g. only checking that all rows were considered and are part of the table but no actual value checking) because of the high costs and the off-chaining of data constraint.
 
@@ -86,3 +83,6 @@ A remote database (in place of the currently local one) can be integrated into t
 The database could sign the records it stored and the user may keep these as proof that the records once existed in the database (proof of existence, in case the database provider denies that the database ever knew about a record). (Jacob Eberhardt, Slide Deck Strategies, p. 7)
 
 We could optimize the calculation of proofs by placing variables which are used together as neighbours in the merkle tree. Thus, when calculating the merkle root / merkle proof we save on iterations as we can chop more parts of the tree away. Of course, this optimization has its limitation when certain variables get used together with multiple others in different functions. (This could also be done automatically with an AI)
+
+
+\newpage
