@@ -1,2 +1,2 @@
 # Offchainer
-This is the repository for the project "Off-chaining Smart Contract Data to RDBMS"
+A system for trustless data exchange between Smart Contract and RDBMS.
