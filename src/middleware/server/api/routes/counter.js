@@ -22,6 +22,7 @@ router.post('/create', (req, res, next) => {
 		.catch(err => error(res, err.status || 500, err))
 })
 
+// Increase counter with the given index
 router.post('/increase/:index', (req, res, next) => {
 	var index
 	const badRequest = () => response(res, 400, 'Invalid index.')

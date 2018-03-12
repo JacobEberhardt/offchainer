@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+
+  middleware:
+    build:
+      context: ../../..
+      dockerfile: docker/environments/staging/Dockerfile
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - database
+      - ganache
+    environment:
+      - PG_HOST=database
+      - PG_PORT=5432
+      - PG_USER=postgres
+      - PG_DATABASE=offchainer
+      - WEBTHREE_HOST=ganache
+      - WEBTHREE_PORT=7545
+
+  database:
+    build: ../../images/database
+
+  ganache:
+    build: ../../images/ganache
