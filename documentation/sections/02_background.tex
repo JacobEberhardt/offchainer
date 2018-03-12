@@ -10,8 +10,8 @@
 
 \subsection{Blockchain}
 
-A new concept for trustless, decentralized and transparent information processing and storage has been developed, introduced and already integrated into several mainstream applications in the last years. Bitcoin, developed by an unknown person or group under the name of Satoshi Nakamoto, led this initiative back in 2008 with its open-source, peer-to-peer network which cryptographically stores records in a chain and serves as a distributed ledger, this was named the Blockchain. The currency in which these operations were valued and paid for with was called Bitcoin, and it was the first decentralized digital currency. 
-Blockchains are essentially continuously growing lists of information which are linked together and secured using cryptography. The main benefit of Blockchains is that they are designed to be incorruptible, and that the data they hold cannot be unintentionally modified since the entire history of the chain is always stored and recorded on it. It is verified by peers and transparent to each user. 
+A new concept for trustless, decentralized and transparent information processing and storage has been developed, introduced and already integrated into several mainstream applications in the last years. Bitcoin, developed by an unknown person or group under the name of Satoshi Nakamoto, led this initiative back in 2008 with its open-source, peer-to-peer network which cryptographically stores records in a chain and serves as a distributed ledger, this was named the Blockchain. The currency in which these operations were valued and paid for with was called Bitcoin, and it was the first decentralized digital currency.
+Blockchains are essentially continuously growing lists of information which are linked together and secured using cryptography. The main benefit of Blockchains is that they are designed to be incorruptible, and that the data they hold cannot be unintentionally modified since the entire history of the chain is always stored and recorded on it. It is verified by peers and transparent to each user.
 Blockchain technology is a mixture of various computing and economic concepts especially in financial sectors, including peer-to-peer systems, cryptography based, consensus protocols, decentralized storage, decentralized processing and smart contracts. The consolidation of these concepts makes blockchains as another innovation and as a programmable platform and system at the same time. Blockchains consist of specific properties including immutability and transparency of cryptographically-secured and peer-recorded transactions, which have been settled upon by consensus on the network. Being able to build up trustless interactions and business disintermediation continues to be one of the most important objectives of using blockchains.
 
 \subsection{Smart Contracts}
@@ -46,7 +46,7 @@ With blockchain being a mutual, decentralized, distributed state machine, this i
 
 \subparagraph{Unspent Transaction Output (UTXO)}
 
-With Bitcoin being a transaction-centric state model UTXO model; which specifies who is allowed to use the output of the transaction moves the estimation of some bitcoin from one address to other address. A transaction changes the state of the agreed-correct blockchain. 
+With Bitcoin being a transaction-centric state model UTXO model; which specifies who is allowed to use the output of the transaction moves the estimation of some bitcoin from one address to other address. A transaction changes the state of the agreed-correct blockchain.
 
 \begin{figure}[h]
 \centering
@@ -58,15 +58,15 @@ Understanding the above example of how Bitcoin transactions work which are UTXO 
 
 \subparagraph{UTXO Transaction Validation}
 \begin{itemize}
-\item Guarantees inputs have not yet been spent 
-\item Checking if the signatures match with addresses of transactions inputs 
-\item Total of output values is equivalent to total of input values 
+\item Guarantees inputs have not yet been spent
+\item Checking if the signatures match with addresses of transactions inputs
+\item Total of output values is equivalent to total of input values
 \end{itemize}
 
 
 \subparagraph{Benefits of UTXO Model:}
 \begin{itemize}
-\item \textbf{Higher level of privacy:} if a user uses another address for every transaction that they receive then it will quite hard to find the correlation of accounts to each other. This model suits greatly for currency use, however significantly less to subjective decentralized applications (DApp), since DApps frequently include monitoring complex packaged state of users which becomes difficult to be achieved.  
+\item \textbf{Higher level of privacy:} if a user uses another address for every transaction that they receive then it will quite hard to find the correlation of accounts to each other. This model suits greatly for currency use, however significantly less to subjective decentralized applications (DApp), since DApps frequently include monitoring complex packaged state of users which becomes difficult to be achieved.
 \item \textbf{Potential scalability paradigms:} UTXOs are more hypothetically compatible with certain types of scalability paradigms.
 \end{itemize}
 
@@ -83,8 +83,8 @@ Ethereum transactions, rather, utilize an architecture depending on global state
 
 \subparagraph{Account Model Transaction Validation}
 \begin{itemize}
-\item Check whether signatures match with address of the sender 
-\item Ensuring that the current nonce matches the nonce from the sender’s account. If that’s the case, it automatically increments the nonce of the sender  
+\item Check whether signatures match with address of the sender
+\item Ensuring that the current nonce matches the nonce from the sender’s account. If that’s the case, it automatically increments the nonce of the sender
 \item Guarantee the sender's balance is bigger or equal with than the transaction value
 \end{itemize}
 
@@ -96,3 +96,12 @@ Ethereum transactions, rather, utilize an architecture depending on global state
 
 
 \input{sections/subsections/0203_integrity_checks}
+
+\subsection{The Concept of Query Completeness}
+The possibility to query RDBMS is a pivotal functionality of those systems and thus represents a great entry point for efforts to link the technologies of blockchain and RDBMS as targeted in this project. The trust that today’s users of RDBMS put into the correctness of the returned results for their queries could be nullified by the trustlessness offered by the blockchain - trustless query results in a sense. Right now, no user can be sure if her results were not tampered with or only part of the truth was returned to her.
+Through an initial slide set from our supervisor Jacob Eberhardt we were introduced to the concept of query completeness which aims at achieving completely trustless queries. The general idea is to use the blockchain and its properties to counteract the four ways a database system could falsify the query results. In detail, the following measurements have to be prevented:
+The database system could try to not consider all database records while performing the query. This means, a mechanism has to be implemented that verifies that all records were looked at.
+The database system could try to add records to the query results that were not part of the database before. To counteract, a trustless systems needs to show that all considered records were part of the database already and that the returned results are actual database entries.
+The database system could try to leave out actual database records that fulfill the query in the returned set of records. Accordingly, we need to proof that that all records that fulfill a user’s query find their way into the results that the user obtains.
+The database system could try to include actual database records that do not fulfill the query in the returned set of records. A trustless system thus has to check that only records that fulfill the query are returned to the user.
+Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined here.
