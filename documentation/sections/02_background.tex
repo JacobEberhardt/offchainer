@@ -75,7 +75,7 @@ Ethereum transactions, rather, utilize an architecture depending on global state
 \begin{figure}[h]
 \centering
 \includegraphics[width=1.0\textwidth]{images/account_model.png}
-\caption{\label{fig:account model}Ethereum Blockchain Account Model Transactions}
+\caption{\label{fig:account_model}Ethereum Blockchain Account Model Transactions}
 \end{figure}
 
 
@@ -95,7 +95,7 @@ Ethereum transactions, rather, utilize an architecture depending on global state
 
 \input{sections/subsections/0203_integrity_checks}
 
-\subsection{The Concept of Query Completeness}
+\subsection{The Concept of Query Completeness} \label{sssec:queryCompleteness}
 The possibility to query RDBMS is a pivotal functionality of those systems and thus represents a great entry point for efforts to link the technologies of blockchain and RDBMS as targeted in this project. The trust that today’s users of RDBMS put into the correctness of the returned results for their queries could be nullified by the trustlessness offered by the blockchain - trustless query results in a sense. Right now, no user can be sure if her results were not tampered with or only part of the truth was returned to her.
 Through an initial slide set from our supervisor Jacob Eberhardt we were introduced to the concept of query completeness which aims at achieving completely trustless queries. The general idea is to use the blockchain and its properties to counteract the four ways a database system could falsify the query results. In detail, the following measurements have to be prevented:
 The database system could try to not consider all database records while performing the query. This means, a mechanism has to be implemented that verifies that all records were looked at.
