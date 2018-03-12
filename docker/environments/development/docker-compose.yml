@@ -6,7 +6,6 @@ services:
     build:
       context: ../../..
       dockerfile: docker/environments/development/Dockerfile
-    command: npm run run-development # Explicitly redefine command to avoid caching issue
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:

@@ -1,15 +1,16 @@
 {
   "name": "offchainer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A middleware for trustless data exchange between blockchain and RDBMS.",
   "scripts": {
 	"staging": "cd docker/environments/staging && docker-compose up -d && docker-compose logs -f middleware",
-	"run-staging": "node src/middleware/server/start.js",
+	"run-staging": "node src/middleware/server/start",
 	"development": "docker-compose -f docker/environments/development/docker-compose.yml up",
-	"run-development": "nodemon src/middleware/server/start.js",
+	"run-development": "nodemon src/middleware/server/start",
 	"benchmarking": "cd docker/environments/benchmarking && docker-compose up -d && docker-compose logs -f middleware",
-	"run-benchmarking": "mocha src/middleware/benchmarking/benchmarking.js --timeout 120000 --exit",
-	"test": "node src/middleware/server/test/test-merkle-tree.js",
+	"run-benchmarking": "mocha src/middleware/benchmarking/benchmarking --timeout 120000 --exit",
+	"testing": "cd docker/environments/testing && docker-compose up -d && docker-compose logs -f middleware",
+	"run-testing": "node src/middleware/server/test/test-merkle-tree",
 	"truffle": "cd src/blockchain && truffle compile --reset --compile-all"
   },
   "dependencies": {
