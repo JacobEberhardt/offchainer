@@ -2,21 +2,15 @@
 
 \subsection{Blockchain}
 
-A new concept for trustless, decentralized and transparent information processing and storage has been developed, introduced and already integrated into several mainstream applications in the last years. Bitcoin, developed by an unknown person or group under the name of Satoshi Nakamoto, led this initiative back in 2008 with its open-source, peer-to-peer network which cryptographically stores records in a chain and serves as a distributed ledger, this was named the Blockchain. The currency in which these operations were valued and paid for with was called Bitcoin, and it was the first decentralized digital currency. 
-Blockchains are essentially continuously growing lists of information which are linked together and secured using cryptography. The main benefit of Blockchains is that they are designed to be incorruptible, and that the data they hold cannot be modified without mutual consent since the entire history of the chain is always stored and recorded on it. It is verified by peers and transparent to each user. 
-Blockchains consist of specific properties including immutability and transparency of cryptographically-secured and peer-recorded transactions, which have been settled upon by the consensus of the network. By enabling the build up of trustless interactions, business disintermediation continues to be one of the most important objectives of using blockchains.
+A new concept for trustless, decentralized and transparent information processing and storage has been developed, introduced and already integrated into several mainstream applications in the last years. Bitcoin, developed by an unknown person or group under the name of Satoshi Nakamoto, led this initiative back in 2008 with its open-source, peer-to-peer network which cryptographically stores records in a chain and serves as a distributed ledger, this was named the Blockchain. The currency in which these operations were valued and paid for with is called Bitcoin, and it was the first decentralized digital currency.
+Blockchains are essentially continuously growing lists of information which are linked together and secured using cryptography. The main benefit of Blockchains is that they are designed to be incorruptible, and that the data they hold cannot be unintentionally modified since the entire history of the chain is always stored and recorded on it. It is verified by peers and transparent to each user.
+Blockchain technology is a mixture of various computing and economic concepts especially in financial sectors, including peer-to-peer systems, cryptography based, consensus protocols, decentralized storage, decentralized processing and smart contracts. The consolidation of these concepts makes blockchains as another innovation and as a programmable platform and system at the same time. Blockchains consist of specific properties including immutability and transparency of cryptographically-secured and peer-recorded transactions, which have been settled upon by consensus on the network. Being able to build up trustless interactions and business disintermediation continues to be one of the most important objectives of using blockchains.
 
-\subsection{Ethereum and Smart Contracts}
+\subsection{Smart Contracts}
+Computer programs that are executed automatically when conditions (terms) of the contract have been met. Understanding smart contracts in a high-level aspect are the same as standard contracts. While a standard contract enforces the terms of a contract (regularly by law), a smart contract actualizes this enforcement of terms through network consensus and online cryptography secure systems. These programs are executed in a trustless and carefully designed way in the network and are referred as Smart Contracts. Ethereum is one of the most known platforms, it empowers developers to create their own smart contracts and creating decentralized applications in the blockchain [\cite{Buterin2014}]. Upon creation of smart contracts, they need to be executed in a secured runtime environment. Therefore, an Ethereum Foundation team project developed the Ethereum Virtual Machine (EVM) which is the runtime enviroment for Smart Contracts. Putting it in simpler understanding, EVM is a virtual machine that continues running on every node in the network and executes smart contracts. In addition, it is isolated that no framework or filesystem access is possible, thus, to ensure determinism. One vital part of the way the EVM works is that each and every task that is executed inside the EVM, is executed by each full node. This is a crucial part of the Ethereum 1.0 consensus model and has the advantage that any contract on the EVM can call some other contract at zero cost, however, it also has its disadvantages that the computational steps on the EVM are exceptionally costly [\cite{Buterin2014}]. In order that the Ethereum network is not being abused or being deliberately attacked, the Ethereum protocol charges a fee for every computational step. The way this cost is paid in Ethereum blockchain i’s through the attribute called gas. The fee or the price of the gas is deteremined on market-basis; meaning it is decided by the economic concept of market where supply meets demand among users and miners' willingness to mine the next block in the network (blockchain). Furthermore, understanding the way how fees work, is that every transaction alongside other attributes must contain the 'gasPrice', which is the fee that the transaction pays per unit of gas, and 'startGas' being the maximum amount of unit of gas that you are willing to pay for a transaction. Therefore, at every execution of transaction a prior evaluation of a transaction cost is done [\cite{Buterin2014}].
+				\[ gasCost(Tx)= {gasPrice *  startGas}\]
+To understand to which extent the usage of the EVM makes sense, it can mainly incorporate running business logic applications ("if this then that"), confirming signatures and other cryptographic objects [\cite{Ethereum2017}. On the other hand, any utilization which incorporates using EVM as a file storage, platform or anything to do with GUI, it does not fit under the reasonable use due to its tremendous costs. Therefore, usage of on-chain code execution with today's blockchain implementations, implies furthest to be at the stage of doing simple programming functions. Nevertheless, in order to be able to use Smart Contracts, higher level programming languages which compile EVM code have been developed such as Solidity, Serpent, LLL.
 
-Smart contracts are a feature which the Ethereum Blockchain is based on. A smart contract is basically a computer program which can check for the fulfillment of certain preconfigured conditions and control the transfer of funds or other assets between several parties. While a standard contract enforces its terms through its legality, a Smart Contract actualizes this enforcement automatically through network consensus and a cryptographically secured system. The contracts are stored on the Blockchain and thereby serve as a decentralized middle man which stores records, enforces conditions and is completely neutral and transparent. The most popular platform which utilizes this technology is the Ethereum Blockchain. It empowers developers to create their own Smart Contracts and their own decentralized Blockchain applications [\cite{Buterin2014}].  \\
-
-The runtime environment which the Smart Contracts actually run on is called the Ethereum Virtual Machine (EVM), and it continuously runs on every node on the chain, which means that every task which is executed inside of the EVM is run by each node, which is obviously costly, but one of the benefits of this is that each contract can call any other contract at zero cost [\cite{Buterin2014}]. The EVM is also isolated in the sense that no outside framework or file system is accessible, this to ensure determinism. The Smart Contracts themselves are written using the Solidity programming language which was designed for this purpose, and it allows users to create contracts which can be used for voting, crowdfunding, blind auctions, multi-signature wallets and more.\\
-
-In order to ensure that the Ethereum network would not be abused or deliberately attacked, the Ethereum protocol charges a fee for every computational step. The way this cost is paid is through an attribute called ‘gas’. The fee or the price of the gas is determined simply via supply and demand; the users’ willingness to pay vs the price for which the miners' are willing to mine the next block in the Blockchain. Basically the way these fees work is that every transaction contains a 'gasPrice' attribute, which is the price per computational step, and the 'startGas' attribute, being the maximum amount of gas which the sender is willing to pay for the transaction. Therefore, at every execution of a transaction a prior evaluation of the transaction cost is done [\cite{Buterin2014}].\\
-
-				\[ gasCost(Tx)= {gasPrice * startGas}\]
-\\
-The usage of the EVM for the most part makes sense when it comes to running business logic applications ("if this, then that") such as confirming signatures or other cryptographic objects [\cite{Ethereum2017}. On the other hand, any utilization which incorporates using the EVM as a file storage platform or anything GUI related would not be practical due to the tremendous costs. 
 
 
 \begin{figure}[h]
@@ -25,81 +19,13 @@ The usage of the EVM for the most part makes sense when it comes to running busi
 \caption{\label{fig:Smartcontracts}www.blockgeeks.com}
 \end{figure}
 
-
-
-
-\subsection{Blockchain-level Protocol: UTXO and Account Model}
-
-The need of secure of value transfer lead to invention of building tamper-resistant systems. The way how transactions are handled, is one of the main characteristics of the blockchain technology. They are the smallest building pieces of a blockchain system. Transaction level consensus are exceptionally expensive, therefore, are bundled together forming a block or a unite of consensus. With every block creation chained to the previous block (through previous block hash) in the network forming chains of blocks, therefore, creating the blockchain.
-
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{images/transactions_blocks.png}
-\caption{\label{fig:Transactions}Transactions order bundeled into blocks.}
-\end{figure}
-
-
-With blockchain being a mutual, decentralized, distributed state machine, this implies that all nodes (users of the blockchain framework) freely hold their own particular duplicate of the blockchain, and the current known "state" is calculated by handling every transaction in order as they show up in the blockchain. The way how each transactions and blocks are mined (processed) in the network differ from implementation. With the introduction of Bitcoin’s Unspent Transaction Output (UTXO) and later Ethereum project with its concept of Account Model state model. Further in this report we provide an explanation of each state models, purpose and use cases.
-
-\subparagraph{Unspent Transaction Output (UTXO)}
-
-With Bitcoin being a transaction-centric state model UTXO model; which specifies who is allowed to use the output of the transaction moves the estimation of some bitcoin from one address to other address. A transaction changes the state of the agreed-correct blockchain. 
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{images/UTXO.png}
-\caption{\label{fig:UTXO}UTXO Transactions example}
-\end{figure}
-
-Understanding the above example of how Bitcoin transactions work which are UTXO model, transactions contain one or more input and output vice versa. An input is a reference to an output from the previous transaction. Whereas an output specifies the amount and an address. With the input pointing always referencing from a previous transaction, provides and uninterrupted stream of value amongst addresses
-
-\subparagraph{UTXO Transaction Validation}
-\begin{itemize}
-\item Guarantees inputs have not yet been spent 
-\item Checking if the signatures match with addresses of transactions inputs 
-\item Total of output values is equivalent to total of input values 
-\end{itemize}
-
-
-\subparagraph{Benefits of UTXO Model:}
-\begin{itemize}
-\item \textbf{Higher level of privacy:} if a user uses another address for every transaction that they receive then it will quite hard to find the correlation of accounts to each other. This model suits greatly for currency use, however significantly less to subjective decentralized applications (DApp), since DApps frequently include monitoring complex packaged state of users which becomes difficult to be achieved.  
-\item \textbf{Potential scalability paradigms:} UTXOs are more hypothetically compatible with certain types of scalability paradigms.
-\end{itemize}
-
-\subparagraph{Account Model}
-
-Ethereum transactions, rather, utilize an architecture depending on global state storage of accounts, balances, code, and storage. The balances of accounts are kept as global state. Moreover, the having the value distribution of a state-centric meaning of transaction specifies sender and the receiver account and its not referenced to the previous transactions. Transaction include binary data (its payload) and Ether
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=1.0\textwidth]{images/account_model.png}
-\caption{\label{fig:account_model}Ethereum Blockchain Account Model Transactions}
-\end{figure}
-
-
-\subparagraph{Account Model Transaction Validation}
-\begin{itemize}
-\item Check whether signatures match with address of the sender 
-\item Ensuring that the current nonce matches the nonce from the sender’s account. If that’s the case, it automatically increments the nonce of the sender  
-\item Guarantee the sender's balance is bigger or equal with than the transaction value
-\end{itemize}
-
-\subparagraph{Benefits of Account Model:}
-\begin{itemize}
-\item \textbf{Huge space savings:}Due to the fact that each transaction only needs to create one reference, one signature and one output
-\item \textbf{Simplicity:} Light clients are able to access the whole records related to an account through scanning down the state tree in a specific direction.
-\end{itemize}
-
 \input{sections/subsections/0203_integrity_checks}
 
-\subsection{The Concept of Query Completeness} \label{sssec:queryCompleteness}
+\subsection{The Concept of Query Completeness}
 The possibility to query RDBMS is a pivotal functionality of those systems and thus represents a great entry point for efforts to link the technologies of blockchain and RDBMS as targeted in this project. The trust that today’s users of RDBMS put into the correctness of the returned results for their queries could be nullified by the trustlessness offered by the blockchain - trustless query results in a sense. Right now, no user can be sure if her results were not tampered with or only part of the truth was returned to her.
 Through an initial slide set from our supervisor Jacob Eberhardt we were introduced to the concept of query completeness which aims at achieving completely trustless queries. The general idea is to use the blockchain and its properties to counteract the four ways a database system could falsify the query results. In detail, the following measurements have to be prevented:
-The database system could try to not consider all database records while performing the query. This means, a mechanism has to be implemented that verifies that all records were looked at.
-The database system could try to add records to the query results that were not part of the database before. To counteract, a trustless systems needs to show that all considered records were part of the database already and that the returned results are actual database entries.
-The database system could try to leave out actual database records that fulfill the query in the returned set of records. Accordingly, we need to proof that that all records that fulfill a user’s query find their way into the results that the user obtains.
-The database system could try to include actual database records that do not fulfill the query in the returned set of records. A trustless system thus has to check that only records that fulfill the query are returned to the user.
-Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined here.
-
+Firstly, the database system could try to not consider all database records while performing the query. This means, a mechanism has to be implemented that verifies that all records were looked at.
+Secondly, the database system could try to add records to the query results that were not part of the database before. To counteract, a trustless system needs to show that all considered records were part of the database already and that the returned results are actual database entries.
+Thirdly, the database system could try to leave out actual database records that fulfill the query in the returned set of records. Accordingly, we need to proof that that all records that fulfill a user’s query find their way into the results that the user obtains.
+Finally, the database system could try to include actual database records that do not fulfill the query in the returned set of records. A trustless system thus has to check that only records that fulfill the query are returned to the user.
+Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined here. We will demonstrate our approach to implement query completeness in the chapter 4.3.3.3.
