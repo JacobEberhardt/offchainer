@@ -35,4 +35,4 @@ COPY --from=0 /wd /wd
 EXPOSE 8000
 
 # Start server
-CMD ["npm", "run", "run-benchmarking"]
+CMD ["mocha", "src/middleware/benchmarking/benchmarking", "--timeout", "120000", "--exit"]
