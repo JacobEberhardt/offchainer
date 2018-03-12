@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+
+  translator:
+    build:
+      context: ../../..
+      dockerfile: docker/environments/translator/Dockerfile
+    volumes:
+      - ../../../:/wd
