@@ -14,4 +14,4 @@ documentation/*
 !documentation/images/
 
 src/middleware/benchmarking/
-!src/middleware/benchmarking/bencharking.js
+!src/middleware/benchmarking/benchmarking.js
