@@ -6,7 +6,7 @@ const promisify = require('../utils/promisify')
 const events = require('../utils/events')
 const Database = require('./database')
 const Sequelize = require('sequelize')
-const MerkleTree = require('../utils/merkleTree')
+const MerkleTree = require('../utils/merkle-tree')
 const transactions = require('../utils/transactions')
 const sha3 = require('web3-utils').soliditySha3
 
@@ -24,27 +24,25 @@ const contract = web3.eth.contract(contractData.abi)
 const db = new Database(
 	'financials',
 	{
-		sc_id: { type: Sequelize.INTEGER },
-		root_hash: {type : Sequelize.STRING},
-		company_name: { type: Sequelize.STRING },
-		recording_date: { type: Sequelize.INTEGER }, // YEAR MONTH DAY 20180129
-		total_sales: { type: Sequelize.INTEGER },
-		cogs: { type: Sequelize.INTEGER },
-		inventory_stock: { type: Sequelize.INTEGER },
-		cash_counter: { type: Sequelize.INTEGER },
-		accounts_receivables: { type: Sequelize.INTEGER },
-		accounts_payable: { type: Sequelize.INTEGER }
+		sc_id: {type: Sequelize.INTEGER},
+		root_hash: {type: Sequelize.STRING},
+		company_name: {type: Sequelize.STRING},
+		recording_date: {type: Sequelize.INTEGER}, // YEAR MONTH DAY 20180129
+		total_sales: {type: Sequelize.INTEGER},
+		cogs: {type: Sequelize.INTEGER},
+		inventory_stock: {type: Sequelize.INTEGER},
+		cash_counter: {type: Sequelize.INTEGER},
+		accounts_receivables: {type: Sequelize.INTEGER},
+		accounts_payable: {type: Sequelize.INTEGER}
 	}
 )
 
-//Contract construction
 /**
  * Create a new contract instance.
  *
  * @return {Promise} A promise that depends on the contract creation
  */
 function create() {
-	console.log(web3.eth.accounts)
 	return promisify(contract.new)({
 		args: [
 			{
@@ -58,22 +56,23 @@ function create() {
 	})
 }
 
-
 /**
  * Create the root, store the root into the SC, and then store the SC id, the root hash, and the raw data in DB.
  * 
  * @param {Object} financials The new financial record to add
- * @returns {Promise} A promise that depends on the successful  insert of financials object
+ * @returns {Promise} A promise that depends on the successful	insert of financials object
  */
 function add(financials) {
+
 	return new Promise((resolve, reject) => {
+
+		// Define functions
 		const handler = (err) => reject(err)
 
-		if(financials == null || financials.companyName == null || financials.recordingDate == null || financials.totalSales == null 
-			|| financials.cogs == null || financials.inventoryStock == null || financials.cashCounter == null 
-			|| financials.accountsReceivables == null || financials.accountsPayable == null) {
-			handler("parameter is missing")
-		}
+		// Check assertions
+		if (financials == null) return handler('Missing financials object')
+		const required = ['companyName', 'recordingDate', 'totalSales', 'cogs', 'inventoryStock', 'cashCounter', 'accountsReceivables', 'accountsPayable']
+		for (let prop of required) if (!financials.hasOwnProperty(prop) || financials[prop] == null) return handler(`Missing property ${prop}`)
 
 		const dbRow = {
 			company_name: financials.companyName,
@@ -97,34 +96,34 @@ function add(financials) {
 			financials.accountsPayable
 		]
 
-		// watch for the returned index
+		// Watch for the returned index
 		events.watch(contract.instance.PostAppendEvent).then(result => {
-			// save the index to the db with the row
+
+			// Save the index to the db with the row
 			if(result.args != null) {
-				dbRow["sc_id"] = result.args.indexInSmartContract.toNumber()
-				dbRow["root_hash"] = result.args.rootHash
-				// just needs to update the DB now.
+				dbRow['sc_id'] = result.args.indexInSmartContract.toNumber()
+				dbRow['root_hash'] = result.args.rootHash
+
+				// Just needs to update the DB now.
 				return db.create(dbRow)
 			} 
 
-		}).then(resolve)
+		})
+		.then(resolve)
 		.catch(handler)
 
-
-		// create the merkle root hash
-		const hashes = [];
-		for(let i = 0; i < leaves.length; i++) {
-			if(typeof leaves[i] === "number") {
-				hashes.push(sha3({value: leaves[i].toString(), type: 'uint256'}))
-			} else {
-				hashes.push(sha3({value: leaves[i], type: 'string'}))
-			}
-		}
+		// Create the merkle root hash
+		const hashes = leaves.map(leave => {
+			if(typeof leave === 'number') return sha3({value: leave.toString(), type: 'uint256'})
+			else return sha3({value: leave, type: 'string'})
+		})
 		const tree = new MerkleTree(hashes, sha3, {hashLeaves: false, values: leaves})
 		const rootHash = tree.getRoot()
+
 		promisify(contract.instance.append)({
 			args: rootHash
-		}).catch(handler)
+		})
+			.catch(handler)
 
 	})
 
@@ -148,13 +147,13 @@ function queryWithDate(query) {
 			return handler("parameter error")
 		}
 
-		// watch for the returned index/indeces that match the query
+		// Watch for the returned index/indeces that match the query
 		events.watch(contract.instance.QueryResultsEvent)
 			.then(result => {
 				// Wait for transaction to be mined, pass return values to next chain
 				return Promise.all([transactions.waitForBlock(web3, transactionHash), result])
 			}).then(([result, previous]) => {
-				// save the index to the db with the row
+				// Save the index to the database with the row
 				if(previous.args != null) {
 					let returnArr = []
 					for(let i = 0; i < resultArr.length; i++) {
@@ -169,14 +168,15 @@ function queryWithDate(query) {
 			.catch(handler)
 
 
-		// get all the records in DB 
-		// it needs to be in order because the way it is ordered as in SC
-		// Send to SC
-		// listen to event that returns either check error, or the query results
+		// Get all the records in the database
+		// It needs to be in order because the way it is ordered as in SC
+		// Send to smart contract
+		// Listen to event that returns either check error, or the query results
 		db.readAllSort([["sc_id", "ASC"]]).then(result => {
 			let rootHashArr = []
 			let dateArr = []
-			// making the tree array
+
+			// Making the tree array
 			for(let i = 0; i < result.length; i++) {
 				let hashes = []
 
@@ -215,9 +215,10 @@ function queryWithDate(query) {
 				rootHashArr.push(tree.getRoot())
 				dateArr.push(result[i].dataValues.recording_date)
 			}
-			// send rootHashArr, dateArr, query to SC
-			// something like something(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min)
-			promisify(contract.instance.queryWithDate)({
+
+			// Send rootHashArr, dateArr, query to SC
+			// Something like something(bytes32[] rootHashArr, uint256[] dateArr, uint256 max, uint256 min)
+			return promisify(contract.instance.queryWithDate)({
 				args: [
 					rootHashArr,
 					dateArr,
@@ -225,11 +226,10 @@ function queryWithDate(query) {
 					query.min
 				]
 			})
-			.then(result => transactionHash = result)
-			.catch(handler)
 
-
-		}).catch(handler)
+		})
+		.then(result => transactionHash = result)
+		.catch(handler)
 
 	})
 }
@@ -238,13 +238,12 @@ function queryWithDate(query) {
 
 function checkRowData(scIndex, rootHashToVerify, proof, proofPosition) {
 	return new Promise((resolve, reject) => {
+
 		// Define functions
-	//	const catchedEvent = false
 		const handler = (err) => reject(err)
 		const checkRowData = promisify(contract.instance.checkRowData)
 
 		// Event Listeners
-
 		events.watch(contract.instance.IntegrityCheckCompletedEvent) // Smart contract needs data
 			.then(eventResult => {
 				// Find data record with given index
@@ -274,7 +273,6 @@ function checkRowData(scIndex, rootHashToVerify, proof, proofPosition) {
 					// Get proof for give counter
 					const proof = tree.getProof(eventResult.args.colId.c[0])
 
-				//call CHeckRowData
 					checkRowData({
 						args: [
 							eventResult.args.rowId.c[0],
@@ -288,8 +286,7 @@ function checkRowData(scIndex, rootHashToVerify, proof, proofPosition) {
 
 				})
 			})
-
-		.catch(handler)	
+			.catch(handler)	
 
 		// IntegrityCheckFailedEvent
 		events.watch(contract.instance.IntegrityCheckCompletedEvent)

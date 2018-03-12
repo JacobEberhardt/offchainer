@@ -1,0 +1,227 @@
+{
+	"info": {
+		"name": "employee-onchain",
+		"_postman_id": "9bc85a7e-f51a-00ed-ca87-042e571a586c",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Employee Contract",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/employee-onchain/create",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"employee-onchain",
+						"create"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add Employee",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\" : \"Adam\",\n\t\"lastName\" : \"Miller\",\n\t\"startDate\" : 1515942162,\n\t\"department\" : \"IT\",\n\t\"salary\" : 2000\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/employee-onchain/add",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"employee-onchain",
+						"add"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add Employee (2)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\" : \"Robert\",\n\t\"lastName\" : \"Fuchs\",\n\t\"startDate\" : 1515943162,\n\t\"department\" : \"Marketing\",\n\t\"salary\" : 1000\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/employee-onchain/add",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"employee-onchain",
+						"add"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add Employee (3)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\" : \"Marc\",\n\t\"lastName\" : \"Zuckerberg\",\n\t\"startDate\" : 1515944162,\n\t\"department\" : \"IT\",\n\t\"salary\" : 3000\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/employee-onchain/add",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"employee-onchain",
+						"add"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contract",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"percentage\" : 15,\n\t\"department\" : \"IT\",\n\t\"fromStartDate\" : 1515942162\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/payraise-onchain/create",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"payraise-onchain",
+						"create"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Increase Salary",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"contractAddress\": \"0xd54b47f8e6a1b97f3a84f63c867286272b273b7c\"\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/employee-onchain/increase-salary",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"employee-onchain",
+						"increase-salary"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "salary/0",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:8000/employee-onchain/salary/0",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"employee-onchain",
+						"salary",
+						"0"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

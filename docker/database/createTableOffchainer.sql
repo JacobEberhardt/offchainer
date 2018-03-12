@@ -1,5 +1,0 @@
-CREATE TABLE offchainer (
-	id SERIAL UNIQUE PRIMARY KEY NOT NULL,
-	key TEXT,
-	message TEXT
-);
