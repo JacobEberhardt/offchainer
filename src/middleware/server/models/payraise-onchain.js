@@ -3,14 +3,10 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
-const events = require('../utils/events')
-const Database = require('./database')
-const Sequelize = require('sequelize')
-const MerkleTree = require('../utils/merkle-tree')
 const web3Util = require('../utils/web3')
 
 // Define values
-CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Payraise.json'
+CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/PayraiseOnchain.json'
 INITIAL_GAS = 4700000
 
 // Import contract data

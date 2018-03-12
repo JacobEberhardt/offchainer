@@ -3,14 +3,10 @@ const web3 = require('../config/web3')
 const fs = require('fs')
 const path = require('path')
 const promisify = require('../utils/promisify')
-const events = require('../utils/events')
-const Database = require('./database')
-const Sequelize = require('sequelize')
-const MerkleTree = require('../utils/merkle-tree')
 const web3Util = require('../utils/web3')
 
 // Define values
-CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/Payraise.json'
+CONTRACT_BUILD_FILE = '../../../blockchain/build/contracts/FinancialsOnchain.json'
 INITIAL_GAS = 4700000
 
 // Import contract data
@@ -20,21 +16,17 @@ const contractData = JSON.parse(fs.readFileSync(path.join(__dirname, CONTRACT_BU
 const contract = web3.eth.contract(contractData.abi)
 
 // Set default account
-web3Util.setDefaultAccount(web3, 0)
+web3Util.setDefaultAccount(web3,0)
 
-// Define functions
+//Contract construction
 /**
- * Create a new pay raise contract instance.
+ * Create a new contract instance.
  *
- * @param {Object} contractDetails The details of the contract
  * @return {Promise} A promise that depends on the contract creation
  */
-function create(contractDetails) {
+function create() {
 	return promisify(contract.new)({
 		args: [
-			contractDetails.percentage,
-			contractDetails.department,
-			contractDetails.fromStartDate,
 			{
 				from: web3.eth.accounts[0],
 				data: contractData.bytecode,
@@ -44,12 +36,45 @@ function create(contractDetails) {
 		requiredProperty: 'address',
 		context: contract
 	})
-		.then(result => {
-			var receipt = web3.eth.getTransactionReceipt(result.transactionHash);
-			return {contract: result, receipt: receipt}
-		})
 }
 
+
+/**
+ * Create and insert an financial records into the database and store the root hash of the data record into the smart contract
+ * 
+ * @param {Object} financials The new financial record to add
+ * @returns {Promise} A promise that depends on the successful	insert of financials object
+ */
+function add(financials) {
+
+	return new Promise((resolve, reject) => {
+			promisify(contract.instance.addRecordEntry)({
+				args: [
+					financials.companyName,
+					financials.recordingDate,
+					financials.totalSales,
+					financials.cogs,
+					financials.inventoryStock,
+					financials.cashCounter,
+					financials.accountsReceivables,
+					financials.accountsPayable,
+					{gas:6000000}
+				]
+			})
+			.then(result => resolve(result));
+	})
+
+}
+
+
+/**
+ * Return Root has for a specific entry specified by index
+ *
+ * @return {Promise} A promise that contains the return value: RecordingData
+ */
+function getRecordingDate(indexOfRecord){
+	return new promisify(contract.instance.getRecordingDate)({args: indexOfRecord})
+}
 
 /**
  * Set the address for the used contract instance to a given address.
@@ -73,6 +98,8 @@ function hasInstance() {
 // Export functions
 module.exports = {
 	create,
+	add,
 	setInstance,
+	getRecordingDate,
 	hasInstance
 }

@@ -1,0 +1,92 @@
+{
+	"info": {
+		"name": "financials-onchain",
+		"_postman_id": "793b8698-ce15-b369-ef71-f9a7fdb107e4",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Financials Contract",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/financials-onchain/create",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"financials-onchain",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Entry",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"companyName\" : \"CompanyAB\",\n    \"recordingDate\" : \"01.01.2010\",\n    \"totalSales\" : \"4213\",\n    \"cogs\" : \"322\",\n    \"inventoryStock\" : \"412\",\n    \"cashCounter\" : \"5123\",\n    \"accountsReceivables\" :\"321\",\n    \"accountsPayable\" : \"5123\"\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/financials-onchain/entry",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"financials-onchain",
+						"entry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Root Hash for Recording Date",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:8000/financials-onchain/recording-date/012",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"financials-onchain",
+						"recording-date",
+						"012"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

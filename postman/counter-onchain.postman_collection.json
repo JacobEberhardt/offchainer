@@ -1,0 +1,72 @@
+{
+	"info": {
+		"name": "counter-onchain",
+		"_postman_id": "25b4716f-354b-5fb7-01f0-974e2a1d405b",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "192.168.99.100:8000/counter-onchain/create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.99.100:8000/counter-onchain/create",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"counter-onchain",
+						"create"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "192.168.99.100:8000/counter-onchain/increase/10",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:8000/counter-onchain/increase/10",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8000",
+					"path": [
+						"counter-onchain",
+						"increase",
+						"10"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

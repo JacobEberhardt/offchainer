@@ -1,0 +1,146 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Employee Pay Raise Use Case",
+		"_postman_id": "d11a6599-b43b-7bec-e3cc-bc9f47df0ecd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Employee Contract",
+			"description": "",
+			"item": [
+				{
+					"name": "http://localhost:8000/employee/create",
+					"request": {
+						"url": "http://localhost:8000/employee/create",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employees",
+					"request": {
+						"url": "http://localhost:8000/employee/",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Root Hash for Employee",
+					"request": {
+						"url": "http://localhost:8000/employee/38/root-hash",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Employee",
+					"request": {
+						"url": "http://localhost:8000/employee/add",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"firstName\" : \"Thanh Tuan\",\n\t\"lastName\" : \"Tenh Cong\",\n\t\"startDate\" : \"01.01.2010\",\n\t\"department\" : \"IT\",\n\t\"salary\" : \"100000\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Import Employees",
+					"request": {
+						"url": "http://localhost:8000/employee/import",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"employees\" : [\n        {\n\t\t\t\"firstName\" : \"Thanh Tuan\",\n\t\t\t\"lastName\" : \"Tenh Cong\",\n\t\t\t\"startDate\" : \"01.01.2010\",\n\t\t\t\"department\" : \"IT\",\n\t\t\t\"salary\" : \"100000\"\n        },\n        {\n\t\t\t\"firstName\" : \"Patrick\",\n\t\t\t\"lastName\" : \"Friedrich\",\n\t\t\t\"startDate\" : \"01.01.2010\",\n\t\t\t\"department\" : \"Research&Development\",\n\t\t\t\"salary\" : \"100000\"\n        },\n        {\n\t\t\t\"firstName\" : \"Simon\",\n\t\t\t\"lastName\" : \"Fallnich\",\n\t\t\t\"startDate\" : \"01.01.2010\",\n\t\t\t\"department\" : \"Project Management\",\n\t\t\t\"salary\" : \"100000\"\n        },\n        {\n\t\t\t\"firstName\" : \"Vincent\",\n\t\t\t\"lastName\" : \"Jonany\",\n\t\t\t\"startDate\" : \"01.01.2010\",\n\t\t\t\"department\" : \"Marketing\",\n\t\t\t\"salary\" : \"100000\"\n        },\n        {\n\t\t\t\"firstName\" : \"Kevin\",\n\t\t\t\"lastName\" : \"Styp\",\n\t\t\t\"startDate\" : \"01.01.2010\",\n\t\t\t\"department\" : \"IT\",\n\t\t\t\"salary\" : \"100000\"\n        },\n        {\n\t\t\t\"firstName\" : \"Dukagjin\",\n\t\t\t\"lastName\" : \"Ramosaj\",\n\t\t\t\"startDate\" : \"01.01.2010\",\n\t\t\t\"department\" : \"Sales\",\n\t\t\t\"salary\" : \"100000\"\n        },\n        {\n\t\t\t\"firstName\" : \"Tarek\",\n\t\t\t\"lastName\" : \"Higazi\",\n\t\t\t\"startDate\" : \"01.01.2010\",\n\t\t\t\"department\" : \"Project Management\",\n\t\t\t\"salary\" : \"100000\"\n        }\n    ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Increase Salary",
+					"request": {
+						"url": "http://localhost:8000/employee/increase-salary",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"contractAddress\" : \"0x5dbd9c1060584534a3fdc6f05247f1ee02f77174\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payraise",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Payraise Contract",
+					"request": {
+						"url": "http://localhost:8000/payraise/create",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"percentage\" : 50,\n\t\"department\" : \"IT\",\n\t\"fromStartDate\" : \"01.01.2010\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
