@@ -1,26 +1,4 @@
 \subsubsection{Financials Use Case}
-\paragraph{Scenario 1: Check only}
-\subparagraph{Generic Steps - Event Based:}
-\begin{itemize}
-\item Client sends request to Client-Side Middleware to verify specific data (data or indexes are not known by Client)
-\item Client-Side Middleware triggers relevant Smart Contract function
-\item Smart Contract triggers Event to retrieve specific data
-\item Client-Side Middleware listens to Event and queries required data from the database
-\item Client-Side Middleware sends required data to smart contract via function call
-\item Smart Contract checks integrity
-\item Smart Contract triggers Event to send result of integrity check (result = corrupted records or true/false)
-\item Client-Side Middleware listens to Event and sends the result back to client
-\end{itemize}
-
-\subparagraph{Generic Steps - Data to check is Known:}
-\begin{itemize}
-\item Client sends request to Client-Side Middleware to verify specific data (data or indexes are not known by Client)
-\item Client-Side Middleware queries required data from the database
-\item Client-Side Middleware sends required data to smart contract via function call
-\item Smart Contract checks integrity
-\item Smart Contract triggers Event to send result of integrity check (result = corrupted records or true/false)
-\item Client-Side Middleware listens to Event and sends the result back to client
-\end{itemize}
 
 \paragraph{Concept - Financials}
 \subparagraph{Description}
