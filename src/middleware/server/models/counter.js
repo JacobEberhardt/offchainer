@@ -9,7 +9,7 @@ const sha3 = require('web3-utils').soliditySha3
 // Import utilities
 const promisify = require('../utils/promisify')
 const events = require('../utils/events')
-const MerkleTree = require('../utils/merkleTree')
+const MerkleTree = require('../utils/merkle-tree')
 const type = require('../utils/type')
 const web3Util = require('../utils/web3')
 const transactions = require('../utils/transactions')
@@ -177,12 +177,13 @@ function increaseCounter(index) {
 			.then(result => resolve(result))
 			.catch(error => {
 
-				if(error.code === "database") { // Error type Database will result in a revert
+				if(error.code === 'database') { // Error type Database will result in a revert
 					revertRootHash({args: oldRootHash})
 					.then(result => {
-						reject("Reverting previous roothash. Transaction: " + result)
+						reject('Reverting previous roothash. Transaction: ' + result)
 					})
-				} else {
+				}
+				else {
 					reject(error)
 				}
 
