@@ -47,16 +47,21 @@ In Figure \ref{fig:05_gas_cost_single} we visualized the used gas for calling si
 \caption{\label{fig:05_gas_cost_single}This is one employee.}
 \end{figure}
 
-- employee creation more costy because overhead of functions for merkle tree (ellaborate what exactly here)
-
+%- employee creation more costy because overhead of functions for merkle tree (elaborate what exactly here)
 % 844906 - 714518 = 130388 gas,    130388 / 714518 = 18,25%
-For the employee contract creation we can see that the off-chained variant needs about 130 thousand less gas than the on-chained variant. Say why we save and then in the end say that its constant and how much percentage-wise this translates to
+%    results) in a future work which could be mmaking library identifies future work
+% abgesehen von leeren Listen 
+%Say why we save and then in the end say that its constant and how much percentage-wise this translates to
+%Blabla could be optimized by making those functions libraries
+For the employee contract creation we can see that the off-chained variant needs about 130 thousand more gas than the on-chained variant. Both Smart Contracts do not save any state variables yet apart from empty lists for either hash values or employees, depending on the approach. The difference in the gas cost originates mainly from the added functions for the merkle tree proof and verification which were added to the smart contract for the off-chained approach. Thanks to this finding a new task for future work could be identified. Extracting the functions which are needed in order to iterate through the tree and verify the merkle proof into a library in the sense of Solidity would benefit the off-chaining approach. Calling functions of libraries in Solidity is in general very beneficial in terms of gas cost (TODO: better word than 'beneficial': Isn't it free?). Anyways the gas cost of the off-chained approach exceed the gas cost of the on-chained approach only by approximately 18\% which is rather minor. All in all, it can be said that the increased gas cost of the off-chained approach are negligible as the contract creation needs to be paid only once throughout the whole life cycle of the smart contract. Analyzing the offered functions of the smart contract is much more important as these will be called multiple times.
+
+TODO: Check that this is really mentioned in our future work part.
 
 - payraise not changed (on-chained for both, thats why it is the same)
 
 - on add we save xy gas because thats where off-chaining is stronk
 
-- increase salary we loose because [.....] only one field, multiple transactions, ellaborate on possible alternatives like functions that would change multiple strings etc etc
+- increase salary we loose because [.....] only one field, multiple transactions, elaborate on possible alternatives like functions that would change multiple strings etc etc
 
 And yet smth more in Figure \ref{fig:05_gas_cost_ten}.
 
@@ -74,7 +79,7 @@ Explain what is visible
 
 Explain what that does mean
 
-- Ellaborate on conclusions and findings from this evaluation
+- Elaborate on conclusions and findings from this evaluation
 
 What do all the statistics say? what do they mean to us?
 
