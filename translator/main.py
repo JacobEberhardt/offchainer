@@ -8,6 +8,7 @@ from utils.io import copy, render, delete
 # Define values
 DEFAULT_OPTIONS = {
     'force_overwrite': False,
+    'ignore_existing': False,
     'show_analysis': False
 }
 FLAGS = {
