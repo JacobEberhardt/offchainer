@@ -1,12 +1,12 @@
 # Offchainer
 A system for trustless data exchange between Smart Contract and RDBMS.
 
-## Prerequisites
+## Deployment
+### Prerequisites
 - [Docker](https://docs.docker.com/install/) 17.05 or higher
 - [npm](https://docs.npmjs.com/getting-started/installing-node) 17.05 or higher
 - [Postman](https://www.getpostman.com/apps) 17.05 or higher (optional)
 
-## Deployment
 ### Source
 Obtain a copy of the source code by cloning this repository
 ```
@@ -35,7 +35,6 @@ To run the unit tests, execute
 ```
 npm run testing
 ```
-An overview of the passed an failed test cases is shown.
 
 ### Translator
 The Translator can be used by running
