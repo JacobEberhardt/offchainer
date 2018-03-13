@@ -30,6 +30,7 @@ FROM node:9.4-slim
 RUN mkdir /wd
 WORKDIR /wd
 COPY --from=0 /wd /wd
+RUN npm install -g mocha
 
 # Expose port
 EXPOSE 8000
