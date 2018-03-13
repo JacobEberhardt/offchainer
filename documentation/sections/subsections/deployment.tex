@@ -1,0 +1,62 @@
+\subsection{Deployment}
+
+This section describes the steps required to run and use our application.
+
+\subsection*{Prerequisites}
+
+\begin{itemize}
+	\item Docker 17.05 or higher\footnote{See \url{https://docs.docker.com/install/}.}
+	\item npm 5.5.0 or higher\footnote{See \url{https://docs.npmjs.com/getting-started/installing-node}.}
+	\item Git 2.1.0 or higher\footnote{See \url{https://git-scm.com/downloads}.} (optional)
+	\item Postman 5.0.0 or higher\footnote{See \url{https://www.getpostman.com/apps}.} (optional)
+\end{itemize}
+
+Docker is a container runtime, which enables platform-independent development and deployment by packing an application's resources, configurations and dependencies to a bundle, referred to as \emph{container}. We chose to use a container engine in general to consistently configure, build and run the different components (client-side application, blockchain, database) of our solution, and Docker in particular as it has a large ecosystem, which provides readily configured and maintained base images for common applications. The package manager npm is used to easily execute deployment commands. Moreover, Git is utilized for version control, which is optional for deployment as it is solely used to obtain the source code. Finally, we employ Postman, a tool for API testing, to provide predefined API calls for optional end-to-end testing of our solution.
+
+\subsection*{Source}
+
+To obtain a copy of the source code, simply clone our repository by running
+\begin{lstlisting}[language=bash]
+$ git clone https://github.com/simonfall/offchainer.git && cd offchainer 
+\end{lstlisting}
+or, without Git, downloaded the source as a ZIP archive from \url{https://github.com/simonfall/offchainer/archive/develop.zip} and unpack it.
+
+\subsection*{Core System}
+
+Build and run our system with
+\begin{lstlisting}[language=bash]
+$ npm run staging 
+\end{lstlisting}
+This command first builds the images for the client-side application, database and local blockchain if they do not exist already and creates containers from the individual images. Furthermore, the output of the client-side application is piped to the current console and the used ports are bound to the host machine so that they can be accessed locally. The client-side application listens over HTTP on port 8000 of the local machine (\url{http://127.0.0.1:8000}). To exit, simply press \mbox{\texttt{Ctrl} + \texttt{C}}, which stops the containers and unbinds the used ports.
+
+\subsection*{Predefined API Requests}
+
+We provide Postman collections, which contain predefined requests for our use cases.\footnote{For more details on the use cases see ??.} To test a use case, import (File $\rightarrow$ Import) the desired JSON file from the \texttt{postman} directory to the Postman application and send the intended requests.
+	
+\subsection*{Benchmarking}
+
+To run the benchmarking, execute
+\begin{lstlisting}[language=bash]
+$ npm run benchmarking
+\end{lstlisting}
+Similar to running the core system, this command first builds the required images, creates the respective containers and pipes the output to the current console. Furthermore, it binds parts of the current filesystem to the container's filesystem in order to output benchmarking results. The benchmarking is performed and the resulting statistics are written to CSV files in the \texttt{benchmarking-results} directory.\footnote{For more details on benchmarking see ??.}
+
+\subsection*{Unit Tests}
+
+We provide unit tests, which target the implementation of our integrity check mechanism. To run the unit tests, execute
+\begin{lstlisting}[language=bash]
+$ npm run testing
+\end{lstlisting}
+This builds the required images, creates the containers and binds the output to the current console. The unit tests are performed and a summary of the passed and failed test cases is shown.
+
+\subsection*{Translator}
+
+The Translator can be used by running
+\begin{lstlisting}[language=bash]
+$ npm run translate <path to contract file>
+\end{lstlisting}
+An example contract can be translated with
+\begin{lstlisting}[language=bash]
+$ npm run translate translator/examples/counters.sol
+\end{lstlisting}
+These commands build the Translator image, create a container and bind parts of the filesystem to the container's filesystem to output the resulting contract. The translation is performed and the off-chained contract is written to the \texttt{translator-output} directory.\footnote{For more details on the Translator see ??.}
