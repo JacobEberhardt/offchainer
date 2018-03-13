@@ -61,6 +61,8 @@ In most general cases, the flow of our application when a user wants to perform 
 \item Client side application sends required data and proof to smart contract via function call.
 \item Smart Contract performs integrity check using the proof from client side application.
 \item Smart Contract continues with the original intended task requested by the user when the proof has passed the integrity check. 
-\item Smart Contract triggers an Event back to the client side application containing either the results of the function, or an error when the proof does not satisfy the condition of the integrity check. 
-\item Client-Side Middleware listens to Event and returns the result back to the user. 
+\item Smart Contract computes a new root hash from the new changed value, and stores it.
+\item Smart Contract triggers an Event back to the client side application containing either the results, or an error when the proof does not satisfy the condition of the integrity check. 
+\item Client side application listens to Event stores the new root hash and the new changed value into the database. 
+\item Client side application finally returns either a success message, or a failure in case of a failed data integrity check. 
 \end{enumerate}
