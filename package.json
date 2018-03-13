@@ -1,22 +1,23 @@
 {
-  "name": "offchainer",
-  "version": "0.3.0",
-  "description": "A system for trustless data exchange between Smart Contract and RDBMS.",
-  "scripts": {
-	"staging": "cd docker/environments/staging && docker-compose up -d && docker-compose logs -f middleware; docker-compose stop",
-	"development": "docker-compose -f docker/environments/development/docker-compose.yml up",
-	"benchmarking": "cd docker/environments/benchmarking && docker-compose up -d && docker-compose logs -f middleware",
-	"testing": "cd docker/environments/testing && docker-compose up -d && docker-compose logs -f middleware",
-	"truffle": "cd src/blockchain && truffle compile --reset --compile-all",
-	"translate": "cd docker/environments/translator && docker-compose run translator python3 translator/main.py -i"
-  },
-  "dependencies": {
-	"express": "^4.16.2",
-	"mocha": "^5.0.0",
-	"pg": "^7.4.0",
-	"sequelize": "^4.22.7",
-	"supertest": "^3.0.0",
-	"web3": "^0.19.0",
-	"web3-utils": "^1.0.0-beta.26"
-  }
+	"name": "offchainer",
+	"version": "0.3.0",
+	"description": "A system for trustless data exchange between Smart Contract and RDBMS.",
+	"scripts": {
+		"staging": "cd docker/environments/staging && docker-compose up -d && docker-compose logs -f middleware; docker-compose stop",
+		"development": "cd docker/environments/development && docker-compose up; docker-compose stop",
+		"benchmarking": "cd docker/environments/benchmarking && docker-compose up -d && docker-compose logs -f middleware; docker-compose stop",
+		"testing": "cd docker/environments/testing && docker-compose up -d && docker-compose logs -f middleware; docker-compose stop",
+		"truffle": "cd src/blockchain && truffle compile --reset --compile-all",
+		"translate": "cd docker/environments/translator && docker-compose run translator python3 translator/main.py -i"
+	},
+	"dependencies": {
+		"express": "^4.16.2",
+		"mocha": "^5.0.0",
+		"npm": "^5.7.1",
+		"pg": "^7.4.0",
+		"sequelize": "^4.22.7",
+		"supertest": "^3.0.0",
+		"web3": "^0.19.0",
+		"web3-utils": "^1.0.0-beta.26"
+	}
 }
