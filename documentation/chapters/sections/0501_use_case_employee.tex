@@ -1,5 +1,5 @@
-\subsubsection{Employee Use Case}
-\paragraph{Concept - Employee Payraise}
+\section{Employee}
+\subsection{Concept}
 \subparagraph{Description}
 In a real world scenario, a company could decide to use the blockchain and the off-chaining approach to verify employee data, which is stored in a private database (RDBMS). Additionally the company wants to make the changes in salaries for each employee as transparent as possible. Together with a union the company can agree on details (e.g. percentage of pay raise, affected departments, etc.) for a pay raise increase and store as well as execute the pay raise on the blockchain.
 
@@ -18,13 +18,13 @@ The general idea to implement this use case is to create two separate Smart Cont
 
 As mentioned before the Employee Smart Contract stores the root hashes of each employee record. The table above shows an example Employee table with one record. The merkle tree is constructed with the values in 'FirstName', 'LastName', 'EntryDate' and 'Salary' in the given record. The root of constructed merkle tree is stored in a map with the 'RecordID' as an identifier for the root hash.
 
-\paragraph{Implementation}
+\subsection{Implementation}
 \subparagraph{Overview}
 
 \begin{figure}[h]%evtl:[t] [!htbp]
-\centering
-\includegraphics[width=1.0\textwidth]{images/payraiseusecase.png}
-\caption{\label{fig:payraiseusecase}Overview of all components of the Employee Use Case}
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/payraiseusecase.png}
+	\caption{\label{fig:payraiseusecase}Overview of all components of the Employee Use Case}
 \end{figure}
 
 As mentioned in the previous chapter, this use case requires two smart contracts, which should interact with each other. Figure \ref{fig:payraiseusecase} shows all the components of this use case and how they interact with each other. In this use case, we have the following components: Client, Client-side Application, Employee DB, Pay Raise Contract and Employee Contract.
@@ -35,31 +35,30 @@ The client-side application is the main part of this use case. It is connected w
 
 Both contracts, employee contract as well as pay raise contract can exist on their own. But only one employee contact should be created for this uses case. Everytime data is inserted or updated in the employee database, the employee contract is updated accordingly. E.g. when a record is inserted in the database, an additional mapping item with the identifier and the Merkle root of the Merkle tree constructed from this record is inserted into the contract. In case a record is updated, a new Merkle tree has to be constructed in the client-side application and the new Merkle root has to be used to replace the old Merkle root in the equivalent mapping item.
 
-
 \subparagraph{Necessary Steps}
 
 This subchapter briefly describes the necessary steps for a client to interact with the components in the use case. Also it gives some insights on how the components interact with each other.
 
 \begin{enumerate}
-\item Create Employee Contract
+	\item Create Employee Contract
 \end{enumerate}
 
 In order to perform further transactions, an employee contract has to be created. Via REST interface, the client shall call a function to create a contract. The client-side application takes the request and creates the contract in the network as well as a contract instance inside the application with the contract address, to perform further transactions with the employee contract.
 
 \begin{enumerate}[resume]
-\item Create/Import Employee Data
+	\item Create/Import Employee Data
 \end{enumerate}
 
 The client can now create data records or use the import function, to create multiple employee data records. The client-side application uses the input of the client to create data records in the employee table in the database. Moreover, it creates for each new employee record a Merkle tree and adds a mapping item with the Merkle root and the “record id” of the employee in the database into the smart contract. 
 
 \begin{enumerate}[resume]
-\item Create Pay Raise Contract
+	\item Create Pay Raise Contract
 \end{enumerate}
 
 Before a pay raise can be executed to employees, specific conditions have to be formulated, for example the percentage, the affected department, etc. Those conditions are formulated in the Pay Raise Contract. This contract contains only the formulated and agreed conditions between the company and the union, as well as getter functions to retrieve these conditions later from the Employee Contract, where the pay raise is executed.
 
 \begin{enumerate}[resume]
-\item Increase Salary
+	\item Increase Salary
 \end{enumerate}
 
 In the Increase Salary step, the client triggers a function on the client-side application to increase the salary of all affected employees according to the created pay raise contract in step 3. Therefore the client sends a request with the contract address of the pay raise contract. The client-side application calls a function in the employee contract by passing the pay raise contract as input parameter. After that the employee contract retrieves the conditions (e.g. percentage, department, etc.) from the pay raise contract and returns it to the client-side application as an event. The client-side application listens to this event and uses the conditions as query parameters when querying the database. For example, if the department is ‘IT’, the SQL Query would look like this:

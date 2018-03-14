@@ -1,4 +1,5 @@
-\subsection{Benchmarking for Employee Use Case}
+\section{Benchmarking of Use Cases}
+
 %- What did we benchmark?
 %Explain which scenarios we did test (1 employee, multiple employee)
 We chose to benchmark the employee use case in particular, as the employee use case is the more complex one of our two use cases.
@@ -19,14 +20,15 @@ Time measurement was done since we wanted to gain insights into how much overhea
 This was possible as our technology stack includes ganache, which is capable of automatically mining new transactions into new blocks instantly, so that we are able to measure only the overhead that our application introduces.
 
 %- Nice transition into showing our first graphics.
-\subsubsection{Time measurement}
+\subsection{Time Measurement}
+
 First we will measure the additional computation time of our application for executing different functions of the smart contract.
 The results can be seen in Figure \ref{fig:05_time}.
 
-\begin{figure}[t]%evtl:[t] [!htbp]
-\centering
-\includegraphics[width=1.0\textwidth]{images/05_evaluation/05_time.png}
-\caption{\label{fig:05_time}Time measurement for Employee Use Case.}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/05_evaluation/05_time.png}
+	\caption{\label{fig:05_time}Time measurement for Employee Use Case.}
 \end{figure}
 
 %Thats a box plot chart
@@ -59,7 +61,7 @@ As every function call in the off-chained approach does not introduce a real ove
 Therefore, no further measurements concerning the computation time have been made.
 We can conclude that the off-chained approach did not introduce any additional computation time and is as good as the on-chained approach timewise.
 
-\subsubsection{Gas cost measurement}
+\subsection{Gas Cost Measurement}
 Measuring the gas needed for executing the functionalities of our smart contract is of utmost importance to us.
 The initial motivation for our prototype was to gain insight into whether it is possible to save on gas costs, when off-chaining state variables from smart contracts.
 As we receive the used gas for each transaction within the JSON-response when we call the smart contract functions through our API endpoint, we were able to gain different insights into the use of gas when on- or off-chaining.
@@ -70,9 +72,9 @@ Similarly to our time measurement, we again measured the main functionalities of
 The results of our analysis will be discussed below.
 
 \begin{figure}[t]
-\centering
-\includegraphics[width=1.0\textwidth]{images/05_evaluation/05_gas_cost_single.png}
-\caption{\label{fig:05_gas_cost_single}This is one employee.}
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/05_evaluation/05_gas_cost_single.png}
+	\caption{\label{fig:05_gas_cost_single}This is one employee.}
 \end{figure}
 
 %- employee creation more costy because overhead of functions for Merkle tree (elaborate what exactly here)
@@ -134,10 +136,10 @@ We introduce a scenario where we add 10 different employees with varying data wh
 This was introduced so that we can benchmark how the \textit{increase salary} function behaves when it gets executed on the majority of the employees or respectively on the minority.
 The results for the cumulative gas costs of this benchmark are visualized in Figure \ref{fig:05_gas_cost_ten}.
 
-\begin{figure}[t]%[htbp]
-\centering
-\includegraphics[width=1.0\textwidth]{images/05_evaluation/05_gas_cost_ten.png}
-\caption{\label{fig:05_gas_cost_ten}This is ten employees.}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/05_evaluation/05_gas_cost_ten.png}
+	\caption{\label{fig:05_gas_cost_ten}This is ten employees.}
 \end{figure}
 
 % 1333476 - 439400 = 894076,   439400 / 1333476 = 32,95% -> 67%

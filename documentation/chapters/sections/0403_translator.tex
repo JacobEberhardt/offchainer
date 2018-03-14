@@ -1,4 +1,4 @@
-\subsection{Translator}
+\section{Translator}
 
 Manually integrating off-chaining into an existing Smart Contract which uses state variables (on-chained contract) requires advanced knowledge of the implementation of both the given contract and our integrity check mechanism. This inevitably introduces a barrier to potential users as they have to familiarize themselves with implementational details of our solution. Moreover, it prevents use cases where knowledge about the implementation of a contract cannot be obtained with reasonable effort, e.g. in the case of automatically generated contracts. Since translating an on-chained contract into an off-chained one is a static procedure, we decided to develop a proof-of-concept for a program which automates this process, referred to as \emph{translator}, to make off-chaining accessible and easy to use.
 

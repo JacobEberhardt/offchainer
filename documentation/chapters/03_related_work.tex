@@ -1,4 +1,4 @@
-\section{Related Work}
+\chapter{Related Work}
 
 The initial concept of "off-chaining" was introduced to us by our project supervisor Jacob Eberhardt and the paper he published along with Professor Stefan Tai.
 
@@ -6,7 +6,7 @@ In their paper they discuss the concept of "off-chaining" data from the blockcha
 
 To gain further inspiration on how the data integrity in our smart contracts could be verified we conducted research on other systems that potentially make use of similar mechanisms. As our system provides external data to a smart contract, that is on-chain, we considered Oracles to be a concept worth looking at. “An Oracle, in the context of blockchains and smart contracts, is an agent which finds and verifies real-world occurrences and submits this information to a blockchain to be used by smart contracts.” \cite{relatedWork01} In addition, we conducted research on potential integrity mechanisms which distributed cloud systems (like AWS or Azure) implement in order to provide as features for their clients. This class of mechanisms is called Remote Data Integrity Checking and our findings on it are presented in the second part of this chapter.
 
-\subsection{Oracles}
+\section{Oracles}
 
 \subparagraph{Initial Research Questions}
 \begin{itemize}
@@ -35,7 +35,8 @@ The Ledger Proof \cite{relatedWork14, relatedWork15} provides a proof that the a
 
 Thus, all three proofs do not account for data integrity but are focused on providing a proof that the intermediary (here Oraclize) has not tampered with the retrieved data. These techniques cannot be used for data integrity checks as envisioned in this project.
 
-\subsection{Remote Data Integrity Checking}
+\section{Remote Data Integrity Checking}
+
 \subparagraph{RDIC Techniques}
 RDIC is applied in cloud computing settings where users want to check the integrity of their data stored on the servers of the provider.
 There are several different RDIC techniques \cite{relatedWork16} and much research is focused on this domain producing new approaches on a regular basis.
@@ -60,7 +61,8 @@ In one example \cite{relatedWork26}, the author generates a random number from 0
 In terms of Oracle RNG approaches, Oraclize \cite{relatedWork07} is a popular provider (also see above). It acts as an external randomness source.
 In contrast, an internal solution like eth-random \cite{relatedWork27} uses the block timestamp and seed to generate pseudo-randomness. It should also be easy to use in an own smart contract.
 
-\subsection{Summary}
+\section{Summary}
+
 The most promising findings in alternative integrity checks are coming from Oraclize (a blockchain oracle provider) and the field of Remote Data Integrity Checking where several techniques have been developed and a lot of research is happening.
 Oraclize provides the proofs to the smart contracts which call their service (and they may run it) or stores the proof for later retrieval on the decentralized database IPFS, depending on the choice made by the smart contract. Oraclize uses three different Authenticity Proofs (TLSNotaryProof, Android Proof, Ledger Proof) to provide the smart contract or the owner or user with a certainty that the pushed data from Oraclize to the smart contract is the correct data. Further research would be required to fully understand these techniques. As for now, the proofs seem to only concern the intermediary (Oraclize) and its trustworthiness and not the integrity of the data per se (i.e. only that Oraclize has not changed the data but no checks on the data e.g. in contrast to a prior state, when stored or similar).
 

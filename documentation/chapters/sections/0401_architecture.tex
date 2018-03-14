@@ -1,18 +1,18 @@
-\subsection{Architecture}
+\section{Architecture}
 
 This section aims to give a broad view of the components and how all of them work together to satisfy the needs of our prototype. A more detailed explanation for each component will be discussed in section \ref{sssec:technologies}.
 
 \begin{figure}[t]%evtl:[t] [!htbp]
-\centering
-\includegraphics[width=1.0\textwidth]{images/architecture.png}
-\caption{\label{fig:architecture}The architecture of the off-chaining approach.}
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/architecture.png}
+	\caption{\label{fig:architecture}The architecture of the off-chaining approach.}
 \end{figure}
 
 As seen in Figure \ref{fig:architecture}, we have divided our architecture into three sides:
 \begin{itemize}
-\item Client side
-\item Database
-\item Blockchain environment
+	\item Client side
+	\item Database
+	\item Blockchain environment
 \end{itemize}
 
 \subparagraph{Client Side}
@@ -31,36 +31,36 @@ We have not only made the assumption that our client side is trusted, but also t
 There are two most basic and general approaches in which the user interacts with our client side application. 
 
 \begin{itemize}
-\item Inserting a new data
-\item Performing a specific action with that data
+	\item Inserting a new data
+	\item Performing a specific action with that data
 \end{itemize}
 
 In most general cases, the flow of our application when a user wants to insert a new data goes in the following way: 
 
 \begin{enumerate}
-\item User posts a request to client side application with all the data that are required in the specified data model. 
-\item Client side application creates a Merkle tree using the data sent.
-\item Client side application sends the Merkle root hash to the the smart contract.
-\item Smart contract stores the root hash as a local variable.
-\item Smart contract fires an Event to the client side application to let it know if it has successfully stored it. 
-\item Client side application performs a database query to store the data and the root hash into the database.
-\item Database stores it.
-\item Return success message to the user. 
+	\item User posts a request to client side application with all the data that are required in the specified data model. 
+	\item Client side application creates a Merkle tree using the data sent.
+	\item Client side application sends the Merkle root hash to the the smart contract.
+	\item Smart contract stores the root hash as a local variable.
+	\item Smart contract fires an Event to the client side application to let it know if it has successfully stored it. 
+	\item Client side application performs a database query to store the data and the root hash into the database.
+	\item Database stores it.
+	\item Return success message to the user. 
 \end{enumerate}
 
 In most general cases, the flow of our application when a user wants to perform a specific task through the smart contract while using the off-chained data goes in the following way:
 
 \begin{enumerate}
-\item User creates a request to the client side application to perform a specific smart contract function. 
-\item Client side application triggers relevant smart contract function.
-\item Smart contract triggers a smart contract event to the client side application to retrieve specific data from database. Specific data can be specified by using the root hash stored in smart contract previously.
-\item Client side application listens to that event and queries required data from the database.
-\item Client side application creates a Merkle tree from the queried data, and creates a Merkle proof.
-\item Client side application sends required data and proof to smart contract via function call.
-\item Smart contract performs integrity check using the proof from client side application.
-\item Smart contract continues with the original intended task requested by the user when the proof has passed the integrity check. 
-\item Smart contract computes a new root hash from the new changed value, and stores it.
-\item Smart contract triggers an event back to the client side application containing either the results, or an error when the proof does not satisfy the condition of the integrity check. 
-\item Client side application listens to event, and then stores the new root hash with the new changed value into the database. 
-\item Client side application finally returns either a success message, or a failure in case of a failed data integrity check. 
+	\item User creates a request to the client side application to perform a specific smart contract function. 
+	\item Client side application triggers relevant smart contract function.
+	\item Smart contract triggers a smart contract event to the client side application to retrieve specific data from database. Specific data can be specified by using the root hash stored in smart contract previously.
+	\item Client side application listens to that event and queries required data from the database.
+	\item Client side application creates a Merkle tree from the queried data, and creates a Merkle proof.
+	\item Client side application sends required data and proof to smart contract via function call.
+	\item Smart contract performs integrity check using the proof from client side application.
+	\item Smart contract continues with the original intended task requested by the user when the proof has passed the integrity check. 
+	\item Smart contract computes a new root hash from the new changed value, and stores it.
+	\item Smart contract triggers an event back to the client side application containing either the results, or an error when the proof does not satisfy the condition of the integrity check. 
+	\item Client side application listens to event, and then stores the new root hash with the new changed value into the database. 
+	\item Client side application finally returns either a success message, or a failure in case of a failed data integrity check. 
 \end{enumerate}

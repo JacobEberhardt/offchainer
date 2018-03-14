@@ -1,4 +1,4 @@
-\subsection{Use Cases} \label{sssec:use_cases}
+\chapter{Use Cases} \label{sssec:use_cases}
 
 In companies large amounts of data records are retrieved and modified each day. But what if data records are changed or manipulated in a way that the results of your calculations with the data become wrong and decisions are made based on these results? Guaranteeing the integrity of data records in a distributed environment is a big challenge.
 
@@ -13,29 +13,15 @@ In the end, we have come up with two different use cases, produced through our f
 The following points should summarize the properties of our use cases. As mentioned before, the developed uses cases should still be feasible and integratable with the current prototype implementation. 
 
 \begin{itemize}
-\item Multiple Columns:
-In order to make use of the hash tree algorithm a data table with multiple columns is required.
-\item One table per Use Case:
-In the current project stage, the Use Cases should use only one table each. Multiple entities and relations would make the Use Case too complex. In the future, a more complex Use Case with multiple entities and relations could be developed.
-\item Big Data:
-In real world examples large numbers of data records are stored and evaluated every day. Our use cases should consider real world examples, where a large amount of data is required. With the current prototype implementation and the posed constraints by the Ethereum network, a large number of data records could hit the gas limit very quickly. Therefore, the number of data records should be limited to a defined number.
-\item Different Scenarios:
-For presentation purposes, the two use cases should not only use different data types but also do different things with the acquired data. 
+	\item Multiple Columns:
+	In order to make use of the hash tree algorithm a data table with multiple columns is required.
+	\item One table per Use Case:
+	In the current project stage, the Use Cases should use only one table each. Multiple entities and relations would make the Use Case too complex. In the future, a more complex Use Case with multiple entities and relations could be developed.
+	\item Big Data:
+	In real world examples large numbers of data records are stored and evaluated every day. Our use cases should consider real world examples, where a large amount of data is required. With the current prototype implementation and the posed constraints by the Ethereum network, a large number of data records could hit the gas limit very quickly. Therefore, the number of data records should be limited to a defined number.
+	\item Different Scenarios:
+	For presentation purposes, the two use cases should not only use different data types but also do different things with the acquired data. 
 \end{itemize}
 
-% Vincent - Same comment as below.  
-
-% Intially, we started with a very straight forward use case which acts as a proof-of-concept to incorporate the off-chaining approach with all of its mechanisms. 
-
-% In the first step specific requirements for the uses cases have to be formulated. For the first use cases very complex examples may not be feasible at this project stage. 
-
-% For now we agreed on two different scenarios: 1. Check only (integrity check) and 2. Check and Modify (also update data).
-
-% Vincent - I edit this out, because the general scenarios are moved to architecture.
-% In the next chapters, we will discuss the two different scenarios and the specific use case for each scenario.
-
-% \subsubsection{Scenarios - Use Cases}
-% In the overall scenario, we assume that the Smart Contract requires data in order to perform a task and a transaction. The main operation of the Smart Contract should be the integrity check of the acquired data from the RDBMS. A possible scenario can stop at this point, where the Smart Contract only returns the result of the integrity check. A more advanced scenario would be that the data has to be modified by a Smart Contract function.
-
-\input{sections/subsections/subsubsections/04033_use_case_financials}
-\input{sections/subsections/subsubsections/04032_use_case_employee}
+\input{chapters/sections/0501_use_case_employee}
+\input{chapters/sections/0502_use_case_financials}
