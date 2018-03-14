@@ -50,13 +50,23 @@ Append row - Steps:
 
 We quickly realized the “red flags” this approach is producing in regards to the gas cost. In the process of adding a new row, we are adding a new leaf, or a new hash into the current Merkle tree (step 4), and this does not work that way, as we are planning on having only the Merkle proof, the nodes that are not affected by the change. Hence, to approach this we always have to send all of the leaves, the hashes of the rows, so that we can create this new tree in addition to a new leaf, the new hash of the inserted row. This quickly creates an overhead in the gas cost when adding a new row into the table. Hence, we took a turn in our approach, and we have to come up with something more usable, and worth it for the users. While the same gas cost problem will still exist in the next approach, it will however provide a much larger incentive for using the function.
 
-\subparagraph{Query Completeness Implementation}
+\subparagraph{Query Completeness}
 
-See section \ref{sssec:querycompleteness} to learn more about this concept.
+The possibility to query RDBMS is a pivotal functionality of those systems and thus represents a great entry point for efforts to link the technologies of blockchain and RDBMS as targeted in this project. The trust that today’s users of RDBMS put into the correctness of the returned results for their queries could be nullified by the trustlessness offered by the blockchain - trustless query results in a sense. Right now, no user can be sure if her results were not tampered with or only part of the truth was returned to her.
+Through an initial slide set from our supervisor Jacob Eberhardt we were introduced to the concept of query completeness which aims at achieving completely trustless queries. The general idea is to use the blockchain and its properties to counteract the four ways a database system could falsify the query results. In detail, the following measurements have to be prevented:
 
-Query completeness is the concept that we incorporated to better leverage the whole table verification. Furthermore, it addresses an important real-world problem. A user queries the database, however, does not want to put trust into the returned results. The blockchain can be used as an objective verifier of the query results. An example on how this mechanism is applied to our use case includes a user who wants to query all sales data in the period from Nov 2017 to Jan 2018, and expects that the results have not been tampered with.
+Firstly, the database system could try to not consider all database records while performing the query. This means, a mechanism has to be implemented that verifies that all records were looked at.
+
+Secondly, the database system could try to add records to the query results that were not part of the database before. To counteract, a trustless system needs to show that all considered records were part of the database already and that the returned results are actual database entries.
+
+Thirdly, the database system could try to leave out actual database records that fulfill the query in the returned set of records. Accordingly, we need to proof that that all records that fulfill a user’s query find their way into the results that the user obtains.
+
+Finally, the database system could try to include actual database records that do not fulfill the query in the returned set of records. A trustless system thus has to check that only records that fulfill the query are returned to the user.
+
+Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined here. An example on how this mechanism is applied to our use case includes a user who wants to query all sales data in the period from Nov 2017 to Jan 2018, and expects that the results have not been tampered with.
 
 Initial implementation idea:
+
 \begin{itemize}
 \item Verify that all entries were considered and that none were left out in the returned results.
 →  have database respond to original query and to the negated query (e.g. original: all sales data in the period from Nov 2017 to Jan 2018, negated: all sales data NOT in the period from Nov 2017 to Jan 2018)
