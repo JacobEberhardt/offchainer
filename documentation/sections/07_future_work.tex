@@ -41,10 +41,6 @@ This could follow a similar implementation structure as with the hashing and Mer
 The full benefit of the Merkle Tree Integrity check mechanism will reveal itself once our implementation supports an even more profound query functionality. Currently, the functions of the smart Contract can be executed and the integrity of the needed data for them is checked but the correct execution of queries to the database can only be verified for the implemented proof-of-concept (queries for date range). The query completeness could be broadened to assured any query by the blockchain as well. This includes the smart Contract capabilities to check that the returned query results (by the database) were not modified, that the returned results match the query predicate, that the records that were not returned do not match the query predicate and that the sum of the two sets (returned and not returned) equals to the right amount of stored records.
 When it comes to benchmarking, it would be interesting to find a limit for the rows that can be checked in this way. Every number bigger than that one needs to cope with compromises concerning query completeness (e.g. only checking that all rows were considered and are part of the table but no actual value checking) because of the high costs and the off-chaining of data constraint.
 
-% (vincent) 
-% \subsection{Add a more user-friendly front-end for the auto off-chaining of smart contracts}
-% The user experience could be enhanced with an actual user interface for the user to interact with when she wants to create off-chained contracts, call other Smart Contract functions or have verified queries. Currently, this is done via Postman calls.
-
 \subparagraph{Make use of a more optimized database for Merkle Trees}
 One of the steps which were originally thought of was to integrate a specifically optimized database for the storing of our Merkle Tree structures, this in order to save on memory and processing within the flows which make use of the Merkle Tree.
 
@@ -76,6 +72,3 @@ A remote database (in place of the currently local one) can be integrated into t
 The database could sign the records it stored and the user may keep these as proof that the records once existed in the database (proof of existence, in case the database provider denies that the database ever knew about a record). (Jacob Eberhardt, Slide Deck Strategies, p. 7)
 
 We could optimize the calculation of proofs by placing variables which are used together as neighbours in the merkle tree. Thus, when calculating the merkle root / merkle proof we save on iterations as we can chop more parts of the tree away. Of course, this optimization has its limitation when certain variables get used together with multiple others in different functions. (This could also be done automatically with an AI)
-
-
-\newpage

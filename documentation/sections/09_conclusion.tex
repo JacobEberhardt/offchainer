@@ -2,6 +2,7 @@
 \subsection{Results and Progress}
 \subsubsection{State after the Midterm Presentation}
 \paragraph{General}
+
 The user with her local middleware can create a Smart Contract and only store a hash or hashes of the needed data there. The actual data is stored in a (relational) database. When the Smart Contract needs the data to e.g. execute one of its function (after the user called it), the database will provide it. Before actually using the provided data the Smart Contract performs an integrity check that the data was not modified in between (by the database or a middleman).
 
 %\paragraph{Implemented Integrity Check Mechanisms}
@@ -56,6 +57,3 @@ The Employee Use Case was showed during the midterm presentation. At this time i
 In this project we encouraged the necessity for off-chaining approaches to deal with limitations in the today’s blockchain developments, to broaden their usefulness and to reduce further usage costs. Taking into consideration our problem statement, by off-chaining data to a RDBMS while compromising blockchain properties as little as possible, we introduced an approach on how we can solve the problem at hand which makes sense for specific use cases. After numerous mentioned challenges during our experience in this project, we introduced two uses cases for moving computation and data off the blockchain, without compromising (or at least as possible) important blockchain properties, in particular, the trustlessness property.
 
 We anticipate that in the future blockchain systems will continue their development and enhance further concerning scalability and privacy issues by joining and implementing new concepts. Nevertheless, we keep considering off-chaining approaches to be crucial features in blockchain-based applications as they grant additional functionalities and possibly huge cost benefits.
-
-
-\newpage
