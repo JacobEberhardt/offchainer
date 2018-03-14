@@ -1,11 +1,11 @@
 \subsection{Benchmarking for Employee Use Case}
 (Maybe start text fancy with the questions which arise during the project: see the benchmarking google sheet for that)
 
-As already mentioned this project was carried out as a prototyping project. Therefore we need to benchmark our results against the current best practice. Current state of the art for deploying contracts to the ethereum blockchain includes saving all the state variables of the contract on the blockchain and thus on all machines participating in the blockchain. As proposed we want to save those state variables off from the blockchain and thus save on gas which explains why gas cost are our most important measurement.
+As already mentioned this project was carried out as a prototyping project. Therefore we need to benchmark our results against the current best practice. Current state of the art for deploying contracts to the Ethereum blockchain includes saving all the state variables of the contract on the blockchain and thus on all machines participating in the blockchain. As proposed we want to save those state variables off from the blockchain and thus save on gas which explains why gas cost are our most important measurement.
 
 %- What did we benchmark?
 %Explain which scenarios we did test (1 employee, multiple employee)
-We especially benchmarked the employee use case as the employee use case is the more complex one of our both use cases. As a preparation for benchmarking we first needed two different smart contracts. One smart contract that works completely on-chain without using any external database, hashing functions or merkle trees and another smart contract that uses all introduced methods that are needed in order to off-chain our data to an external database. The two variants behave completely similar except for the saving of the state variables. Both variants are completely functional and could be used as they are if someone would like to deploy the employee use case. These fact were very important to us because only like that we could make sure that our benchmarks lead to meaningful results. Within the employee use case we measured different scenarios which will be described in the corresponding sections, mainly a time measure as well as a simple and another complex measure for the gas cost have been made.
+We especially benchmarked the employee use case as the employee use case is the more complex one of our both use cases. As a preparation for benchmarking we first needed two different smart contracts. One smart contract that works completely on-chain without using any external database, hashing functions or Merkle trees and another smart contract that uses all introduced methods that are needed in order to off-chain our data to an external database. The two variants behave completely similar except for the saving of the state variables. Both variants are completely functional and could be used as they are if someone would like to deploy the employee use case. These fact were very important to us because only like that we could make sure that our benchmarks lead to meaningful results. Within the employee use case we measured different scenarios which will be described in the corresponding sections, mainly a time measure as well as a simple and another complex measure for the gas cost have been made.
 
 %Explain under which aspects we did benchmark (gas, time)
 %Mention again why gas is of utmost importance to us (because it translates to money and time)
@@ -25,11 +25,11 @@ First we will measure the introduced computation time of our application for exe
 %Thats a box plot chart
 As we measured the computation time multiple times we decided to unite the results into a box plot chart. Thus we can see how the system behaves most of the times and single outliers can easily be identified. Throughout our measurement we always compare the on-chained approach against the off-chained approach. Every single function got called multiple times and the results have been summed up into the corresponding box plot.
 
-For the \textit{employee contract} creation we can see the that the time differs by circa 50ms when comparing the on-chained approach to the off-chained approach. The on-chained approach needs about 400ms of computation time in the application while the off-chained approach needs 350ms. Both timings are negligible for us as the average block time of the ethereum blockchain is currently about 14 seconds [TODO: Need citation: https://etherscan.io/chart/blocktime]. Thus our application has more than enough time to compute a new transaction comparing nearly half a second against 14 seconds.
+For the \textit{employee contract} creation we can see the that the time differs by circa 50ms when comparing the on-chained approach to the off-chained approach. The on-chained approach needs about 400ms of computation time in the application while the off-chained approach needs 350ms. Both timings are negligible for us as the average block time of the Ethereum blockchain is currently about 14 seconds [TODO: Need citation: https://etherscan.io/chart/blocktime]. Thus our application has more than enough time to compute a new transaction comparing nearly half a second against 14 seconds.
 
 The \textit{payraise contract} creation needs about the same time for the on-chained as for the off-chained approach. Both need about 350ms of computation time and are negligible for the same reason as for the \textit{employee contract} creation. The same holds true for the \textit{add} functionality which takes even less time and thus the timing is negligible here as well.
 
-More interesting are the timing needs of the \textit{increase salary} functionality. We can easily see that the off-chained variant has a much higher variance than the on-chained variant and we have peeks in the computation time of up to one second. Hereby it is very important to mention that the time needed for the off-chained variant increases with the size of the employee dataset. This happens because for every added employee the \textit{increase salary} function needs to generate another transaction. As every transaction needs to be mined first the increased timing needs of our application are also negligible as what we see in our chart is the cumulated computation time for all transactions that happened during this function call. All of these transactions need to be mined within blocks of the ethereum blockchain which takes a lot longer, namely about 14 seconds currently, than the computation of our application. Plus, it could possibly happen that the single transactions will be divided on multiple blocks. Therefore the introduced timing needs of our application are also negligible for this function and additionally all measurements of the \textit{increase salary} function were less than a second which is quite fast.% maybe explain that the introduced overhead is somehow "virtual?"
+More interesting are the timing needs of the \textit{increase salary} functionality. We can easily see that the off-chained variant has a much higher variance than the on-chained variant and we have peeks in the computation time of up to one second. Hereby it is very important to mention that the time needed for the off-chained variant increases with the size of the employee dataset. This happens because for every added employee the \textit{increase salary} function needs to generate another transaction. As every transaction needs to be mined first the increased timing needs of our application are also negligible as what we see in our chart is the cumulated computation time for all transactions that happened during this function call. All of these transactions need to be mined within blocks of the Ethereum blockchain which takes a lot longer, namely about 14 seconds currently, than the computation of our application. Plus, it could possibly happen that the single transactions will be divided on multiple blocks. Therefore the introduced timing needs of our application are also negligible for this function and additionally all measurements of the \textit{increase salary} function were less than a second which is quite fast.% maybe explain that the introduced overhead is somehow "virtual?"
 
 %Everything under 1 second -> not relevant, no further measurements
 %Erwähnen dass es super ist, dass die middlewar keine extra zeiten introduced und genauso fix ist wie das normale.
@@ -39,7 +39,7 @@ As every function call in the off-chained approach does not introduce a real ove
 Measuring the gas needed for executing the functionalities of our smart contract is of utmost importance to us. The initial motivation for our prototype was to gain experience on whether it is possible to save on gas cost when off-chaining state variables from smart contracts. As we receive the used gas for each transaction within the JSON-response when we call the smart contract functions through our API endpoint we were able to extract different insights into the use of gas when on- or off-chaining.
 
 %And smth more in Figure \ref{fig:05_gas_cost_single}.
-In Figure \ref{fig:05_gas_cost_single} we visualized the used gas for calling single functions of our smart contract for the employee use case. Similarly to our time measurement we again measured the main functionalities of our smart contract and compared the on-chained variant with the off-chained variant.
+In Figure \ref{fig:05_gas_cost_single} we visualized the used gas for calling single functions of our smart contract for the employee use case. Similarly to our time measurement we again measured the main functionalities of our smart contract and compared the on-chained variant with the off-chained variant. The results of our analysis will be discussed now.
 
 \begin{figure}[t]
 \centering
@@ -47,21 +47,31 @@ In Figure \ref{fig:05_gas_cost_single} we visualized the used gas for calling si
 \caption{\label{fig:05_gas_cost_single}This is one employee.}
 \end{figure}
 
-%- employee creation more costy because overhead of functions for merkle tree (elaborate what exactly here)
+%- employee creation more costy because overhead of functions for Merkle tree (elaborate what exactly here)
 % 844906 - 714518 = 130388 gas,    130388 / 714518 = 18,25%
-%    results) in a future work which could be mmaking library identifies future work
-% abgesehen von leeren Listen 
+%    results) in a future work which could be making library identifies future work
+% besides from empty lists 
 %Say why we save and then in the end say that its constant and how much percentage-wise this translates to
 %Blabla could be optimized by making those functions libraries
-For the employee contract creation we can see that the off-chained variant needs about 130 thousand more gas than the on-chained variant. Both Smart Contracts do not save any state variables yet apart from empty lists for either hash values or employees, depending on the approach. The difference in the gas cost originates mainly from the added functions for the merkle tree proof and verification which were added to the smart contract for the off-chained approach. Thanks to this finding a new task for future work could be identified. Extracting the functions which are needed in order to iterate through the tree and verify the merkle proof into a library in the sense of Solidity would benefit the off-chaining approach. Calling functions of libraries in Solidity is in general very beneficial in terms of gas cost (TODO: better word than 'beneficial': Isn't it free?). Anyways the gas cost of the off-chained approach exceed the gas cost of the on-chained approach only by approximately 18\% which is rather minor. All in all, it can be said that the increased gas cost of the off-chained approach are negligible as the contract creation needs to be paid only once throughout the whole life cycle of the smart contract. Analyzing the offered functions of the smart contract is much more important as these will be called multiple times.
+For the employee contract creation we can see that the off-chained variant needs about 130 thousand more gas than the on-chained variant. Both smart contracts do not save any state variables yet apart from empty lists for either hash values or employees, depending on the approach. The difference in the gas cost originates mainly from the added functions for the Merkle tree proof and verification which were added to the smart contract for the off-chained approach. Thanks to this finding a new task for future work could be identified. Extracting the functions which are needed in order to iterate through the tree and verify the Merkle proof into a library in the sense of Solidity would benefit the off-chaining approach. Calling functions of libraries in Solidity is in general very beneficial in terms of gas cost (TODO: better word than 'beneficial': Isn't it free?). Anyways the gas cost of the off-chained approach exceed the gas cost of the on-chained approach only by approximately 18\% which is rather minor. All in all, it can be said that the increased gas cost of the off-chained approach are negligible as the contract creation needs to be paid only once throughout the whole life cycle of the smart contract. Analyzing the offered functions of the smart contract is much more important as these will be called multiple times.
 
 TODO: Check that this is really mentioned in our future work part.
 
-- payraise not changed (on-chained for both, thats why it is the same)
+%- payraise not changed (on-chained for both, thats why it is the same)
+The gas cost for the creation of the payraise contract do not differ from each other as both approaches use the same implementation for the payraise contract. The payraise contract holds very few information in his state variables which basically are information about the department for the payraise and a percentage value for the payraise. Off-Chaining this very small contract would not have made sense and thus it was kept as an on-chain approach because this contract is not very data intense.
 
-- on add we save xy gas because thats where off-chaining is stronk
+% - on add we save xy gas because thats where off-chaining is stronk
+% independent of data we always pay 43940, even if employee bigger or more fields blabla whatever, this is super constant which is huge
+% 146278 - 43940 = 102388,      43490 / 146278 = 30, 04% --> We save 70%
+% Comparing this to constant overhead is enormous because we save what we lost with only one call
+One of the most interesting functions of the smart contract is the add functionality. This is one of the main features of the employee contract which we expected to yield the biggest opportunity to save on gas cost. Our measurements confirmed our expectations as we save approximately 102 thousand gas on each call of the add functionality which translates to a save of about 70\%. An important thing to mention at this point is that the gas cost of 43940 for the off-chained add functionality are constant because that is the gas cost for saving one root hash in a smart contract. So independent of how big the employee data item looks like, so independent whether it uses very long or short names, we will always only need to pay the constant 43940 gas for storing the hash of this record. This would also hold true if there were multiple new variable fields added to employee records in general. Comparing the savings of the add functionality to the introduced overhead when saving employee contracts where we needed to pay about 130 thousand gas more lets the overhead look very small because by adding only one employee we nearly balanced this overhead out. Bigger savings could be achieved by adding multiple employees which represents a normal use case.
+
+% 145591 - 54249 = 91342,   145591 / 54249 = 268,38% :'(
+Another very important function is the \textit{increase salary} functionality of the employee contract. We can see that the gas cost for increasing the salary of a single employee raises by approximately 91 thousand gas for the off-chained approach.
 
 - increase salary we loose because [.....] only one field, multiple transactions, elaborate on possible alternatives like functions that would change multiple strings etc etc
+
+mention all or nothing approach (can be either off-chained completely or on-chained completely)
 
 And yet smth more in Figure \ref{fig:05_gas_cost_ten}.
 
@@ -70,7 +80,6 @@ And yet smth more in Figure \ref{fig:05_gas_cost_ten}.
 \includegraphics[width=1.0\textwidth]{images/05_evaluation/05_gas_cost_ten.png}
 \caption{\label{fig:05_gas_cost_ten}This is ten employees.}
 \end{figure}
-
 
 
 - Insert graphics / statistics
@@ -92,5 +101,7 @@ Do we really save gas?
 - Know your use case!
 
 - Give pay-raise as example for when off-chaining makes no sense (we kept it on-chain)
+
+- Make function names cursive (textit)
 
 -> Conclude on that
