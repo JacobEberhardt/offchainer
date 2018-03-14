@@ -5,14 +5,14 @@ In companies large amounts of data records are retrieved and modified each day. 
 
 This challenge can be tackled by using blockchain technologies. Storing data in the blockchain can guarantee the integrity of your data at all time. Although it gives you many other advantages, storing data, especially large amounts of data, on the blockchain can be very expensive.
 
-The task of this project is to find ways to guarantee the integrity of data stored in a RDBMS with the help of Smart Contracts. The general idea is to perform integrity checks on data in the Smart Contract, whenever data is required to perform any transaction. To show the practical relevance of this approach realistic uses cases have to be found and developed. The use cases shall show the potential benefit of storing large amounts of data off-chain but still being able to guarantee the integrity of the data. This is always the case when it comes to financial or personal/contract data.
+The task of this project is to find ways to guarantee the integrity of data stored in a RDBMS with the help of smart contracts. The general idea is to perform integrity checks on data in the smart contract, whenever data is required to perform any transaction. To show the practical relevance of this approach realistic uses cases have to be found and developed. The use cases shall show the potential benefit of storing large amounts of data off-chain but still being able to guarantee the integrity of the data. This is always the case when it comes to financial or personal/contract data.
 
-In the first step specific requirements for the uses cases have to be formulated. For the first use cases very complex examples may not be feasible at this project stage. The idea is to generate simple uses cases first, apply these to the current prototype implementation, test them in terms of performance and efficiency and show ways to further develop the use cases as well as apply different integrity mechanisms based on the results of the tests.
+Throughout the implementation process in this project, we have always been coming up with use cases, and iterate over it to produce a more relateable and complex use cases. The idea is to generate simple uses cases first, apply these to the current prototype implementation, test them in terms of performance and efficiency and show ways to further develop the use cases as well as apply different integrity mechanisms based on the results of the tests.
 
-In the second part, two different use cases are presented, which were developed during discussions with the project team. The uses cases should represent a real case scenario and highlight the need for off-chaining data.
+In the end, we have come up with two different use cases, produced through our feedback sessions and discussions as a group. The uses cases should represent a real case scenario and highlight the need for off-chaining data.
 
-\subsubsection{Requirements}
-The following points should summarize the requirements for the first use cases. As mentioned before, the developed uses cases should still be feasible and integratable with the current prototype implementation. Also too complex examples might lead to reaching the resource limit (gas limit) quickly without having implemented efficient integrity mechanisms.
+\subsubsection{Properties}
+The following points should summarize the properties of our use cases. As mentioned before, the developed uses cases should still be feasible and integratable with the current prototype implementation. 
 
 \begin{itemize}
 \item Multiple Columns:
@@ -22,10 +22,18 @@ In the current project stage, the Use Cases should use only one table each. Mult
 \item Big Data:
 In real world examples large numbers of data records are stored and evaluated every day. Our use cases should consider real world examples, where a large amount of data is required. With the current prototype implementation and the posed constraints by the Ethereum network, a large number of data records could hit the gas limit very quickly. Therefore, the number of data records should be limited to a defined number.
 \item Different Scenarios:
-For presentation purposes, the two use cases should not only use different data types but also do different things with the acquired data. For now we agreed on two different scenarios: 1. Check only (integrity check) and 2. Check and Modify (also update data).
+For presentation purposes, the two use cases should not only use different data types but also do different things with the acquired data. 
 \end{itemize}
 
-% VINCENT - I edit this out, because the general scenarios are moved to architecture.
+% Vincent - Same comment as below.  
+
+% Intially, we started with a very straight forward use case which acts as a proof-of-concept to incorporate the off-chaining approach with all of its mechanisms. 
+
+% In the first step specific requirements for the uses cases have to be formulated. For the first use cases very complex examples may not be feasible at this project stage. 
+
+% For now we agreed on two different scenarios: 1. Check only (integrity check) and 2. Check and Modify (also update data).
+
+% Vincent - I edit this out, because the general scenarios are moved to architecture.
 % In the next chapters, we will discuss the two different scenarios and the specific use case for each scenario.
 
 % \subsubsection{Scenarios - Use Cases}
