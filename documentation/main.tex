@@ -1,41 +1,88 @@
-\documentclass[a4paper]{scrreprt}
+\documentclass[paper=a4, fontsize=12pt, headinclude, twoside=false, parskip=half+, numbers=noenddot, open=right, toc=bibliography]{scrreprt}
 
-%% Language and font encodings
-\usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
+% PDF parameters
+\pdfminorversion=7
+\pdfobjcompresslevel=1
+
+% Encoding
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{float}
+\usepackage[english]{babel}
+\usepackage[autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
 
-%% Sets page size and margins
-\usepackage[a4paper, top=3cm, bottom=2cm, left=3cm, right=3cm, marginparwidth=1.75cm]{geometry}
+% Values
+\newcommand{\thetitle}{Off-chaining Smart Contract Data to RDBMS}
+\newcommand{\theauthors}{Simon Fallnich, Patrick Friedrich, Tarek Higazi, Vincent Jonany, Dukagjin Ramosaj, Kevin Marcel Styp-Rekowski, Thanh Tuan Tenh Cong}
 
-%% Useful packages
+% Verlinkungen
+\usepackage[colorlinks=false, pdfborder={0 0 0}, breaklinks=true]{hyperref}
+
+% PDF Metainformationen
+\hypersetup{
+	pdftitle={\thetitle},
+	pdfauthor={\theauthors},
+	pdfsubject={},
+	pdfkeywords={},
+	pdfcreator={},
+	pdfproducer={}
+}
+
+% Font
+\usepackage{lmodern}
+
+% Margins
+\usepackage{geometry}
+\geometry{top=30mm, left=20mm, right=20mm, bottom=30mm}
+
+% Spacing
+\usepackage{setspace}
+\linespread{1.3}
+
+% Headings
+\setkomafont{chapter}{\Huge\rmfamily}
+\setkomafont{section}{\Large\rmfamily}
+\setkomafont{subsection}{\large\rmfamily}
+\setkomafont{subsubsection}{\large\rmfamily}
+\setkomafont{chapterentry}{\large\rmfamily}
+\setkomafont{descriptionlabel}{\bfseries\rmfamily}
+\setkomafont{captionlabel}{\small\bfseries}
+\setkomafont{caption}{\small}
+
+% Heading spacing
+\renewcommand{\chapterheadstartvskip}{}
+
+% Header and footer
+\usepackage[automark]{scrpage2}
+
+% TOC style
+\usepackage{scrhack}
+\usepackage{tocstyle}
+\usetocstyle{standard}
+\setcounter{tocdepth}{2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dependencies
+
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{listings}
 \usepackage{enumitem}
 
-\setcounter{tocdepth}{4}
-\setcounter{secnumdepth}{4}
-
-\title{Off-chaining Smart Contract Data to RDBMS}
-\author{Thanh Tuan Tenh Cong, 
-Simon Fallnich,
-Patrick Friedrich,
-Tarek Higazi,\\
-Vincent Jonany,
-Dukagjin Ramosaj,
-Kevin Marcel Styp-Rekowski}
-
 \begin{document}
 
-	\maketitle
+	\renewcommand*{\chapterpagestyle}{empty}
+	\pagestyle{empty}
+	\input{title}
 
 	\input{chapters/00_abstract}
 
 	\tableofcontents
+	\clearpage
+
+	\renewcommand*{\chapterpagestyle}{plain}
+	\pagestyle{useheadings}
+	\setcounter{page}{1}
 
 	\input{chapters/01_introduction}
 	\input{chapters/02_background}
