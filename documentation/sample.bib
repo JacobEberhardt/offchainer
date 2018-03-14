@@ -26,6 +26,36 @@ doi="10.1007/978-3-319-67262-5\_1",
 url="https://doi.org/10.1007/978-3-319-67262-5\1"
 }
 
+@Article{Martel2004,
+author="Martel, Charles
+and Nuckolls, Glen
+and Devanbu, Premkumar
+and Gertz, Michael
+and Kwong, April
+and Stubblebine, Stuart G.",
+title="A General Model for Authenticated Data Structures",
+journal="Algorithmica ",
+year="2004",
+month="May",
+day="01",
+volume="39",
+number="1",
+pages="21--41",
+abstract="Query answers from on-line databases can easily be corrupted by  hackers or malicious database publishers. Thus it is  important to provide mechanisms which allow clients to trust the  results from on-line queries.  Authentic publicationallows untrusted publishers to answer securely queries  from clients on behalf of trusted off-line data owners.  Publishers  validate answers using hard-to-forge verification  objects VOs), which clients can check efficiently.  This approach  provides greater scalability, by making it easy to add more publishers, and better  security, since on-line publishers do not need to be trusted.To make authentic publication attractive, it is important for theVOs to be small, efficient to compute, and efficient to verify.This has lead researchers to develop independently  several different schemes forefficient VO computation based on specific data structures.Our goal is to develop a unifying framework for these disparate results, leading to a generalized security result. In this paper we characterizea broad class of data structures which we call  Search DAGs, andwe develop a generalized algorithm for the construction of VOs forSearch DAGs. We prove that the VOs thus constructed are secure,and that they are efficient to compute and verify.We demonstrate how this approach easily captures existing work onsimple structures such as binary trees, multi-dimensional range trees,tries, and skip lists. Once these are shown to be Search DAGs, therequisite security and efficiency results immediatelyfollow from our general theorems.Going further, we also use Search DAGs to produce and prove the security of authenticated versions of two complex data models for efficient multi-dimensional range searches. This allows efficient VOs to be computed (size O(log N + T)) for typical one- and two-dimensional range queries, where the query answer is of size T and the database is of size N.We also show I/O-efficient schemes to construct the VOs.  For a system with diskblocks of size B, we answer one-dimensional and three-sided range queries and computethe VOs with O(logB N + T/B) I/O operations using linear sizedata structures.",
+issn="1432-0541",
+doi="10.1007/s00453-003-1076-8",
+url="https://doi.org/10.1007/s00453-003-1076-8"
+}
+
+@article{kundu2012hashing,
+  title={On Hashing Graphs.},
+  author={Kundu, Ashish and Bertino, Elisa},
+  journal={IACR Cryptology ePrint Archive},
+  volume={2012},
+  pages={352},
+  year={2012}
+}
+
 @article{nakamoto2008bitcoin,
   title={Bitcoin: A peer-to-peer electronic cash system},
   author={Nakamoto, Satoshi},
@@ -241,12 +271,14 @@ journal={Truffle Suite}
 
 @misc{relatedWork39, title={Ethereum Development}, url={https://github.com/ethereum/wiki/wiki/Ethereum-Development-Tutorial}, journal={Ethereum/GitHub}, publisher={Ethereum}}
 
-@misc{relatedWork40, title={MarketCap}, howpublished = {\url{https://coinmarketcap.com}}, note = {Accessed: 2018-10-08}}
+@misc{relatedWork40, title={MarketCap}, howpublished = {\url{https://coinmarketcap.com}}, note = {Accessed: 2018-03-10}}
 
 @misc{futureWork01,
   title = { Oraclize Documentation - Encrypted Queries },
   howpublished = {\url{http://docs.oraclize.it/#ethereum-advanced-topics-encrypted-queries}},
   note = {Accessed: 2018-03-08}
 }
+
+@misc{futureWork02, title={JRFC 20 - Merkle DAG}, howpublished = {\url{https://github.com/jbenet/random-ideas/issues/20}, publisher={jbenet}, note = {Accessed: 2018-03-12}}}
 
 @misc{etherscan_blocktime, title={Ethereum Average BlockTime Chart}, url={https://etherscan.io/chart/blocktime}, journal={Etherscan}, publisher={Etherscan}}
