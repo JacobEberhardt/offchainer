@@ -59,7 +59,28 @@
 \usepackage{scrhack}
 \usepackage{tocstyle}
 \usetocstyle{standard}
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{1}
+
+\newcommand{\chapternames}[1]{
+	\vspace*{-3em}
+	\textsc{#1}
+	\vspace*{2em}
+
+}
+
+\newcommand{\sectionnames}[1]{
+	\vspace*{-1.5em}
+	\textsc{#1}
+	\vspace*{0.5em}
+
+}
+
+\newcommand{\subsectionnames}[1]{
+	\vspace*{-1.2em}
+	\textsc{#1}
+	\vspace*{0.2em}
+
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dependencies
@@ -75,6 +96,8 @@
 	\pagestyle{empty}
 	\input{title}
 
+	\addchap{Abstract}
+	\chapternames{}
 	\input{chapters/00_abstract}
 
 	\tableofcontents
