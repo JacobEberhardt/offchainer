@@ -8,7 +8,7 @@ src/blockchain/build
 
 documentation/*
 !documentation/main.tex
-!documentation/sections/
+!documentation/chapters/
 !documentation/sample.bib
 !documentation/frog.jpg
 !documentation/images/
