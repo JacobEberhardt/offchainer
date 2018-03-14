@@ -7,7 +7,7 @@ The current implementation of the “Translator” is at its proof-of-concept st
 
 \subsection{Implemented Smart Contracts offered as library for other developers}
 \subparagraph{Library}
-The functionalities of our developed off-chaining solution could be included in Ethereum as a library living on the blockchain. Every developer could make use of these in her Smart Contract then. The library functions could for example include our implemented integrity check mechanisms (e.g. multi-row and multi-column Merkle Tree, compatible with Web3.js) and off-chaining concept (with e.g. events, also general setup for avoiding gas costs through storage).
+The functionalities of our developed off-chaining solution could be included in Ethereum as a library living on the blockchain. Every developer could make use of these in her Smart Contract then. The library functions could for example include our implemented integrity check mechanisms (e.g. multi-row and multi-column Merkle Tree, compatible with Web3.js) and off-chaining concept (with e.g. events, also general setup for avoiding gas costs through storage). We hope that by paying the constant gas cost to publish these functions developers can save when they create their contracts on the blockchain by simply using the already existing functions of the library, thus effectively lowering their used gas.
 
 \subparagraph{Smart Contract to inherit from}
 In addition to (or possibly instead of) the library we could provide the Smart Contract as an entity living on the Ethereum blockchain that developers could have their Smart Contracts inherit from and thus include the functions and structure of our implemented off-chaining solution.
