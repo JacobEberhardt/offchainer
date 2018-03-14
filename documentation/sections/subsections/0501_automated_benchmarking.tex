@@ -8,10 +8,14 @@
 %Moccha, supertest (-> using test frameworks)
 %Writing to .csv file
 %.csv can then later be used to generate statistics
-We automated the process of benchmarking within our system. Thus we achieved a repeatable, fast and reusable way to evaluate our application with different small changes to our contracts.
+We automated the process of benchmarking within our system. 
+Thus, we achieved a repeatable, fast and reusable way to evaluate our application with different small changes to our contracts.
 
-As our application gets accessed through API routes this was the most natural point to call when automating our benchmarking. Also in the JSON response of those API calls we receive information about gas costs of the transaction and the time needed for the computation that happened within our application.
+As our application gets accessed through API routes, this was the most natural point to call when automating our benchmarking. 
+Also, in the JSON response of those API calls we receive information about the gas costs of the transaction and the time needed for the computation that happened within our application.
 
-The automatization was realized using the npm packages ``mocca'' and ``supertest''. These packages represent a test framework for JavaScript where it is possible to define test sets which contain multiple test cases. Also it enables us to call our express-application through the defined routes.
+The automatization was realized using the npm packages ``mocca'' and ``supertest''. 
+These packages represent a test framework for JavaScript, where it is possible to define test sets which contain multiple test cases.
+ Moreover, it enables us to call our express-application through the defined routes.
 
-After extracting the gained insights about our application and the behaviour of our contracts we save the findings into a CSV-file which can later easily be used to generate statistics about our findings.
+After extracting the gained insights about our application and the behaviour of our contracts, we save these results into a CSV-file which can later easily be used to generate statistics about our results.
