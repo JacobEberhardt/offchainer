@@ -1,6 +1,6 @@
 \section{Architecture}
 
-This section aims to give a broad view of the components and how all of them work together to satisfy the needs of our prototype. A more detailed explanation for each component will be discussed in section \ref{sssec:technologies}.
+This section aims to give a broad view of the components and how all of them work together to satisfy the needs of our prototype. 
 
 \begin{figure}[t]%evtl:[t] [!htbp]
 	\centering
@@ -16,7 +16,7 @@ As seen in Figure \ref{fig:architecture}, we have divided our architecture into 
 \end{itemize}
 
 \subparagraph{Client Side}
-The client side consists of the client side application, and the Ethereum node. The client side application is the biggest component as it bridges the database and the smart contract in the Ethereum node. Currently, we put trust into the client side to a certain extent. The extent of trust varies depending on the use case, but nevertheless, a certain level of trust has to exist. For example, upon insertion of new data, before any data goes into the smart contract to be processed, we trust that the client side application will not alter the values. This assumption also acts as a temporary solution to the problem which we have encountered in performing heavy computations inside the smart contract. This assumption has allowed us to take the computational burden from smart contract to the client side application. This problem and solution will be explained in more details in <this section, core implementation stratey>.
+The client side consists of the client side application, and the Ethereum node. The client side application is the biggest component as it bridges the database and the smart contract in the Ethereum node. Currently, we put trust into the client side to a certain extent. The extent of trust varies depending on the use case, but nevertheless, a certain level of trust has to exist. For example, upon insertion of new data, before any data goes into the smart contract to be processed, we trust that the client side application will not alter the values. This assumption also acts as a temporary solution to the problem which we have encountered in performing heavy computations inside the smart contract. This assumption has allowed us to take the computational burden from smart contract to the client side application. This problem and solution will be explained in more details in section \ref{subsec:approach-implementation-client}.
 
 \subparagraph{Blockchain Environment}
 The blockchain environment is the decentralized network where the smart contract and its local data are going to ultimately live in. The blockchain decentralized network is trustless. But what it truly means is that the trust is distributed amongst all nodes in the network. It also means that we do not enforce an external institution to make sure that the smart contract and its local data are accurate and consistent (integrity). The environment itself ensures the integrity of the data.
