@@ -20,7 +20,7 @@ The other huge blocker which we encountered includes the inconsistency of the da
 
 The solutions mentioned are not the best, as our implementation becomes very complex and dirty; we have to pad 64 hex characters to the left of the input in order to match the representation of the uint256 variable in Solidity before hashing it using Web3.js. Fortunately, we found a third party library which provides a SHA-3 (keccak) function that matches the characteristics of the function in Solidity. <https://web3js.readthedocs.io/en/1.0/web3-utils.html> It allows us to state the exact Solidity data type that we want to hash it as, and it also takes care of the appending and the removal of the extra ‘0x’ hex characters of the hash results.
 
-\subsubsection*{Revert}
+\subsubsection*{Rollback}
 
 The client side application is also responsible for reverting the previous smart contract transaction in case of any error when updating the results into the database, such as a new computed root hash from the smart contract. In case of error, the client side application will create a new transaction for the smart contract and revert it to the previous stored root hash.
 
