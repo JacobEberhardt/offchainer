@@ -84,6 +84,25 @@
 
 }
 
+% References
+\usepackage[backend=biber,
+			style=authoryear,
+			autocite=inline,
+			giveninits=true,
+			dashed=false,
+			maxcitenames=2,
+			maxnames=2,
+			maxbibnames=99,
+			uniquename=false,
+			uniquelist=false]{biblatex}
+\addbibresource{bibliography.bib}
+\DefineBibliographyStrings{english}{andothers = {{et\,al\adddot}}} % et al. statt u.a.
+\setlength{\bibitemsep}{0.5em}
+\input{bibconfig.tex}
+
+% Überschrift Literaturverzeichnis
+\DefineBibliographyStrings{english}{bibliography={References}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dependencies
 
@@ -143,7 +162,6 @@
 	\input{chapters/08_project_organization}
 	\input{chapters/09_conclusion}
 
-	\bibliographystyle{unsrt}
-	\bibliography{sample}
+	\printbibliography
 
 \end{document}
