@@ -2,7 +2,7 @@
 
 %- What did we benchmark?
 %Explain which scenarios we did test (1 employee, multiple employee)
-We chose to benchmark the employee use case in particular, as the employee use case is the more complex one of our two use cases.
+We chose to benchmark the employee use case in particular, as the employee use case is the more complex of our two use cases.
 As a preparation for benchmarking we first needed two different smart contracts.
 One smart contract that works completely on-chain without using any external database, hashing functions or Merkle trees and another smart contract that uses all of the introduced methods that are needed in order to off-chain our data to an external database.
 The two variants behave completely similarly, except for the saving of the state variables.
@@ -15,7 +15,7 @@ Within the employee use case we measured different scenarios which will be descr
 %Explain the thing with benchmarking only the overhead due to automining of ganache
 %We mainly benchmarked the two measurements gas cost and time.
 Gas cost was the initial motivation for off-chaining, as we expected to save on gas costs when we off-chain the state variables.
-Gas cost translates to real currency as a participant of the blockchain either needs to buy Ether or by mining blocks and as a reward from the network receiving Ether which is needed to pay for the resulting gas cost of a transaction.
+Gas cost translates to real currency as a participant of the blockchain either needs to buy Ether or receive it by mining blocks and as a reward from the network, which is needed to pay for the resulting gas cost of a transaction.
 Time measurement was done since we wanted to gain insights into how much overhead our application adds to a normal blockchain application.
 This was possible as our technology stack includes ganache, which is capable of automatically mining new transactions into new blocks instantly, so that we are able to measure only the overhead that our application introduces.
 
@@ -85,7 +85,7 @@ The results of our analysis will be discussed below.
 %Blabla could be optimized by making those functions libraries
 For the \textit{employee contract} creation we can see that the off-chained variant needs about 130 thousand more gas than the on-chained variant.
 Both smart contracts do not save any state variables apart from empty lists for either hash values or employees, depending on the approach.
-The difference in the gas cost originates mainly from the added functions for the Merkle tree proof and verification which were added to the smart contract for the off-chained approach.
+The difference in the gas costs originates mainly from the added functions for the Merkle tree proof and verification which were added to the smart contract for the off-chained approach.
 As a result, a new task for future work could be identified.
 Extracting the functions which are needed in order to iterate through the tree and verify the Merkle proof into a library in the sense of Solidity would benefit the off-chaining approach.
 Calling functions of libraries in Solidity is in general very beneficial in terms of gas cost.
@@ -95,7 +95,7 @@ Analyzing the offered functions of the smart contract is much more important as 
 
 %- payraise not changed (on-chained for both, thats why it is the same)
 The gas costs for the creation of the \textit{payraise contract} do not differ from each other as both approaches use the same implementation for the payraise contract.
-The payraise contract holds very little information in its state variables which basically are information about the department for which the payraise is relevant and a percentage value for the payraise.
+The payraise contract holds very little information in its state variables which are basically information about the department for which the payraise is relevant and a percentage value for the payraise.
 Off-chaining this very small contract would not have made sense and thus, it was kept as an on-chain approach because this contract is not very data intense.
 
 % - on add we save xy gas because thats where off-chaining is stronk
@@ -120,7 +120,7 @@ The on-chained variant only needs to iterate through its locally saved employees
 Raising the salary translates into saving a new integer variable as a state variable of the smart contract which in comparison to the off-chain approach is rather cheap in terms of gas costs.
 The off-chained approach however sends the integer field for the salary of the employee together with a complete Merkle proof for verifying the integrity of this salary field.
 The smart contract would then need to start its computations by verifying the integrity of the received employee, respectively the salary of the employee.
-The overhead introduced by this behavior explains the risen gas cost for the off-chained approach.
+The overhead introduced by this behavior explains the risen gas costs for the off-chained approach.
 
 Introducing more functionalities would make the evaluation even more complex.
 One could think of a new function that would modify multiple string fields of the employee, which would create the need to pay for the newly saved string fields.
@@ -143,7 +143,7 @@ The results for the cumulative gas costs of this benchmark are visualized in Fig
 \end{figure}
 
 % 1333476 - 439400 = 894076,   439400 / 1333476 = 32,95% -> 67%
-When adding 10 employees to the employee contract, we can see that the overall saving on gas was approximately 894 thousand gas.
+When adding 10 employees to the employee contract, we can see that the overall saving on gas was approximately 894000 gas.
 Also, we see that the off-chained approach needed exactly 439400 gas which is exactly ten times the constant gas cost for adding a single root hash to the smart contract, which aligns with our thoughts on that.
 The cumulative gas costs for the on-chained approach are put together by slightly differing gas costs for each add call as we used different data for the added employees so the single add values would fluctuate.
 
@@ -175,12 +175,12 @@ There are plenty of use cases for which this is true.
 %When does Off-Chaining make sense?
 %- Give pay-raise as example for when off-chaining makes no sense (we kept it on-chain)
 In general, we can say that off-chaining makes sense especially when smart contracts use mainly large state variables and functions which change large or many variables in the state of the smart contract.
-For smaller contracts which do not save a lot of variables, or are rather of a computationally intense, off-chaining does not make sense as it would introduce an unnecessary overhead.
+For smaller contracts which do not save a lot of variables, or are rather computationally intense, off-chaining does not make sense as it would introduce an unnecessary overhead.
 We can see an example for that in the payraise contract.
-As this contract was so small we did not off-chain it as this would have introduced a bigger overhead due to the Merkle proof and verification.
+Since this contract was so small we did not off-chain it as this would have introduced a bigger overhead due to the Merkle proof and verification.
 
 %- Later on say how our measurements can be compared to the financials use case (cut out the increase-salary basically)
-Comparing the measurements for the employee use case to the financial use case, we can say that the results would probably have been very similar as the financials use case has similar structure compared to the employee use case.
+Comparing the measurements for the employee use case to the financial use case, we can say that the results would probably have been very similar as the financials use case has a similar structure when compared to the employee use case.
 In the financials use case we save a lot of financial data so we would probably also save on the \textit{add} functionality, but the verification of the financial records would be conducted offline and not on the blockchain.
 This is why an evaluation of the financials use case would look very similar to the evaluation of the employee use case with the main difference of not gaining the insights we gained when analyzing the \textit{increase salary} function as the financials use case has no equivalent for this function.
 
