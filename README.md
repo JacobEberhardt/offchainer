@@ -1,5 +1,5 @@
 # Offchainer
-A system for trustless data exchange between Smart Contract and RDBMS.
+A system for trustless data exchange between smart contracts and RDBMS.
 
 ## Documentation
 We provide a documentation which describes the details of this project ([PDF](https://github.com/simonfall/offchainer/blob/develop/documentation/offchainer.pdf)).
