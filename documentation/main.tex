@@ -61,7 +61,7 @@
 \usepackage{scrhack}
 \usepackage{tocstyle}
 \usetocstyle{standard}
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 
 \newcommand{\chapternames}[1]{
 	\vspace*{-3em}
@@ -97,18 +97,23 @@
 
 	\renewcommand*{\chapterpagestyle}{empty}
 	\pagestyle{empty}
+	\pagenumbering{Roman}
 	\input{title}
 
-	\addchap{Abstract}
+	\addchap*{Abstract}
 	\chapternames{Simon Fallnich}
 	\input{chapters/00_abstract}
 
 	\tableofcontents
 	\clearpage
 
+	\pagenumbering{roman}
 	\renewcommand*{\chapterpagestyle}{plain}
+	\listoffigures
+	\clearpage
+
 	\pagestyle{useheadings}
-	\setcounter{page}{1}
+	\pagenumbering{arabic}
 
 	\input{chapters/01_introduction}
 	\input{chapters/02_background}
