@@ -88,7 +88,7 @@
 			\label{fig:merkle-tree-proof}
 		\end{figure}
 
-		A \emph{Merkle} tree, or \emph{hash tree}, is a tree in which every leaf node stores the hash of a data block and every non-leaf node stores the hash of the hashes of its children \cite{merkle1987}.
+		A \emph{Merkle} tree, or \emph{hash tree}, is a tree in which every leaf node stores the hash of a data block and every non-leaf node stores the hash of the concatenated hashes of its children \cite{merkle1987}.
 		This structure enables efficient, partial integrity checks on large data sets.
 			
 		\autoref{fig:merkle-tree} shows a binary Merkle tree with five leaves.
