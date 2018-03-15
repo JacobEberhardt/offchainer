@@ -6,15 +6,17 @@ An external auditor wants to check the financial situation of a company. One tas
 
 This use case consists of two parties, a financial auditor and the company that holds the financial data. An assumption that we make is that the middleware is open-sourced, produced by an auditing company, and it is being consumed by the company to store their financial data in the blockchain environment. The middleware allows the company to off-chain their financial records from the smart contract into a database, while maintaining the integrity of the data using the blockchain environment. The middleware also allows the auditor to easily audit companies’ financial records without having to worry about the integrity of data once they are appended. It also allows the auditor to query the financial records with a filter, such as the date of the records, performing query completeness. The middleware however does not allow users to edit the records through the middleware, though it is possible to do it on the database directly, which will then result in an integrity check error when the records are used or verified by the auditor.
 
-\textit{Example: A Sales Table}
-\begin{center}
+
+\begin{table}
+	\centering
+	\caption{An Example of a Sales Table}
     \begin{tabular}{| l | l | l | l | l |}
     \hline
     ID & Product & Date & Amount & Price \\ \hline
     1 & Wallet & 20171230 & 1 & 20 \\ \hline
     .. & ... & .... & .. & ... \\ \hline
     \end{tabular}
-\end{center}
+\end{table}
 
 The different table rows represent moments in time (e.g. every Friday night after 00:00 or every first of the month) and thus new records are appended to the table. In this way, the records can be tracked back in time and an auditor could double-check the records for e.g. the last 6 months or the last 104 weeks. The smart contract entry then consists of the root hash over every table row (with each column being a leaf in the Merkle tree).
 
@@ -37,9 +39,9 @@ Merkle tree is used here when a column, or multiple column values are changed in
 
 For the Merkle tree implementation, there is no need to implement a new one or change the existing one, as we can use the Multiple Item Proof here (note: an item here will correspond to a row, not a column).
 
-Append row - Steps:
+These are the implemented steps for appending a row into the database: 
 \begin{enumerate}
-	\item First, the client side application gets all the data from the Database.
+	\item First, the client-side application gets all the data from the Database.
 	\item It then creates the proof and sends it to the smart contract.
 	\item The smart contract does the integrity check.
 	\item Then the new total values are calculated.
@@ -47,7 +49,7 @@ Append row - Steps:
 	\item It then recreates the tree with that new roothash from the total row, and the hash of the newly added item row.
 	\item Store the new root hash of the whole table.
 	\item Send back the total row with its root hash, and the root hash of the added row.
-	\item Client side application receives it, and stores it into the database. 
+	\item Client-side application receives it, and stores it into the database. 
 \end{enumerate}
 
 \subparagraph{Realization}
@@ -76,14 +78,15 @@ Alternatively, we can verify that all results from the database match the query 
 
 The above statements show that there is a clear trade-off between achieving query completeness and this project’s goal of saving gas costs by off-chaining data. Either practically all data has to be stored on-chain to enable our smart contract to guarantee query completeness, or a plethora of computations (Merkle proofs for each row in the data table) have to be on-chained which would hit the gas limit relatively fast.
 
-As we are facing the challenge described previously, we decided to implement our proof-of-concept for query completeness by adding assumptions to make it feasible and easier for testing for large amount of data: building on our initial assumption that we trust our client side application, we calculate the Merkle proofs on the client side and thus save a considerable amount of computation on-chain. Nevertheless, the smart contract will still have to check the integrity of the data and perform a simplified query to guarantee query completeness. We also only allow the "date" column to be used in the query in this proof-of-concept.
+As we are facing the challenge described previously, we decided to implement our proof-of-concept for query completeness by adding assumptions to make it feasible and easier for testing for large amount of data: building on our initial assumption that we trust our client-side application, we calculate the Merkle proofs on the client side and thus save a considerable amount of computation on-chain. Nevertheless, the smart contract will still have to check the integrity of the data and perform a simplified query to guarantee query completeness. We also only allow the "date" column to be used in the query in this proof-of-concept.
 
 \subparagraph{Proof of Concept}
 
-This section describes the step-by-step actions between our client side application, smart contract and the database. The proof of concept includes the implementation of appending a new financial row, and query completeness.
+This section describes the step-by-step actions between our client-side application, smart contract and the database. The proof of concept includes the implementation of appending a new financial row, and query completeness.
 
-\textit{Example: This table shows how the records are stored in the database, assuming all data here are appended through the smart contract.}
-\begin{center}
+\begin{table} 
+	\centering
+	\caption{A Representation of How the Records Are Stored in the Database}
     \begin{tabular}{| l | l | l | l | l | l | l | l |}
     \hline
     ID & company\_name & roothash & total\_sales & date & cogs & sc\_id & ... \\ \hline
@@ -92,9 +95,11 @@ This section describes the step-by-step actions between our client side applicat
     3 & CompanyAB & 0x321 & 3000 & 20170601 & 222 & 2 & .. \\ \hline
     4 & CompanyAB & 0x789 & 9000 & 20180130 & 980 & 3 & .. \\ \hline
     \end{tabular}
-\end{center}
+	\label{table:recordsOffChain}
+\end{table}
 
-\textbf{\textit{Appending A Financial Row}}
+\subparagraph{Appending A Financial Row Steps}
+Below shows the implemented step by step actions when a user requests to append a new row into the records. Figure \ref{fig:appendRowFinancials} shows the activity diagram of the steps described below: 
 
 \begin{figure}[h]
 	\centering
@@ -104,15 +109,16 @@ This section describes the step-by-step actions between our client side applicat
 
 \begin{enumerate}
 	\item User appends a new financial data, providing all the required information to be in the database
-	\item Client side application then creates a Merkle tree from the given raw data
+	\item Client-side application then creates a Merkle tree from the given raw data
 	\item Sends the root hash of the created Merkle tree to the smart contract
 	\item Smart contract appends that new root hash into its local mappings.
 	\item Smart contract increments the new length of the mapping, which is the smart contract ID that is going to be returned. This acts as an identifier to which hash belongs to which financial row. It is also used to preserve the ordering of the hashes which will later be used for query completeness.
-	\item Smart contract sends back the smart contract ID to the client side application
-	\item Client side application saves the raw financial data, with the root hash, and the smart contract ID in the database.
+	\item Smart contract sends back the smart contract ID to the client-side application
+	\item Client-side application saves the raw financial data, with the root hash, and the smart contract ID in the database. (See also Table \ref{table:recordsOffChain} to see how records are saved in the database)
 \end{enumerate}
 
-\textbf{\textit{Query Completeness}}
+\subparagraph{Query Completeness Steps}
+Below shows the implemented step by step actions when a user requests to perform query completeness. Figure \ref{fig:queryCompleteness} shows the activity diagram of the steps described below: 
 
 \begin{figure}[h]
 	\centering
@@ -122,15 +128,15 @@ This section describes the step-by-step actions between our client side applicat
 
 \begin{enumerate}
 	\item User requests to get all of financial data that are within the date range the user has requested.
-	\item The client side application gets all data from the database in the ascending order of the smart contract ID. This ID is generated by the smart contract to keep the ordering of the hashes that are stored in the smart contract. It is generated upon appending a financial record through the smart contract.
-	\item The client side application hashes each of the rows in the table.
+	\item The client-side application gets all data from the database in the ascending order of the smart contract ID. This ID is generated by the smart contract to keep the ordering of the hashes that are stored in the smart contract. It is generated upon appending a financial record through the smart contract.
+	\item The client-side application hashes each of the rows in the table.
 	\item It will then map the hashes of the row and the raw date value to the smart contract ID.
-	\item The client side application sends the mapping with the query to the smart contract.
+	\item The client-side application sends the mapping with the query to the smart contract.
 	\item The smart contract checks if it got the right data, the right amount of rows and the correct table overall by iterating over the provided root hashes and comparing them to the stored hashes in the local mapping.
 		\begin{enumerate}
-		\item If smart contract cannot verify the rows, then it will throw an integrity check error to the client side application as an event.
+		\item If smart contract cannot verify the rows, then it will throw an integrity check error to the client-side application as an event.
 		\item If the smart contract can confirm this, it checks the query condition for every row and returns an array of booleans indicating all the indexes of rows that fulfill the query. Dates are intentionally stored as “uint” to ease the query function in the smart contract. For example 1, March, 2018 -> 20180301
 		\end{enumerate}
 	\item Smart contract triggers an event to return back all the smart contract IDs that have satisfied the query.
-	\item The client side application listens to this event and returns the specified rows to the user subsequently.
+	\item The client-side application listens to this event and returns the specified rows to the user subsequently.
 \end{enumerate}
