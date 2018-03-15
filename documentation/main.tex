@@ -92,6 +92,24 @@
 \usepackage{listings}
 \usepackage{enumitem}
 \usepackage{caption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\newcommand{\arrowhead}{Stealth[length=1.5mm,width=1.2mm]}
+\tikzset{>={Stealth[length=1.5mm,width=1.2mm]},rounded corners=2pt}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
+\lstdefinestyle{base}{
+	language=C,
+	emptylines=1,
+	breaklines=true,
+	basicstyle=\scriptsize\ttfamily\color{black},
+	moredelim=**[is][\color{gray}]{@}{@},
+}
 
 \begin{document}
 
