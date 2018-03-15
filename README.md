@@ -1,6 +1,9 @@
 # Offchainer
 A system for trustless data exchange between Smart Contract and RDBMS.
 
+## Documentation
+We provide a documentation which describes the details of this project ([PDF](https://github.com/simonfall/offchainer/blob/develop/documentation/offchainer.pdf))
+
 ## Deployment
 ### Prerequisites
 - [Docker](https://docs.docker.com/install/) 17.05 or higher
