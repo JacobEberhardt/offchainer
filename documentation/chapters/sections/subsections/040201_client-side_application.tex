@@ -1,6 +1,6 @@
 \subsection{Client-side Application}
 \label{subsec:approach-implementation-client}
-\subsectionnames{Vincent Jonany, Dukagjin Ramosa, Tarek Higazij}
+\subsectionnames{Vincent Jonany, Tarek Higazi}
 
 \subsubsection*{Technologies}
 
@@ -18,7 +18,7 @@ Initially, we used the native default SHA-3 (keccak) hash function provided by t
 
 The other huge blocker which we encountered includes the inconsistency of the data variables in Javascript and Solidity. Our next proof-of-concept includes incrementing a counter value in the smart contract, and that counter value is kept off-chained. Immediately, we received two different hash results from hashing the counter value, an integer, from Web3.js and Solidity. The problem is that when we pass in a number literal in Solidity’s SHA-3 function, it will convert the integer to the smallest possible integer type, in this case, a literal value of 1 will be considered as uint8. Hence, the solution requires us to keep the bytes representation of the input consistent. For example, we had to left-pad the byte representation of the integer by 2 hex characters, which calculates to 8 bytes, to match the representation of uint8 in Solidity. 
 
-The solutions mentioned are not the best, as our implementation becomes very complex and dirty; we have to pad 64 hex characters to the left of the input in order to match the representation of the uint256 variable in Solidity before hashing it using Web3.js. Fortunately, we found a third party library which provides a SHA-3 (keccak) function that matches the characteristics of the function in Solidity. <https://web3js.readthedocs.io/en/1.0/web3-utils.html> It allows us to state the exact Solidity data type that we want to hash it as, and it also takes care of the appending and the removal of the extra ‘0x’ hex characters of the hash results.
+The solutions mentioned are not the best, as our implementation becomes very complex and dirty; we have to pad 64 hex characters to the left of the input in order to match the representation of the uint256 variable in Solidity before hashing it using Web3.js. Fortunately, we found a third party library which provides a SHA-3 (keccak) function that matches the characteristics of the function in Solidity \cite{web3util}. It allows us to state the exact Solidity data type that we want to hash it as, and it also takes care of the appending and the removal of the extra ‘0x’ hex characters of the hash results.
 
 \subsubsection*{Rollback}
 
