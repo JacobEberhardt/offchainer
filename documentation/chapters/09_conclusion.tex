@@ -5,28 +5,28 @@
 
 %The user with her local middleware can create a Smart Contract and only store a hash or hashes of the needed data there. The actual data is stored in a (relational) database. When the Smart Contract needs the data to e.g. execute one of its function (after the user called it), the database will provide it. Before actually using the provided data the Smart Contract performs an integrity check that the data was not modified in between (by the database or a middleman).
 
-%%\paragraph{Implemented Integrity Check Mechanisms}
-%%\subparagraph{Whole Row Hashing (Jacob Eberhardt, Slide Deck Strategies, p. 5)}
-%%The hash of a whole data row (record) of the database table is stored in the Smart Contract. This hash is used to check the integrity of the received data from the database on arrival and before usage.
+%\paragraph{Implemented Integrity Check Mechanisms}
+%\subparagraph{Whole Row Hashing (Jacob Eberhardt, Slide Deck Strategies, p. 5)}
+%The hash of a whole data row (record) of the database table is stored in the Smart Contract. This hash is used to check the integrity of the received data from the database on arrival and before usage.
 
-%%\subparagraph{Merkle Tree - Check One Column of One Row (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
-%%The root hash of the Merkle Tree over the data is stored in the Smart Contract. Additionally, the functionality to perform a Merkle Proof on one column for one table row is implemented (in the Smart Contract as well as in the middleware). The root hash and the provided Merkle Proof for one data field are used to check the integrity of this data field.
+%\subparagraph{Merkle Tree - Check One Column of One Row (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
+%The root hash of the Merkle Tree over the data is stored in the Smart Contract. Additionally, the functionality to perform a Merkle Proof on one column for one table row is implemented (in the Smart Contract as well as in the middleware). The root hash and the provided Merkle Proof for one data field are used to check the integrity of this data field.
 
-%%\subparagraph{Merkle Tree - Check Multiple Rows (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
-%%The Merkle Proof functionality was enhanced to cope with Merkle Proofs for multiple table rows.
+%\subparagraph{Merkle Tree - Check Multiple Rows (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
+%The Merkle Proof functionality was enhanced to cope with Merkle Proofs for multiple table rows.
 
-%%\subparagraph{Merkle Tree - Check Multiple Columns (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
-%%In the above implementation as well as with existing libraries there was no possibility to check several columns at once (you had to provide one Merkle Proof per column which represented a lot of overhead). With this innovation the user can proof all columns in question at once.
+%\subparagraph{Merkle Tree - Check Multiple Columns (Jacob Eberhardt, Slide Deck Strategies, p. 8)}
+%In the above implementation as well as with existing libraries there was no possibility to check several columns at once (you had to provide one Merkle Proof per column which represented a lot of overhead). With this innovation the user can proof all columns in question at once.
 
-%%\paragraph{Use Cases}
-%%\subparagraph{Initial - Simple Message}
-%%To start off and build the first prototype for the hashing integrity check we implemented a simple case where a message is the hashed and later verified data.
+%\paragraph{Use Cases}
+%\subparagraph{Initial - Simple Message}
+%To start off and build the first prototype for the hashing integrity check we implemented a simple case where a message is the hashed and later verified data.
 
-%%\subparagraph{For Merkle Tree - Multiple Counters}
-%%For the sake of building and testing the Merkle Proof we worked with a Smart Contract that contained four counters that could be incremented. Each counter represented one column in our table.
+%\subparagraph{For Merkle Tree - Multiple Counters}
+%For the sake of building and testing the Merkle Proof we worked with a Smart Contract that contained four counters that could be incremented. Each counter represented one column in our table.
 
-%%\subparagraph{Verification - Company Financials}
-%%Our first use case performs verification of a company’s financial data. They could for example store their sales data every Friday and thus proof to third parties (like tax officials or auditors) later on that they have not modified their financial data afterwards (think accounting tricks). The once stored data is not modified anymore (would undermine the trust auditors could put in the data).
+%\subparagraph{Verification - Company Financials}
+%Our first use case performs verification of a company’s financial data. They could for example store their sales data every Friday and thus proof to third parties (like tax officials or auditors) later on that they have not modified their financial data afterwards (think accounting tricks). The once stored data is not modified anymore (would undermine the trust auditors could put in the data).
 
 %\subparagraph{Verification and Modification - Payroll and Salary Raises}
 %The second use cases additionally comprises modification of the stored data. Here, we envision a union and a company that negotiated a pay raise for the employees. To proof that all relevant salaries were increased the pay raise (along with storing the old and new salaries) is performed on-chain. Thus, the salaries are updated accordingly which implies the necessity for modification.
@@ -48,12 +48,38 @@
 %The Employee Use Case was showed during the midterm presentation. At this time it was in the final stage of the implementation. In the second phase of this project we decided to not further improve the Employee Use Case but rather work on the Financials Use Case as well as implement better integrity check mechanism. The Employee Use Case just underwent some adjustments due to changes in the Merkle tree implementation.
 
 %\paragraph{Benchmarking Results}
-
 %\paragraph{Translator - Proof-of-Concept}
 
-%% Mention working prototype which was made as an API
-%% Mention 2 use cases and that this was sucessfull
-%\section{Summary and Outlook}
-%In this project we encouraged the necessity for off-chaining approaches to deal with limitations in the today’s blockchain developments, to broaden their usefulness and to reduce further usage costs. Taking into consideration our problem statement, by off-chaining data to a RDBMS while compromising blockchain properties as little as possible, we introduced an approach on how we can solve the problem at hand which makes sense for specific use cases. After numerous mentioned challenges during our experience in this project, we introduced two uses cases for moving computation and data off the blockchain, without compromising (or at least as possible) important blockchain properties, in particular, the trustlessness property.
 
-%We anticipate that in the future blockchain systems will continue their development and enhance further concerning scalability and privacy issues by joining and implementing new concepts. Nevertheless, we keep considering off-chaining approaches to be crucial features in blockchain-based applications as they grant additional functionalities and possibly huge cost benefits.
+%\section{Summary and Outlook}
+
+% client side application, RDBMS, smart contract which can utilize the RDBMS data
+% Mention working prototype which was made as an API
+% Mention 2 use cases and that this was sucessfull
+% Mention verification and modification
+% Verication for single and multiple rows + single and multiple variables
+% Query Completeness
+% Mention translator
+% (Benchmarking) results
+% which makes sense for specific use cases. 
+In this project we encouraged the necessity for off-chaining approaches to deal with limitations in the today’s blockchain developments, to broaden their usefulness and to reduce further usage costs. 
+Taking into consideration our problem statement, by off-chaining data to a RDBMS while compromising blockchain properties as little as possible, we introduced an approach on how we can solve the problem at hand.
+ After numerous mentioned challenges during our experience in this project, we introduced a client side application which is connected to a database and offers its functionality through an API.
+The client side application is capable of communicating with smart contracts living on the Ethereum blockchain and allowing smart contracts to use data from the RDBMS without compromising blockchain properties under certain preconditions. 
+We showed the possibility to use and modify the data from RDBMS within the blockchain as well as utilizing multiple rows and multiple columns from the RDBMS simultaneously within the blockchain.
+
+This concept was implemented in two use cases, namely the employee use case and the financial use case.
+We showed concepts of how to prove query completeness of the potentially untrusted database with the help of the blockchain.
+Also a first prototype version of a translator was developed which is capable of automatically generating contracts using the approach proposed in this paper from state of the art contracts.
+
+%two uses cases for saving data off the blockchain.
+
+We anticipate that in the future blockchain systems will continue their development and enhance further concerning scalability issues by joining and implementing new concepts. 
+Our analysis of our new approach showed that this approach can indeed save gas cost.
+Altough, it needs to be mentioned that this saving is not applicable for all use cases but for plenty.
+To sum up, we keep considering off-chaining approaches to be crucial features in blockchain-based applications as they grant possibly huge cost benefits.
+
+
+
+
+
