@@ -1,7 +1,7 @@
 Smart contracts are increasingly used in various domains as they enable credible computations without the need for a trusted third party.
-To ensure trustless properties, computations and storage have to be distributed on a large network of nodes, which makes it expensive to use more than a few hundred bytes of data in smart contract computations.
+In order to ensure trustless properties, computations and storage have to be distributed on a large network of nodes, which makes it expensive to use more than a few hundred bytes of data in smart contract computations.
 In this report, we explore possibilities to \emph{off-chain} smart contract data, i.e., storing it outside the blockchain without compromising the data integrity.
 We present a system which leverages cryptographic proofs to store the state variables of a smart contract in an untrusted relational database, while maintaining the ability to use those variables in trustless computations.
-The performance of this system is evaluated in the light of two use cases to give an differentiated assessment, in which cases the benefit of storing data off-chain outperforms the overhead added by the applied integrity check mechanism.
-It is found that, although performance increases strongly rely on the specific use case, off-chaining delivers the best result when the number of variables is high compared to the access frequence (?).
-Finally, we present a concept to automatically transform common smart contracts to use the presented off-chaining approach.
+The performance of this system is evaluated for two use cases to give a differentiated assessment in which cases the benefit of storing data off-chain outperforms the overhead added by the applied integrity check mechanism.
+It is found that, although performance increases rely on the specific use case, off-chaining delivers the best result when for smart contracts which use large state variables and functions that change many state variables at once.
+Finally, we present a concept of a translator which automatically transforms common smart contracts to use the presented off-chaining approach.
