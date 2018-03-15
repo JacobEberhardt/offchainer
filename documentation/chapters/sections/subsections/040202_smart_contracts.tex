@@ -10,8 +10,8 @@ As our development framework in Blockchain, we decided using Truffle as the most
 
 In order to test our smart contracts development in a local blockchain network, we used Ganache. We used Ganache since it provides us with a possibility of simulating the blockchain network, allowing us to make Remote Procedure Calls(RPC) calls in it without the need of actually mining the blocks. Moreover, Ganache provides a nice user interface in which developers can see the details of all the transactions, mined status, costs, and other things to aid them during development and debugging. 
 
-\subsubsection*{Other Responsibilities}
+\subsubsection*{Responsibilities}
 
-In addition to performing data integrity checks, and performing the tasks they are programmed to do, it is also their responsibility to create the new root when it changes any data. For example, when the Smart Contract has finished incrementing a counter value, it is the responsibility of the Smart Contract to create the new root hash. It can create the new root hash using the proof given for the integrity check and using the new counter value’s hash value. 
+In addition to performing data integrity checks, and performing the tasks they are programmed to do, it is also their responsibility to create the new root when it changes any data. For example, when the Smart Contract has finished incrementing a counter value, it is the responsibility of the Smart Contract to create the new root hash. It can create the new root hash using the proof given for the integrity check (also see section \ref{subsec:mip-generation}) and using the new counter value’s hash value. 
 
 We are able to keep this responsibility in the Smart Contracts because sending Merkle proofs is not expensive, as it is only sending a fraction of nodes of the whole tree. Recreating the Merkle tree in the integrity check, and for creating a new root hash is also not computationally expensive.
