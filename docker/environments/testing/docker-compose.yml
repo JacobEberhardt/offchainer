@@ -6,6 +6,7 @@ services:
     build:
       context: ../../..
       dockerfile: docker/environments/testing/Dockerfile
+    command: node src/middleware/server/test/test-merkle-tree # Explicitly redefine command to avoid caching issue
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:

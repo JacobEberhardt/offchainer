@@ -8,33 +8,21 @@ from utils.io import copy, render, delete
 # Define values
 DEFAULT_OPTIONS = {
     'force_overwrite': False,
+    'ignore_existing': False,
     'show_analysis': False
 }
 FLAGS = {
     '--force-overwrite': 'force_overwrite',
     '-f': 'force_overwrite',
+    '--ignore-existing': 'ignore_existing',
+    '-i': 'ignore_existing',
     '--show-analysis': 'show_analysis',
     '-s': 'show_analysis'
 }
 FILEDIR = path.dirname(path.realpath(__file__))
 WORKDIR = getcwd()
 MINIMUM_NUMBER_OF_ARGS = 2
-DEFAULT_OUTPUT_DIR = path.join(WORKDIR, 'output')
-FILES_TO_COPY = [
-    'docker/ganache',
-    'docker/prebuild',
-    'docker-compose.yml',
-    'Dockerfile',
-    'scripts',
-    'src/blockchain/contracts/Migrations.sol',
-    'src/blockchain/migrations/1_initial_migration.js',
-    'src/blockchain/truffle.js',
-    'src/middleware/package.json',
-    'src/middleware/server/config',
-    'src/middleware/server/utils',
-    'src/middleware/server/server.js'
-]
-FILES_DIR = path.join(FILEDIR, 'files')
+DEFAULT_OUTPUT_DIR = path.join(WORKDIR, 'translator-output')
 TEMPLATE_DIR = path.join(FILEDIR, 'templates')
 
 # Define error codes
@@ -52,7 +40,7 @@ ERROR_OUTPUT_DIR_EXISTS = 'already exists'
 ERROR_INVALID_CONTRACT = 'Input file is not a valid Solidity contract'
 
 # Define messages
-MSG_SUCCESS = 'Output was written to'
+MSG_SUCCESS = 'Contract successfully translated.'
 
 # Filter flags
 args = list(filter(lambda x: x.find('-') != 0, sys.argv))
@@ -81,7 +69,7 @@ output_dir = path.join(WORKDIR, args[2]) if len(args) > 2 else DEFAULT_OUTPUT_DI
 if path.exists(output_dir):
     if options.force_overwrite:
         delete(output_dir)
-    else:
+    elif not options.ignore_existing:
         print(ERROR, output_dir, ERROR_OUTPUT_DIR_EXISTS)
         exit(CODE_OUTPUT_EXIST)
 
@@ -98,20 +86,8 @@ contract = Contract(content)
 if options.show_analysis:
     contract.print()
 
-# Copy files
-makedirs(output_dir)
-for file in FILES_TO_COPY: # Copy files from main repository
-    source = path.join(FILEDIR, '../', file)
-    destination = path.join(output_dir, file)
-    copy(source, destination)
-
-for blob in listdir(FILES_DIR): # Copy custom files
-    source = path.join(FILES_DIR, blob)
-    destination = path.join(output_dir, blob)
-    copy(source, destination)
-
 # Render templates
 render(output_dir, TEMPLATE_DIR, contract)
 
 # Print success message
-print(MSG_SUCCESS, output_dir)
+print(MSG_SUCCESS)

@@ -30,4 +30,4 @@ RUN npm install -g nodemon
 EXPOSE 8000
 
 # Start server
-CMD ["npm", "run", "run-development"]
+CMD ["nodemon", "src/middleware/server/start"]

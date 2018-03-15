@@ -35,4 +35,4 @@ COPY --from=0 /wd /wd
 EXPOSE 8000
 
 # Start server
-CMD ["npm", "run", "run-testing"]
+CMD ["node", "src/middleware/server/test/test-merkle-tree"]
