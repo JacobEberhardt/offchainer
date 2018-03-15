@@ -1,5 +1,5 @@
 \chapter{Future Work} \label{sec:future_work}
-
+\chapternames{Patrick Friedrich, Tarek Higazi, Vincent Jonany, Dukagjin Ramosaj}
 In this section, we provide possible future steps that show how to continue and further increase the value and advantages of the off-chaining approach. During the course of the project, we have identified several relevant additional ideas to extend our implemented off-chaining system that we present one after the other subsequently. We have ordered the list according to what we believe will give the highest value.
 
 \subparagraph{Smart Translator}
@@ -42,6 +42,7 @@ The full benefit of the Merkle Tree Integrity check mechanism will reveal itself
 When it comes to benchmarking, it would be interesting to find a limit for the rows that can be checked in this way. Every number bigger than that one needs to cope with compromises concerning query completeness (e.g. only checking that all rows were considered and are part of the table but no actual value checking) because of the high costs and the off-chaining of data constraint.
 
 \subparagraph{Make use of a more optimized database for Merkle Trees}
+\subsectionnames{Tarek Higazi}
 One of the steps which were originally thought of was to integrate a specifically optimized database for the storing of our Merkle Tree structures, this in order to save on memory and processing within the flows which make use of the Merkle Tree.
 
 In our current implementation it would not have had much of an effect since we used relatively small Merkle Trees for our use cases and demos, however it is not the most efficient since we re-create the Merkle Tree whenever necessary, rather than storing it somewhere and updating it.
