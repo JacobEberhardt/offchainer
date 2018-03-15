@@ -205,8 +205,8 @@
 
 				\begin{algorithmic}[1]
 					\Procedure{VerifyProof}{$booleans, hashes, dataBlocks, indexOfFirstLeaf$}
-						\State $computedRootHash \gets \Call{ComputeHash}{0, booleans, hashes, dataBlocks, indexOfFirstLeaf}$ \label{algline:2}
-						\If{$computedRootHash = storedRootHash$} \Return true \Comment{Proof is valid}
+						\State $rootHash \gets \Call{ComputeHash}{0, booleans, hashes, dataBlocks, indexOfFirstLeaf}$ \label{algline:2}
+						\If{$rootHash = storedRootHash$} \Return true \Comment{Proof is valid}
 						\Else{} \Return false \Comment{Proof is invalid}
 						\EndIf	
 					\EndProcedure
