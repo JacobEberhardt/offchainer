@@ -1,4 +1,5 @@
 \chapter{Use Cases} \label{sssec:use_cases}
+\chapternames{Thanh Tuan Tenh Cong, Patrick Friedrich}
 
 In companies large amounts of data records are retrieved and modified each day. But what if data records are changed or manipulated in a way that the results of your calculations with the data become wrong and decisions are made based on these results? Guaranteeing the integrity of data records in a distributed environment is a big challenge.
 
@@ -10,7 +11,7 @@ Throughout the implementation process in this project, we have always been comin
 
 In the end, we have come up with two different use cases, produced through our feedback sessions and discussions as a group. The uses cases should represent a real case scenario and highlight the need for off-chaining data.
 
-The following points should summarize the properties of our use cases. As mentioned before, the developed uses cases should still be feasible and integratable with the current prototype implementation. 
+The following points should summarize the properties of our use cases. As mentioned before, the developed uses cases should still be feasible and integratable with the current prototype implementation.
 
 \begin{itemize}
 	\item Multiple Columns:
@@ -20,8 +21,9 @@ The following points should summarize the properties of our use cases. As mentio
 	\item Big Data:
 	In real world examples large numbers of data records are stored and evaluated every day. Our use cases should consider real world examples, where a large amount of data is required. With the current prototype implementation and the posed constraints by the Ethereum network, a large number of data records could hit the gas limit very quickly. Therefore, the number of data records should be limited to a defined number.
 	\item Different Scenarios:
-	For presentation purposes, the two use cases should not only use different data types but also do different things with the acquired data. 
+	For presentation purposes, the two use cases should not only use different data types but also do different things with the acquired data.
 \end{itemize}
 
 \input{chapters/sections/0501_use_case_employee}
+\newpage
 \input{chapters/sections/0502_use_case_financials}

@@ -40,7 +40,7 @@ Merkle tree is used here when a column, or multiple column values are changed in
 
 For the Merkle tree implementation, there is no need to implement a new one or change the existing one, as we can use the Multiple Item Proof here (note: an item here will correspond to a row, not a column).
 
-These are the implemented steps for appending a row into the database: 
+These are the implemented steps for appending a row into the database:
 \begin{enumerate}
 	\item First, the client-side application gets all the data from the Database.
 	\item It then creates the proof and sends it to the smart contract.
@@ -50,16 +50,16 @@ These are the implemented steps for appending a row into the database:
 	\item It then recreates the tree with that new roothash from the total row, and the hash of the newly added item row.
 	\item Store the new root hash of the whole table.
 	\item Send back the total row with its root hash, and the root hash of the added row.
-	\item Client-side application receives it, and stores it into the database. 
+	\item Client-side application receives it, and stores it into the database.
 \end{enumerate}
 
 \subparagraph{Realization}
 
-We quickly realized the “red flags” this approach is producing in regards to the gas cost. In the process of adding a new row, we are adding a new leaf, or a new hash into the current Merkle tree (step 6). This cannot work the way we imagined it, as we are planning on having only the Merkle proof, the nodes that are not affected by the change. Hence, to approach this we always have to send all of the leaves, the hashes of the rows, so that we can create this new tree in addition to a new leaf, the new hash of the inserted row. This quickly creates an overhead in the gas cost when adding a new row into the table. Hence, we took a turn in our approach, and we have to come up with something more usable, and worth it for the users. While the same gas cost problem will still exist in the next approach, it will however provide a much larger incentive for using the function. 
+We quickly realized the “red flags” this approach is producing in regards to the gas cost. In the process of adding a new row, we are adding a new leaf, or a new hash into the current Merkle tree (step 6). This cannot work the way we imagined it, as we are planning on having only the Merkle proof, the nodes that are not affected by the change. Hence, to approach this we always have to send all of the leaves, the hashes of the rows, so that we can create this new tree in addition to a new leaf, the new hash of the inserted row. This quickly creates an overhead in the gas cost when adding a new row into the table. Hence, we took a turn in our approach, and we have to come up with something more usable, and worth it for the users. While the same gas cost problem will still exist in the next approach, it will however provide a much larger incentive for using the function.
 
 \subparagraph{Query Completeness}
 
-The possibility to query RDBMS is a pivotal functionality of those systems and thus represents a great entry point for efforts to link the technologies of blockchain and RDBMS as targeted in this project. The trust that today’s users of RDBMS put into the correctness of the returned results for their queries could be nullified by the trustlessness offered by the blockchain - trustless query results in a sense. Right now, users may not be sure if the results were not tampered with or only part of the truth were returned to them.
+The possibility to query RDBMS is a pivotal functionality of those systems and thus represents a great entry point for efforts to link the technologies of blockchain and RDBMS as targeted in this project. The trust that today’s users of RDBMS put into the correctness of the returned results for their queries could be nullified by the trustlessness offered by the blockchain - trustless query results in a sense. Currently, users may not be sure if the results were not tampered with or only part of the truth were returned to them.
 
 The general idea is to use the blockchain and its properties to counteract the four ways a database system could falsify the query results. In detail, the following measurements have to be prevented:
 \begin{itemize}
@@ -67,15 +67,15 @@ The general idea is to use the blockchain and its properties to counteract the f
 	\item Secondly, the database system could try to add records to the query results that were not part of the database before. To counteract, a trustless system needs to show that all considered records were part of the database already and that the returned results are actual database entries.
 	\item Thirdly, the database system could try to leave out actual database records that fulfill the query in the returned set of records. Accordingly, we need to proof that that all records that fulfill a user’s query find their way into the results that the user obtains.
 	\item Finally, the database system could try to include actual database records that do not fulfill the query in the returned set of records. A trustless system thus has to check that only records that fulfill the query are returned to the user.
-\end{itemize} 
+\end{itemize}
 
-Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined here. An example on how this mechanism is applied to our use case includes a user who wants to query all sales data in the period from Nov 2017 to Jan 2018, and expects that the results have not been tampered with.
+Any system that successfully counteracts these ways to counterfeit query results achieves query completeness as defined in this paper. An example on how this mechanism is applied to our use case includes a user who wants to query all sales data in the period from Nov 2017 to Jan 2018, and expects that the results have not been tampered with.
 
 \subparagraph{Initial Implementation Ideas}
 
 Our initial approach to implementing query completeness includes, verifying that all entries were considered and that none were left out in the returned results. We can have the database responds to original query and to the negated query (e.g. original: all sales data in the period from Nov 2017 to Jan 2018, negated: all sales data NOT in the period from Nov 2017 to Jan 2018). And in the end, check if the combined size of both returned lists equals total number of entries (mapping counter in SC). Extending this idea, we can also send the two results, queried results, and the negated results to the smart contract to check if both lists will result into the stored root hash of the whole table.
 
-Alternatively, we can verify that all results from the database match the query through smart contract, by storing all of the required data in the smart contract. 
+Alternatively, we can verify that all results from the database match the query through smart contract, by storing all of the required data in the smart contract.
 
 The above statements show that there is a clear trade-off between achieving query completeness and this project’s goal of saving gas costs by off-chaining data. Either practically all data has to be stored on-chain to enable our smart contract to guarantee query completeness, or a plethora of computations (Merkle proofs for each row in the data table) have to be on-chained which would hit the gas limit relatively fast.
 
@@ -85,7 +85,7 @@ As we are facing the challenge described previously, we decided to implement our
 
 This section describes the step-by-step actions between our client-side application, smart contract and the database. The proof of concept includes the implementation of appending a new financial row, and query completeness.
 
-\begin{table} 
+\begin{table}
 	\centering
 	\caption{A Representation of How the Records Are Stored in the Database}
     \begin{tabular}{| l | l | l | l | l | l | l | l |}
@@ -100,7 +100,7 @@ This section describes the step-by-step actions between our client-side applicat
 \end{table}
 
 \subparagraph{Appending A Financial Row Steps}
-Below shows the implemented step by step actions when a user requests to append a new row into the records. Figure \ref{fig:appendRowFinancials} shows the activity diagram of the steps described below: 
+Below shows the implemented step by step actions when a user requests to append a new row into the records. Figure \ref{fig:appendRowFinancials} shows the activity diagram of the steps described below:
 
 \begin{figure}[h]
 	\centering
@@ -119,7 +119,7 @@ Below shows the implemented step by step actions when a user requests to append 
 \end{enumerate}
 
 \subparagraph{Query Completeness Steps}
-Below shows the implemented step by step actions when a user requests to perform query completeness. Figure \ref{fig:queryCompleteness} shows the activity diagram of the steps described below: 
+Below shows the implemented step by step actions when a user requests to perform query completeness. Figure \ref{fig:queryCompleteness} shows the activity diagram of the steps described below:
 
 \begin{figure}[h]
 	\centering

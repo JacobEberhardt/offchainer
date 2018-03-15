@@ -33,8 +33,8 @@ Another idea that we derived from our initial research on integrity check mechan
 To reduce the gas costs, a random sample from the query results that the database returns could be drawn and then verified by the blockchain. In contrast, in our proof-of-concept implementation for query completeness every record is looked at on-chain.
 In a similar fashion, the Randomized Sampling could be used as an integrity check mechanism that trades less security against decreased gas costs. When the smart Contract requests the off-chained data all of that data is currently checked afterwards on-chain (which is costly). Again, a random sample could be drawn from the off-chained data that is handed to the smart Contract and only that random sample is verified. The user of the system could be offered the choice whether she wants a full integrity check performed or a Randomized Sampling.
 
-\subparagraph{Encryption-Based (Jacob Eberhardt, Slide Deck Strategies, p. 7)}
-Instead of hashing, the data could also be encrypted (i.e. signed by the user) and could thus not be modified in any meaningful way. It could be relatively easy and efficient to perform integrity checks in this way.
+\subparagraph{Encryption-Based}
+Instead of hashing, the data could also be encrypted (i.e. signed by the user) and could thus not be modified in any meaningful way \cite{Eberhardt}. It could be relatively easy and efficient to perform integrity checks in this way.
 This could follow a similar implementation structure as with the hashing and Merkle Tree beforehand; first a whole row is encrypted and can thus be checked. Then, a more sophisticated mechanism (like a Merkle Tree for encryption) could be built on top of that. With more research in the field and more experience further ideas beyond the presented and implemented ones could arise and prove themselves as good candidates for integrity check mechanisms.
 
 \subparagraph{Mature Query Completeness}
@@ -54,7 +54,7 @@ During our research about alternative approaches to check the integrity of the o
 \subparagraph{Merkle DAG}
 Merkle DAG (Directed Acyclic Graph) is one of the features that we included into our potential roadmap after the mid-term presentation. However, due to the limited time and resources we have, we decided to prioritize other things in the roadmap.
 
-Over the past few years, some papers have been published in regards to extending the Merkle hash technique from just trees but to other data structures \cite{Martel2004}, such as directed acyclic graphs. In addition to that, another paper has been published in regards to a revised hashing technique \cite{kundu2012hashing} for directed acyclic graphs. The paper suggests that the traditional hashing technique is not suitable for a more complex data structure, such as the directed acyclic graph. And lastly, there exists a proof-of-concept \cite{futureWork02} and further disucussions for Merkle DAG. 
+Over the past few years, some papers have been published in regards to extending the Merkle hash technique from just trees but to other data structures \cite{Martel2004}, such as directed acyclic graphs. In addition to that, another paper has been published in regards to a revised hashing technique \cite{kundu2012hashing} for directed acyclic graphs. The paper suggests that the traditional hashing technique is not suitable for a more complex data structure, such as the directed acyclic graph. And lastly, there exists a proof-of-concept \cite{futureWork02} and further disucussions for Merkle DAG.
 
 The data structure compatible on the client side application will affect the complexity of the use cases that we can handle. However, at the same time, we also try to not tremendously increase the gas cost. The Merkle DAG increases the complexity of the data structure from a binary tree to a directed acyclic graph. It allows us to have a more complex relationship. For example, we could create a complex Role Based Access management application that leverages the smart Contract to maintain the integrity of the hierarchy status of each role.
 
@@ -70,6 +70,6 @@ Additional Database access control mechanisms could be included.
 The user could specify if and which kind of blockchain guarantees she wishes to have for the data she wants to store (e.g. blockchain needed at all?, which integrity check?).
 A remote database (in place of the currently local one) can be integrated into the implementation. This could simulate the case that the user does not control the database herself and lead to further refinements of our solution.
 
-The database could sign the records it stored and the user may keep these as proof that the records once existed in the database (proof of existence, in case the database provider denies that the database ever knew about a record). (Jacob Eberhardt, Slide Deck Strategies, p. 7)
+The database could sign the records it stored and the user may keep these as proof that the records once existed in the database (proof of existence, in case the database provider denies that the database ever knew about a record). \cite{Eberhardt}
 
 We could optimize the calculation of proofs by placing variables which are used together as neighbours in the merkle tree. Thus, when calculating the merkle root / merkle proof we save on iterations as we can chop more parts of the tree away. Of course, this optimization has its limitation when certain variables get used together with multiple others in different functions. (This could also be done automatically with an AI)
