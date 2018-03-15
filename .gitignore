@@ -8,6 +8,7 @@ src/blockchain/build
 
 documentation/*
 !documentation/main.tex
+!documentation/offchainer.pdf
 !documentation/chapters/
 !documentation/sample.bib
 !documentation/frog.jpg
