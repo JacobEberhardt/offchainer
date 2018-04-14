@@ -1,7 +1,7 @@
 {
 	"name": "offchainer",
 	"version": "0.3.0",
-	"description": "A system for trustless data exchange between Smart Contract and RDBMS.",
+	"description": "A system for trustless data exchange between smart contracts and RDBMS.",
 	"scripts": {
 		"staging": "cd docker/environments/staging && docker-compose up -d && docker-compose logs -f middleware; docker-compose stop",
 		"development": "cd docker/environments/development && docker-compose up; docker-compose stop",
